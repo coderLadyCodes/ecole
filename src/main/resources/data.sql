@@ -1,0 +1,1 @@
+INSERT INTO users (id,name, email, password, media) VALUES (1,"samia", "samia@cool.fr", "0000", "photo");
