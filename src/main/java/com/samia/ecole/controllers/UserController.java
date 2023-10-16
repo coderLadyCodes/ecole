@@ -12,7 +12,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @RestController
-@RequestMapping("/api/")
 public class UserController {
     public static String uploadDirectory = System.getProperty("user.dir") + "src/resources/static/images";
     private final UserService userService;
@@ -20,7 +19,7 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-    @GetMapping("/")
+    @GetMapping(path = "/hello")
     public String hello(){
         return "hello école";
     }
