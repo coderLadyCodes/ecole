@@ -2,6 +2,7 @@ package com.samia.ecole.controllers;
 
 import com.samia.ecole.entities.User;
 import com.samia.ecole.services.UserService;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,19 +12,24 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @RestController
+@RequestMapping("/api/")
 public class UserController {
-    public static String uploadDirectory = System.getProperty("user.dir") + "resources/static/images";
+    public static String uploadDirectory = System.getProperty("user.dir") + "src/resources/static/images";
     private final UserService userService;
 
     public UserController(UserService userService) {
         this.userService = userService;
     }
+    @GetMapping("/")
+    public String hello(){
+        return "hello école";
+    }
     @PostMapping("/saveUser")
-    public User saveUser(@ModelAttribute User user, @RequestParam("image")MultipartFile file) throws IOException {
+    public User createUser(@ModelAttribute User user, @RequestParam("image")MultipartFile file) throws IOException {
         String originalFileName = file.getOriginalFilename();
         Path fileNameAndPath = Paths.get(uploadDirectory, originalFileName);
         Files.write(fileNameAndPath, file.getBytes());
         user.setMedia(originalFileName);
-        return userService.saveUser(user);
+        return userService.createUser(user);
     }
 }
