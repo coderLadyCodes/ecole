@@ -1,6 +1,7 @@
 package com.samia.ecole.services;
 
 import com.samia.ecole.entities.User;
+import com.samia.ecole.exceptions.UserAlreadyExistsException;
 import com.samia.ecole.exceptions.UserNotFoundException;
 import com.samia.ecole.repositories.UserRepository;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,16 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User Not Found"));
     }
     public User createUser(User user){
+        if(userAlreadyExists(user.getEmail())){
+            throw new UserAlreadyExistsException(user.getEmail() + " this user Exists already !");
+        }
         return userRepository.save(user);
     }
+
+    private boolean userAlreadyExists(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
     public User updateUser(Long id, User userDetails){
         User user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User not found"));
         user.setName(userDetails.getName());

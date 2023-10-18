@@ -24,36 +24,41 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-    @GetMapping("/")
+    @GetMapping("/allusers")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
     @PostMapping("/user")
-    public User createUser(@ModelAttribute User user, @RequestParam("image")MultipartFile file) throws IOException {
-        String originalFileName = file.getOriginalFilename();
-        Path fileNameAndPath = Paths.get(uploadDirectory, originalFileName);
-        Files.write(fileNameAndPath, file.getBytes());
-        user.setMedia(originalFileName);
+    public User createUser(@RequestBody User user) {
         return userService.createUser(user);
     }
-    @GetMapping("/user/{id}")
-    public User getUserById(@PathVariable(value="id") Long id){
-        return userService.getUserById(id);
-    }
-    @GetMapping("/user/media/{id}")
-    public Resource getMedia(@PathVariable Long id) throws IOException {
-        User user = userService.getUserById(id);
-        Path mediaPath = Paths.get(uploadDirectory, user.getMedia());
-        Resource resource = new FileSystemResource(mediaPath.toFile());
-        String contentType = Files.probeContentType(mediaPath);
-        //return contentType(MediaType.parseMediaType(contentType)).body(resource);
-        return resource;
-    }
-    @PutMapping("/{id}")
+//    @PostMapping("/user")
+//    public User createUser(@ModelAttribute User user, @RequestParam("image")MultipartFile file) throws IOException {
+//        String originalFileName = file.getOriginalFilename();
+//        Path fileNameAndPath = Paths.get(uploadDirectory, originalFileName);
+//        Files.write(fileNameAndPath, file.getBytes());
+//        user.setMedia(originalFileName);
+//        return userService.createUser(user);
+//    }
+
+//    @GetMapping("/user/media/{id}")
+//    public Resource getMedia(@PathVariable Long id) throws IOException {
+//        User user = userService.getUserById(id);
+//        Path mediaPath = Paths.get(uploadDirectory, user.getMedia());
+//        Resource resource = new FileSystemResource(mediaPath.toFile());
+//        String contentType = Files.probeContentType(mediaPath);
+//        //return contentType(MediaType.parseMediaType(contentType)).body(resource);
+//        return resource;
+//    }
+@GetMapping("/user/{id}")
+public User getUserById(@PathVariable(value="id") Long id){
+    return userService.getUserById(id);
+}
+    @PutMapping("/update/{id}")
     public User updateUser(@PathVariable(value = "id") Long id, @RequestBody User userDetails){
         return userService.updateUser(id, userDetails);
     }
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public void deleteUser(@PathVariable(value = "id") Long id){
         userService.deleteUser(id);
     }
