@@ -2,6 +2,7 @@ package com.samia.ecole.controllers;
 
 import com.samia.ecole.entities.User;
 import com.samia.ecole.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -29,7 +30,7 @@ public class UserController {
         return userService.getAllUsers();
     }
     @PostMapping("/user")
-    public User createUser(@RequestBody User user) {
+    public User createUser(@Valid @RequestBody User user) {
         return userService.createUser(user);
     }
 //    @PostMapping("/user")
@@ -55,7 +56,7 @@ public User getUserById(@PathVariable(value="id") Long id){
     return userService.getUserById(id);
 }
     @PutMapping("/update/{id}")
-    public User updateUser(@PathVariable(value = "id") Long id, @RequestBody User userDetails){
+    public User updateUser(@Valid @PathVariable(value = "id") Long id, @RequestBody User userDetails){
         return userService.updateUser(id, userDetails);
     }
     @DeleteMapping("/delete/{id}")
