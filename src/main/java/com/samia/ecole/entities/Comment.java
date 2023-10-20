@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Table(name="comments")
 public class Comment {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name="comment_content")
     private String commentContent;
