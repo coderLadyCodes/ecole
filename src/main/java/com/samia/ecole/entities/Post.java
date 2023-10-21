@@ -3,6 +3,7 @@ package com.samia.ecole.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name="posts")
@@ -21,25 +22,29 @@ public class Post {
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE, optional = false)
     @JoinColumn(name = "user", nullable = false)
     private User user;
+    @OneToMany(mappedBy ="post",cascade = CascadeType.ALL)
+    private List<Comment> commentList;
 
     public Post() {
     }
 
-    public Post(String title, String postContent, String imagePost, LocalDateTime localDateTime, User user) {
+    public Post(String title, String postContent, String imagePost, LocalDateTime localDateTime, User user, List<Comment> commentList) {
         this.title = title;
         this.postContent = postContent;
         this.imagePost = imagePost;
         this.localDateTime = localDateTime;
         this.user = user;
+        this.commentList = commentList;
     }
 
-    public Post(Long id, String title, String postContent, String imagePost, LocalDateTime localDateTime, User user) {
+    public Post(Long id, String title, String postContent, String imagePost, LocalDateTime localDateTime, User user, List<Comment> commentList) {
         this.id = id;
         this.title = title;
         this.postContent = postContent;
         this.imagePost = imagePost;
         this.localDateTime = localDateTime;
         this.user = user;
+        this.commentList = commentList;
     }
 
     public Long getId() {
@@ -90,6 +95,14 @@ public class Post {
         this.user = user;
     }
 
+    public List<Comment> getCommentList() {
+        return commentList;
+    }
+
+    public void setCommentList(List<Comment> commentList) {
+        this.commentList = commentList;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
@@ -99,6 +112,7 @@ public class Post {
                 ", imagePost='" + imagePost + '\'' +
                 ", localDateTime=" + localDateTime +
                 ", user=" + user +
+                ", commentList=" + commentList +
                 '}';
     }
 }

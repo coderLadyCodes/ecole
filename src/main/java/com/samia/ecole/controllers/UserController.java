@@ -1,31 +1,36 @@
 package com.samia.ecole.controllers;
 
 import com.samia.ecole.entities.User;
+import com.samia.ecole.exceptions.CustomException;
+import com.samia.ecole.services.FileService;
 import com.samia.ecole.services.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.util.StreamUtils;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.List;
 
 @RestController
 public class UserController {
-    public static String uploadDirectory = System.getProperty("user.dir") + "src/resources/static/images";
-    private final UserService userService;
+    @Value("${ecole.images.userprofiles}")
+    String userprofileimagepath;
 
-    public UserController(UserService userService) {
+    private final UserService userService;
+    private final FileService fileservice;
+
+    public UserController(UserService userService, FileService fileservice) {
         this.userService = userService;
+        this.fileservice = fileservice;
     }
-    @GetMapping("/allusers")
+    @GetMapping("/users")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
@@ -33,33 +38,28 @@ public class UserController {
     public User createUser(@Valid @RequestBody User user) {
         return userService.createUser(user);
     }
-//    @PostMapping("/user")
-//    public User createUser(@ModelAttribute User user, @RequestParam("image")MultipartFile file) throws IOException {
-//        String originalFileName = file.getOriginalFilename();
-//        Path fileNameAndPath = Paths.get(uploadDirectory, originalFileName);
-//        Files.write(fileNameAndPath, file.getBytes());
-//        user.setMedia(originalFileName);
-//        return userService.createUser(user);
-//    }
+    @GetMapping(value = "/images/user/{imagename}", produces = MediaType.IMAGE_JPEG_VALUE)
+    public void serveImage(@PathVariable("imagename)") String imagename, HttpServletResponse response){
+        try {
+            InputStream inputStream = fileservice.serveImage(userprofileimagepath, imagename);
+            response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+            StreamUtils.copy(inputStream,response.getOutputStream());
+        }catch (FileNotFoundException e){
+            throw new CustomException("File Not Found with the name:" + imagename, HttpStatus.BAD_REQUEST);
+        }catch ( Exception e){
+            e.printStackTrace();
+        }
+    }
 
-//    @GetMapping("/user/media/{id}")
-//    public Resource getMedia(@PathVariable Long id) throws IOException {
-//        User user = userService.getUserById(id);
-//        Path mediaPath = Paths.get(uploadDirectory, user.getMedia());
-//        Resource resource = new FileSystemResource(mediaPath.toFile());
-//        String contentType = Files.probeContentType(mediaPath);
-//        //return contentType(MediaType.parseMediaType(contentType)).body(resource);
-//        return resource;
-//    }
-@GetMapping("/user/{id}")
-public User getUserById(@PathVariable(value="id") Long id){
-    return userService.getUserById(id);
-}
-    @PutMapping("/update/{id}")
+    @GetMapping("/user/{id}")
+    public User getUserById(@PathVariable(value="id") Long id){
+       return userService.getUserById(id);
+    }
+    @PutMapping("user/update/{id}")
     public User updateUser(@Valid @PathVariable(value = "id") Long id, @RequestBody User userDetails){
         return userService.updateUser(id, userDetails);
     }
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("user/delete/{id}")
     public void deleteUser(@PathVariable(value = "id") Long id){
         userService.deleteUser(id);
     }

@@ -1,5 +1,6 @@
 package com.samia.ecole.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -23,6 +24,10 @@ public class User {
     @Email(message = "Email is not valid")
     @Column(name="email",unique = true, nullable = false)
     private String email;
+    @Email(message = "Email is not valid")
+    @Column(name="phone",unique = true)
+    //@Pattern(regexp = )
+    private String phone;
     @NotEmpty
     @Size(min = 4, max = 12, message = "password must be minimum of 4 chars and max of 12 chars")
     //@Pattern(regexp = )
@@ -34,6 +39,7 @@ public class User {
     @Column(name = "role")
     private Role role;
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("user")
     private List<Post> postList=new ArrayList<>();
     @OneToOne
     @JoinColumn(name = "student")
@@ -41,9 +47,10 @@ public class User {
     public User() {
     }
 
-    public User(String name, String email, String password, String profileImage, Role role, List<Post> postList, Student student) {
+    public User(String name, String email, String phone, String password, String profileImage, Role role, List<Post> postList, Student student) {
         this.name = name;
         this.email = email;
+        this.phone = phone;
         this.password = password;
         this.profileImage = profileImage;
         this.role = role;
@@ -51,10 +58,11 @@ public class User {
         this.student = student;
     }
 
-    public User(Long id, String name, String email, String password, String profileImage, Role role, List<Post> postList, Student student) {
+    public User(Long id, String name, String email, String phone, String password, String profileImage, Role role, List<Post> postList, Student student) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.phone = phone;
         this.password = password;
         this.profileImage = profileImage;
         this.role = role;
@@ -84,6 +92,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getPassword() {
@@ -132,6 +148,7 @@ public class User {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
                 ", password='" + password + '\'' +
                 ", profileImage='" + profileImage + '\'' +
                 ", role=" + role +

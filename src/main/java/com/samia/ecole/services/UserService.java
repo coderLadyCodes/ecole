@@ -36,6 +36,7 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User not found"));
         user.setName(userDetails.getName());
         user.setEmail(userDetails.getEmail());
+        user.setPhone(userDetails.getPhone());
         user.setProfileImage(userDetails.getProfileImage());
         user.setRole(userDetails.getRole());
         user.setPostList(userDetails.getPostList());

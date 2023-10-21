@@ -23,12 +23,16 @@ public class CustomExceptionHandling {
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(UserNotFoundException.class) // à AJOUTER:({UserNotFoundException.class, StudentNotFoundException.class, PostNotFoundException.class, CommentNotFoundException.class})
+    @ExceptionHandler(UserNotFoundException.class)
     public Map<String, String> userNotFound(UserNotFoundException ex){
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
         return error;
-    }
+    }                                              // ADD THIS BELOW
+//    @ResponseStatus(HttpStatus.NOT_FOUND)
+//    @ExceptionHandler({UserNotFoundException.class, ProfessionNotFoundException.class, SocialMediaNotFoundException.class, CommentNotFoundException.class})
+//    public Map<String, String> handleNotFoundExceptions(RuntimeException ex){
+//        Map<String, String> error = new HashMap<>();
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserAlreadyExistsException.class)
