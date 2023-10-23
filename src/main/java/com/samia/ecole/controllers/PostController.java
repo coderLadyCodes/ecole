@@ -41,7 +41,7 @@ public class PostController {
         return postService.getAllPosts();
     }
                                           //CREATE POST
-    @PostMapping("/user/{id}/post")
+    @PostMapping("/user/post/{id}")
     public Post createPost(@RequestParam("post") String post, @RequestParam(name= "image", required = false)MultipartFile file, @PathVariable(value ="id") Long id) {
         Post createdpost = null;
         try{
@@ -96,7 +96,7 @@ public class PostController {
             return postService.getPostById(id);
         }
                                            // UPDATE POST
-        @PutMapping("/user/post/{id}")
+        @PutMapping("user/post/{id}")
         public Post updatePost(@RequestBody Post post, @PathVariable(value = "id") Long id){
         return postService.updatePost(post,id);
         }

@@ -4,19 +4,22 @@ import org.springframework.http.HttpStatus;
 
 import java.time.LocalDateTime;
 
-public class CustomException extends RuntimeException {
-    private static final long serialVersionUID = 1L;
+public class ApiResponse {
     private String message;
     private LocalDateTime timestamp;
     private HttpStatus status;
-    public CustomException(String message,HttpStatus status) {
-        this.message=message;
-        this.timestamp= LocalDateTime.now();
-        this.status=status;
-    }
-    public CustomException(){}
+    private int statuscode;
 
-    @Override
+    public ApiResponse() {
+    }
+
+    public ApiResponse(String message, LocalDateTime timestamp, HttpStatus status, int statuscode) {
+        this.message = message;
+        this.timestamp = timestamp;
+        this.status = status;
+        this.statuscode = statuscode;
+    }
+
     public String getMessage() {
         return message;
     }
@@ -41,12 +44,21 @@ public class CustomException extends RuntimeException {
         this.status = status;
     }
 
+    public int getStatuscode() {
+        return statuscode;
+    }
+
+    public void setStatuscode(int statuscode) {
+        this.statuscode = statuscode;
+    }
+
     @Override
     public String toString() {
-        return "CustomException{" +
+        return "ApiResponse{" +
                 "message='" + message + '\'' +
                 ", timestamp=" + timestamp +
                 ", status=" + status +
+                ", statuscode=" + statuscode +
                 '}';
     }
 }
