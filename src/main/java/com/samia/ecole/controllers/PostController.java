@@ -16,6 +16,7 @@ import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.DataInput;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,17 +42,18 @@ public class PostController {
         return postService.getAllPosts();
     }
                                           //CREATE POST
+
     @PostMapping("/user/post/{id}")
-    public Post createPost(@RequestParam("post") String post, @RequestParam(name= "image", required = false)MultipartFile file, @PathVariable(value ="id") Long id) {
+    public Post createPost(@RequestBody Post post, @RequestParam(name= "image", required = false)MultipartFile file, @PathVariable(value ="id") Long id) throws IOException {
         Post createdpost = null;
-        try{
-            Post postdata = objectMapper.readValue(post, Post.class);
+//        try{
+           Post postdata = objectMapper.readValue((DataInput) post, Post.class);
             createdpost = postService.createPost(postdata,id,file,postimagepath);
-        }catch (JsonProcessingException e){
-            e.printStackTrace();
-        }
+//       }catch (JsonProcessingException e){
+//           e.printStackTrace();
+//       }
         return createdpost;
-    }
+   }
 //    @PostMapping("/user/{id}/post/{id}/image")
 //    public ResponseEntity<ApiResponse> addImageToPost(@RequestParam("image") MultipartFile image, @PathVariable(value ="id") Long id){
 //        String uploadedImageFilename = "";
@@ -64,7 +66,7 @@ public class PostController {
 //                LocalDateTime.now(), HttpStatus.OK, HttpStatus.OK.value());
 //        return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.OK);
 //    }
-                                              // SERVE IMAGE
+                                              // ADD IMAGE TO POST
        @PostMapping("/user/post/{id}/image")
         public void addImageToPost(@RequestParam("image") MultipartFile image, @PathVariable(value ="id") Long id){
             String uploadedImageFilename = "";
