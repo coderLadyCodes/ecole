@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-public class PostController {
+public class PostController{
     @Value("${ecole.images.posts}")
     String postimagepath;
     private final PostService postService;

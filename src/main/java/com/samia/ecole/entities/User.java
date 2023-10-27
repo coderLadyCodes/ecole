@@ -39,7 +39,7 @@ public class User {
     @Column(name = "role")
     private Role role;
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JsonIgnoreProperties("user")
+    //@JsonIgnoreProperties("user")
     private List<Post> postList=new ArrayList<>();
     @OneToOne
     @JoinColumn(name = "student")
