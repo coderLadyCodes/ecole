@@ -25,6 +25,7 @@ public class Post{
     @JoinColumn(name = "user", nullable = false)
     private User user;
     @OneToMany(mappedBy ="post",cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Comment> commentList;
 
     public Post() {
