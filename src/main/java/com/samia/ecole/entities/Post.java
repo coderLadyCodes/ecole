@@ -1,7 +1,9 @@
 package com.samia.ecole.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -23,9 +25,10 @@ public class Post{
     private LocalDateTime localDateTime;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE, optional = false)
     @JoinColumn(name = "user", nullable = false)
+    @JsonBackReference
     private User user;
     @OneToMany(mappedBy ="post",cascade = CascadeType.ALL)
-    @JsonIgnore
+    @JsonManagedReference
     private List<Comment> commentList;
 
     public Post() {

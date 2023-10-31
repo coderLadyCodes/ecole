@@ -1,5 +1,7 @@
 package com.samia.ecole.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -16,6 +18,7 @@ public class Comment {
     private LocalDateTime localDateTime;
     @ManyToOne
     @JoinColumn(name = "post")
+    @JsonBackReference
     private Post post;
 
     @OneToOne

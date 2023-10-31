@@ -1,6 +1,7 @@
 package com.samia.ecole.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -39,7 +40,7 @@ public class User {
     @Column(name = "role")
     private Role role;
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JsonIgnore
+    @JsonManagedReference
     private List<Post> postList=new ArrayList<>();
     @OneToOne
     @JoinColumn(name = "student")
