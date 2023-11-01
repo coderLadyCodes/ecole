@@ -43,6 +43,7 @@ public class User {
     @JsonManagedReference
     private List<Post> postList=new ArrayList<>();
     @OneToOne
+    @JsonManagedReference
     @JoinColumn(name = "student")
     private Student student;
     public User() {

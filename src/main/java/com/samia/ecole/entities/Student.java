@@ -1,5 +1,7 @@
 package com.samia.ecole.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -22,6 +24,7 @@ public class Student {
     private boolean cantine;
     @OneToOne
     @JoinColumn(name = "user")
+    @JsonBackReference
     private User user;
 
     public Student() {
