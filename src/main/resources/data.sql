@@ -13,7 +13,7 @@ INSERT INTO comments (id,comment_content, local_date_time,post,user) VALUES (2,'
 INSERT INTO comments (id,comment_content, local_date_time,post,user) VALUES (3,'comment3', '2023-06-03 09:10:00', 3,3);
 INSERT INTO comments (id,comment_content, local_date_time,post,user) VALUES (4,'comment4', '2023-07-04 08:40:00', 4,4);
 
-INSERT INTO students (id,name, profile_image,birthday,presence,cantine,user) VALUES (1,'name1','image1','2023-01-02',true, true, 1);
-INSERT INTO students (id,name, profile_image,birthday,presence,cantine,user) VALUES (2,'name2','image2','2023-02-02',false, false, 2);
-INSERT INTO students (id,name, profile_image,birthday,presence,cantine,user) VALUES (3,'name3','image3','2023-05-02',true, false, 3);
-INSERT INTO students (id,name, profile_image,birthday,presence,cantine,user) VALUES (4,'name4','image4','2023-06-02',false, true, 4);
+INSERT INTO students (id,name, profile_image,birthday,presence,cantine) VALUES (1,'name1','image1','2023-01-02',true, true);
+INSERT INTO students (id,name, profile_image,birthday,presence,cantine) VALUES (2,'name2','image2','2023-02-02',false, false);
+INSERT INTO students (id,name, profile_image,birthday,presence,cantine) VALUES (3,'name3','image3','2023-05-02',true, false);
+INSERT INTO students (id,name, profile_image,birthday,presence,cantine) VALUES (4,'name4','image4','2023-06-02',false, true);

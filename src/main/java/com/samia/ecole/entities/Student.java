@@ -22,31 +22,29 @@ public class Student {
     private boolean presence;
     @Column(name="cantine", nullable = false)
     private boolean cantine;
-    @OneToOne
-    @JoinColumn(name = "user")
-    @JsonBackReference
-    private User user;
+//    @OneToOne
+//    @JoinColumn(name = "user")
+//    @JsonBackReference
+//    private User user;
 
     public Student() {
     }
 
-    public Student(String name, String profileImage, LocalDate birthday, boolean presence, boolean cantine, User user) {
+    public Student(String name, String profileImage, LocalDate birthday, boolean presence, boolean cantine) {
         this.name = name;
         this.profileImage = profileImage;
         this.birthday = birthday;
         this.presence = presence;
         this.cantine = cantine;
-        this.user = user;
     }
 
-    public Student(Long id, String name, String profileImage, LocalDate birthday, boolean presence, boolean cantine, User user) {
+    public Student(Long id, String name, String profileImage, LocalDate birthday, boolean presence, boolean cantine) {
         this.id = id;
         this.name = name;
         this.profileImage = profileImage;
         this.birthday = birthday;
         this.presence = presence;
         this.cantine = cantine;
-        this.user = user;
     }
 
     public Long getId() {
@@ -97,14 +95,6 @@ public class Student {
         this.cantine = cantine;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     @Override
     public String toString() {
         return "Student{" +
@@ -114,7 +104,6 @@ public class Student {
                 ", birthday=" + birthday +
                 ", presence=" + presence +
                 ", cantine=" + cantine +
-                ", user=" + user +
                 '}';
     }
 }
