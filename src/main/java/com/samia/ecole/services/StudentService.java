@@ -39,6 +39,7 @@ public class StudentService {
         student.setBirthday(studentDetails.getBirthday());
         student.setPresence(studentDetails.isPresence());
         student.setCantine(studentDetails.isCantine());
+        //student.setUser(studentDetails.getUser());
         return studentRepository.save(student);
     }
     public void deleteStudent(Long id){

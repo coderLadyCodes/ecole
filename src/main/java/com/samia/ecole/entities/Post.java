@@ -25,7 +25,7 @@ public class Post{
     private LocalDateTime localDateTime;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE, optional = false)
     @JoinColumn(name = "user", nullable = false)
-    @JsonBackReference
+    @JsonManagedReference
     private User user;
     @OneToMany(mappedBy ="post",cascade = CascadeType.ALL)
     @JsonManagedReference

@@ -22,10 +22,6 @@ public class Student {
     private boolean presence;
     @Column(name="cantine", nullable = false)
     private boolean cantine;
-//    @OneToOne
-//    @JoinColumn(name = "user")
-//    @JsonBackReference
-//    private User user;
 
     public Student() {
     }

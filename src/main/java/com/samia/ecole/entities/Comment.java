@@ -23,7 +23,6 @@ public class Comment {
     private Post post;
 
     @OneToOne
-    //@JsonIgnore
     @JoinColumn(name = "user")
     private User user;
 
