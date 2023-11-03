@@ -13,8 +13,8 @@ INSERT INTO posts (id,title, post_content,image_post,local_date_time,user) VALUE
 INSERT INTO posts (id,title, post_content,image_post,local_date_time,user) VALUES (3,'title3','content3','imagepost3','2023-08-02 01:20',3);
 INSERT INTO posts (id,title, post_content,image_post,local_date_time,user) VALUES (4,'title4','content4','imagepost4','2023-05-02 02:50',4);
 
-INSERT INTO comments (id,comment_content, local_date_time,post) VALUES (1,'comment1', '2023-04-01 10:44:00', 1);
-INSERT INTO comments (id,comment_content, local_date_time,post) VALUES (2,'comment2', '2023-05-02 11:22:00', 2);
-INSERT INTO comments (id,comment_content, local_date_time,post) VALUES (3,'comment3', '2023-06-03 09:10:00', 3);
-INSERT INTO comments (id,comment_content, local_date_time,post) VALUES (4,'comment4', '2023-07-04 08:40:00', 4);
+INSERT INTO comments (id,comment_content, local_date_time,post, user) VALUES (1,'comment1', '2023-04-01 10:44:00', 1,1);
+INSERT INTO comments (id,comment_content, local_date_time,post, user) VALUES (2,'comment2', '2023-05-02 11:22:00', 2,2);
+INSERT INTO comments (id,comment_content, local_date_time,post, user) VALUES (3,'comment3', '2023-06-03 09:10:00', 3,3);
+INSERT INTO comments (id,comment_content, local_date_time,post, user) VALUES (4,'comment4', '2023-07-04 08:40:00', 4,4);
 
