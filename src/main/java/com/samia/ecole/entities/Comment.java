@@ -19,11 +19,13 @@ public class Comment {
     private LocalDateTime localDateTime;
     @ManyToOne
     @JoinColumn(name = "post")
-    @JsonBackReference
+    //@JsonBackReference
+    @JsonIgnore
     private Post post;
 
     @OneToOne
     @JoinColumn(name = "user")
+    //@JsonIgnore
     private User user;
 
     public Comment() {

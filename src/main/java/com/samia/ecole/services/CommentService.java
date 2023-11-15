@@ -25,9 +25,9 @@ public class CommentService {
         return commentRepository.findAll();
     }
 
-    public Comment createComment(Comment comment, Long postid){
-        Post postcomment = postRepository.findById(postid).orElseThrow(() -> new CustomException("Post not found with id : " + postid, HttpStatus.NOT_FOUND));
-        comment.setPost(postcomment);
+    public Comment createComment(Comment comment){
+//        Post postcomment = postRepository.findById(postid).orElseThrow(() -> new CustomException("Post not found with id : " + postid, HttpStatus.NOT_FOUND));
+//        comment.setPost(postcomment);        //, Long postid
         comment.setLocalDateTime(LocalDateTime.now());
         return commentRepository.save(comment);
     }

@@ -24,11 +24,15 @@ public class Post{
     @Column(name="local_date_time")
     private LocalDateTime localDateTime;
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE, optional = false)
-    @JoinColumn(name = "user", nullable = false)
-    @JsonManagedReference
+    @JoinColumn(name = "user")
+    //@JsonManagedReference
+    //@JsonIgnore
+    //@JsonBackReference
     private User user;
     @OneToMany(mappedBy ="post",cascade = CascadeType.ALL)
-    @JsonManagedReference
+    //@JsonManagedReference
+    @JsonIgnore
+    //@JsonBackReference
     private List<Comment> commentList;
 
     public Post() {

@@ -3,10 +3,12 @@ package com.samia.ecole.entities;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import java.util.ArrayList;
@@ -26,13 +28,14 @@ public class User {
     @Email(message = "Email is not valid")
     @Column(name="email",unique = true, nullable = false)
     private String email;
-    @Email(message = "Email is not valid")
+    @Email(message = "Phone number is not valid")
     @Column(name="phone",unique = true)
-    //@Pattern(regexp = )
+    @NotEmpty
+    //@Pattern(regexp = "^\\d{10}$")
     private String phone;
     @NotEmpty
-    @Size(min = 4, max = 12, message = "password must be minimum of 4 chars and max of 12 chars")
-    //@Pattern(regexp = )
+    @Size(min = 8, message = "password must be greater than 8 characters")
+    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name="password", nullable = false)
     private String password;
     @NotEmpty
@@ -41,7 +44,8 @@ public class User {
     @Column(name = "role")
     private Role role;
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JsonBackReference
+    @JsonIgnore
+    //@JsonBackReference
     private List<Post> postList=new ArrayList<>();
     @OneToOne
     @JoinColumn(name = "student")

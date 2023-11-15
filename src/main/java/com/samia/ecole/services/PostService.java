@@ -25,10 +25,10 @@ public class PostService {
         this.userRepository = userRepository;
         this.fileService = fileService;
     }
-    public Post createPost(Post post, Long id, MultipartFile file, String folderpath){
-        User foundUser = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User Not Found"));
+    public Post createPost(Post post, MultipartFile file, String folderpath){
+       // User foundUser = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User Not Found"));
         post.setLocalDateTime(LocalDateTime.now());
-        post.setUser(foundUser);
+       // post.setUser(foundUser);
         String filenamewithtimestamp="";
         if(file != null){
             try{

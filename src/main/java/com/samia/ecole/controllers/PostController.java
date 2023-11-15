@@ -42,10 +42,10 @@ public class PostController{
         return postService.getAllPosts();
     }
                                           //CREATE POST
-    @PostMapping("/user/post/{id}")
+    @PostMapping("/post")
     @ResponseBody
-    public Post createPost(@RequestBody Post post, @PathVariable("id") Long id, @RequestParam(name= "image", required = false)MultipartFile file ){
-        return postService.createPost(post, id,file, postimagepath);
+    public Post createPost(@RequestBody Post post, @RequestParam(name= "image", required = false)MultipartFile file ){
+        return postService.createPost(post, file, postimagepath);
     }
 
 //    @PostMapping("/user/post/{id}")
@@ -72,9 +72,9 @@ public class PostController{
 //        return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.OK);
 //    }
                                                //ADD IMAGE TO POST
-       @PostMapping("/user/post/{id}/image")
+       @PostMapping("post/{id}/image")
        @ResponseBody
-        public void addImageToPost(@RequestParam("image") MultipartFile image, @PathVariable(value ="id") Long id){
+        public void addImageToPost(@PathVariable(value ="id") Long id, @RequestParam("image") MultipartFile image){
             String uploadedImageFilename = "";
              try {
                    uploadedImageFilename = fileService.uploadImage(postimagepath, image);
@@ -99,17 +99,17 @@ public class PostController{
         }
         }
                                             // GET POST BY POST ID
-        @GetMapping("user/post/{id}")
+        @GetMapping("/post/{id}")
         public Post getPostById(@PathVariable(value="id") Long id){
             return postService.getPostById(id);
         }
                                            // UPDATE POST
-        @PutMapping("user/post/{id}")
+        @PutMapping("/post/update/{id}")
         public Post updatePost(@RequestBody Post post, @PathVariable(value = "id") Long id){
         return postService.updatePost(post,id);
         }
                                           // DELETE POST
-        @DeleteMapping("user/post/{id}")
+        @DeleteMapping("/post/delete/{id}")
          public void deleteUser(@PathVariable(value = "id") Long id){
              postService.deletePost(id);
         }

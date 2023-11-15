@@ -17,12 +17,12 @@ public class CommentController {
     public List<Comment> getAllComments(){
        return commentService.getAllComments();
     }
-    @PostMapping("/user/post/{postid}/comment")
-    public Comment createComment(@RequestBody Comment comment, @PathVariable(value = "postid") Long postid){
-        Comment commentcreated = commentService.createComment(comment, postid);
-        return commentcreated;
+    @PostMapping("/comment")
+    public Comment createComment(@RequestBody Comment comment){ //@PathVariable(value = "postid") Long postid,
+          return commentService.createComment(comment); //, postid
+
     }
-    @DeleteMapping("/user/post/comment/{id}")
+    @DeleteMapping("/comment/delete/{id}")
     public void deleteComment(@PathVariable(value="id") Long id){
         commentService.deleteComment(id);
     }

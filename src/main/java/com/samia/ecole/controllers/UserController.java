@@ -18,6 +18,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 
+@CrossOrigin("http://localhost:3000")
 @RestController
 public class UserController {
     @Value("${ecole.images.userprofiles}")
@@ -35,6 +36,7 @@ public class UserController {
         return userService.getAllUsers();
     }
     @PostMapping("/user")
+    //@PostMapping(consumes = "application/json;charset=UTF-8", value="/user")
     public User createUser(@Valid @RequestBody User user) {
         return userService.createUser(user);
     }
