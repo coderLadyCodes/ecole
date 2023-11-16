@@ -35,7 +35,7 @@ public class User {
     private String phone;
     @NotEmpty
     @Size(min = 8, message = "password must be greater than 8 characters")
-    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name="password", nullable = false)
     private String password;
     @NotEmpty
