@@ -13,8 +13,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
@@ -40,7 +42,21 @@ public class UserController {
     public User createUser(@Valid @RequestBody User user) {
         return userService.createUser(user);
     }
-    @GetMapping(value = "/images/user/{imagename}", produces = MediaType.IMAGE_JPEG_VALUE)
+
+    @PostMapping("/id/image")
+    public User uploadUserImage(@RequestParam("image")MultipartFile image, @PathVariable Long id){
+        User user = userService.getUserById(id);
+        String filename = null;
+        try {
+            filename = fileservice.uploadImage(userprofileimagepath, image);
+        } catch (IOException e) {
+            throw new CustomException("File Not Found with the name:", HttpStatus.BAD_REQUEST);
+        }
+         user.setProfileImage(filename);
+        return userService.updateUser(id, user);
+    }
+
+    @GetMapping(value = "/user/{imagename}", produces = MediaType.IMAGE_JPEG_VALUE)
     public void serveImage(@PathVariable("imagename)") String imagename, HttpServletResponse response){
         try {
             InputStream inputStream = fileservice.serveImage(userprofileimagepath, imagename);
