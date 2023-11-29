@@ -119,6 +119,11 @@ public class User {
     public String getProfileImage() {
         return profileImage;
     }
+    @Transient
+    public String getProfileImagePath(){
+       if (profileImage == null || id == null) return null;
+       return "images/" + id + "/" + profileImage;
+    }
 
     public void setProfileImage(String profileImage) {
         this.profileImage = profileImage;
