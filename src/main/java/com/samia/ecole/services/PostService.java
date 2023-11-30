@@ -18,28 +18,26 @@ import java.util.List;
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final FileService fileService;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository, FileService fileService) {
+    public PostService(PostRepository postRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
-        this.fileService = fileService;
     }
-    public Post createPost(Post post, MultipartFile file, String folderpath){
-       // User foundUser = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User Not Found"));
-        post.setLocalDateTime(LocalDateTime.now());
-       // post.setUser(foundUser);
-        String filenamewithtimestamp="";
-        if(file != null){
-            try{
-                filenamewithtimestamp = fileService.uploadImage(folderpath, file);
-                post.setImagePost(filenamewithtimestamp);
-            }catch (IOException e) {
-                throw new CustomException("Something went wrong when uploading image",HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-        }
-        return postRepository.save(post);
-    }
+//    public Post createPost(Post post, MultipartFile file, String folderpath){
+//       // User foundUser = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User Not Found"));
+//        post.setLocalDateTime(LocalDateTime.now());
+//       // post.setUser(foundUser);
+//        String filenamewithtimestamp="";
+//        if(file != null){
+//            try{
+//                filenamewithtimestamp = fileService.uploadImage(folderpath, file);
+//                post.setImagePost(filenamewithtimestamp);
+//            }catch (IOException e) {
+//                throw new CustomException("Something went wrong when uploading image",HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+//        }
+//        return postRepository.save(post);
+//    }
     public Post getPostById(Long id){
         return postRepository.findById(id).orElseThrow(()-> new CustomException("post not found with id :" + id, HttpStatus.NOT_FOUND));
     }
