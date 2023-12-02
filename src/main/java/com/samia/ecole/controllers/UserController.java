@@ -18,8 +18,8 @@ import java.util.List;
 @CrossOrigin("http://localhost:3000")
 @RestController
 public class UserController {
-    @Value("${ecole.images.userprofiles}")
-    String userprofileimagepath;
+//    @Value("${ecole.images.userprofiles}")
+//    String userprofileimagepath;
 
     private final UserService userService;
    // private final FileService fileservice;
