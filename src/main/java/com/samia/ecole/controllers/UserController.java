@@ -33,8 +33,8 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @PostMapping("/user")
-    public User createUser(@Valid @RequestBody User user, @RequestParam("image") MultipartFile multipartFile) throws IOException {
+    @PostMapping(value="/user") // consumes = {"application/json", "multipart/form-data"}  OR:  headers = { "Content-Type=multipart/form-data" }
+    public User createUser(@Valid User user, @RequestParam("image") MultipartFile multipartFile) throws IOException {
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
         user.setProfileImage(fileName);
         User savedUser = userService.createUser(user);

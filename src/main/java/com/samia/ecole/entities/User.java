@@ -28,10 +28,10 @@ public class User {
     @Email(message = "Email is not valid")
     @Column(name="email",unique = true, nullable = false)
     private String email;
-    @Email(message = "Phone number is not valid")
+
     @Column(name="phone",unique = true)
     @NotEmpty
-    //@Pattern(regexp = "^\\d{10}$")
+    @Pattern(regexp = "\\d{10}", message = "Phone number is not valid")
     private String phone;
     @NotEmpty
     @Size(min = 8, message = "password must be greater than 8 characters")
