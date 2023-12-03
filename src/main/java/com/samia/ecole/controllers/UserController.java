@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Objects;
 
 @CrossOrigin("http://localhost:3000")
 @RestController
@@ -33,9 +34,9 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @PostMapping(value="/user") // consumes = {"application/json", "multipart/form-data"}  OR:  headers = { "Content-Type=multipart/form-data" }
-    public User createUser(@Valid User user, @RequestParam("image") MultipartFile multipartFile) throws IOException {
-        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+    @PostMapping(value="/user", consumes = {"application/json", "multipart/form-data"} ) //OR:  headers = { "Content-Type=multipart/form-data" }
+    public User createUser(@Valid @ModelAttribute("user") User user, @RequestParam("image") MultipartFile multipartFile) throws IOException {
+        String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
         user.setProfileImage(fileName);
         User savedUser = userService.createUser(user);
         String uploadDir = "images/" + savedUser.getId();
