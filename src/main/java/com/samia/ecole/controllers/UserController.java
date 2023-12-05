@@ -4,6 +4,7 @@ import com.samia.ecole.services.FileUploadUtil;
 import com.samia.ecole.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Objects;
 
 @CrossOrigin("http://localhost:3000")
+//@CrossOrigin(origins = "*", methods= {RequestMethod.POST, RequestMethod.GET,RequestMethod.PUT})
 @RestController
 public class UserController {
 //    @Value("${ecole.images.userprofiles}")
@@ -34,8 +36,8 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @PostMapping(value="/user", consumes = {"application/json", "multipart/form-data"} ) //OR:  headers = { "Content-Type=multipart/form-data" }
-    public User createUser(@Valid @ModelAttribute("user") User user, @RequestParam("image") MultipartFile multipartFile) throws IOException {
+    @PostMapping(consumes={MediaType.MULTIPART_FORM_DATA_VALUE,MediaType.APPLICATION_JSON_VALUE}, value="/user")
+    public User createUser(@Valid @RequestBody User user, @RequestPart(required = false) MultipartFile multipartFile) throws IOException {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
         user.setProfileImage(fileName);
         User savedUser = userService.createUser(user);

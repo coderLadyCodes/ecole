@@ -1,11 +1,15 @@
 package com.samia.ecole.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.samia.ecole.entities.User;
 import com.samia.ecole.exceptions.UserAlreadyExistsException;
 import com.samia.ecole.exceptions.UserNotFoundException;
 import com.samia.ecole.repositories.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.DataInput;
+import java.io.IOException;
 import java.util.List;
 
 @Service

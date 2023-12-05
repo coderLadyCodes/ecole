@@ -25,8 +25,8 @@ import java.util.List;
 
 @RestController
 public class PostController{
-    @Value("${ecole.images.posts}")
-    String postimagepath;
+    //@Value("${ecole.images.posts}")
+    //String postimagepath;
     private final PostService postService;
 
     private final ObjectMapper objectMapper;

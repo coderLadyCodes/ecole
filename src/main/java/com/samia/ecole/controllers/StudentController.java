@@ -16,8 +16,8 @@ import java.util.List;
 
 @RestController
 public class StudentController {
-    @Value("${ecole.images.userprofiles}")
-    String userprofileimagepath;
+    //@Value("${ecole.images.userprofiles}")
+    //String userprofileimagepath;
     private final StudentService studentService;
    // private final FileService fileservice;
 
