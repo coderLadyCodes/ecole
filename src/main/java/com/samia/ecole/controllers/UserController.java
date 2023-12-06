@@ -36,15 +36,15 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @PostMapping(consumes={MediaType.MULTIPART_FORM_DATA_VALUE,MediaType.APPLICATION_JSON_VALUE}, value="/user")
-    public User createUser(@Valid @RequestBody User user, @RequestPart(required = false) MultipartFile multipartFile) throws IOException {
+    @PostMapping(value="/user", consumes={MediaType.MULTIPART_FORM_DATA_VALUE,MediaType.APPLICATION_JSON_VALUE})
+    public User createUser(@RequestBody User user, @RequestParam(value="image",required = false) MultipartFile multipartFile) throws IOException {
         String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
         user.setProfileImage(fileName);
         User savedUser = userService.createUser(user);
         String uploadDir = "images/" + savedUser.getId();
         FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
 
-        return userService.createUser(user);
+        return savedUser;
     }
 //    @PostMapping("/user")
 //    //@PostMapping(consumes = "application/json;charset=UTF-8", value="/user")
