@@ -43,7 +43,7 @@ public class UserService {
         user.setPhone(userDetails.getPhone());
         user.setProfileImage(userDetails.getProfileImage());
         user.setRole(userDetails.getRole());
-        user.setPostList(userDetails.getPostList());
+       // user.setPostList(userDetails.getPostList());
         user.setStudent(userDetails.getStudent());
         //user.setPassword(userDetails.getPassword());
         return userRepository.save(user);

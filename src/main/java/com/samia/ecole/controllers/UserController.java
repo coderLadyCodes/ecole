@@ -3,21 +3,15 @@ import com.samia.ecole.entities.User;
 import com.samia.ecole.services.FileUploadUtil;
 import com.samia.ecole.services.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
-import java.util.Objects;
 
-@CrossOrigin("http://localhost:3000")
+
+@CrossOrigin(origins = "http://localhost:3000")
 //@CrossOrigin(origins = "*", methods= {RequestMethod.POST, RequestMethod.GET,RequestMethod.PUT})
 @RestController
 public class UserController {
@@ -36,16 +30,18 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @PostMapping(value="/user", consumes={MediaType.MULTIPART_FORM_DATA_VALUE,MediaType.APPLICATION_JSON_VALUE})
-    public User createUser(@RequestBody User user, @RequestParam(value="image",required = false) MultipartFile multipartFile) throws IOException {
-        String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-        user.setProfileImage(fileName);
-        User savedUser = userService.createUser(user);
-        String uploadDir = "images/" + savedUser.getId();
-        FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
-
-        return savedUser;
-    }
+    @PostMapping(value="/user", consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
+    public User createUser(@RequestBody User user, @RequestParam(value="profileImage",required = false) MultipartFile multipartFile) throws IOException {
+            if(multipartFile == null){
+                return userService.createUser(user);
+            }else {
+            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+            user.setProfileImage(fileName);
+            User savedUser = userService.createUser(user);
+            String uploadDir = "images/" + savedUser.getId();
+            FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+            return savedUser;
+    }}
 //    @PostMapping("/user")
 //    //@PostMapping(consumes = "application/json;charset=UTF-8", value="/user")
 //    public User createUser(@Valid @RequestBody User user) {

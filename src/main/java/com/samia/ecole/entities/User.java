@@ -40,28 +40,27 @@ public class User {
     private String profileImage;
     @Column(name = "role")
     private Role role;
-    @OneToMany//(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @JsonIgnore
-    //@JsonBackReference
-    private List<Post> postList=new ArrayList<>();
+//    @OneToMany//(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+//    @JsonIgnore
+//    //@JsonBackReference
+//    private List<Post> postList=new ArrayList<>();
     @OneToOne
     @JoinColumn(name = "student")
     private Student student;
     public User() {
     }
 
-    public User(String name, String email, String phone, String password, String profileImage, Role role, List<Post> postList, Student student) {
+    public User(String name, String email, String phone, String password, String profileImage, Role role, Student student) {
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.password = password;
         this.profileImage = profileImage;
         this.role = role;
-        this.postList = postList;
         this.student = student;
     }
 
-    public User(Long id, String name, String email, String phone, String password, String profileImage, Role role, List<Post> postList, Student student) {
+    public User(Long id, String name, String email, String phone, String password, String profileImage, Role role, Student student) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -69,7 +68,6 @@ public class User {
         this.password = password;
         this.profileImage = profileImage;
         this.role = role;
-        this.postList = postList;
         this.student = student;
     }
 
@@ -134,14 +132,6 @@ public class User {
         this.role = role;
     }
 
-    public List<Post> getPostList() {
-        return postList;
-    }
-
-    public void setPostList(List<Post> postList) {
-        this.postList = postList;
-    }
-
     public Student getStudent() {
         return student;
     }
@@ -160,7 +150,6 @@ public class User {
                 ", password='" + password + '\'' +
                 ", profileImage='" + profileImage + '\'' +
                 ", role=" + role +
-                ", postList=" + postList +
                 ", student=" + student +
                 '}';
     }
