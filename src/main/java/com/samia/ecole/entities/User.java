@@ -35,7 +35,7 @@ public class User {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name="password", nullable = false)
     private String password;
-    @NotEmpty
+
     @Column(name="profile_image")
     private String profileImage;
     @Column(name = "role")

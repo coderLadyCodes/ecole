@@ -1,4 +1,5 @@
 package com.samia.ecole.controllers;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.samia.ecole.entities.User;
 import com.samia.ecole.services.FileUploadUtil;
 import com.samia.ecole.services.UserService;
@@ -19,20 +20,22 @@ public class UserController {
 //    String userprofileimagepath;
 
     private final UserService userService;
+    private ObjectMapper objectMapper;
    // private final FileService fileservice;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, ObjectMapper objectMapper) {
         this.userService = userService;
 
+        this.objectMapper = objectMapper;
     }
     @GetMapping("/users")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    @PostMapping(value="/user", consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
-    public User createUser(@RequestBody User user, @RequestParam(value="profileImage",required = false) MultipartFile multipartFile) throws IOException {
-            if(multipartFile == null){
+    @PostMapping(value="/user", consumes=MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE ) //consumes = "multipart/mixed"
+    public User createUser(@RequestBody User user, @RequestPart(value="profileImage",required = false) MultipartFile multipartFile) throws IOException {
+        if(multipartFile == null){
                 return userService.createUser(user);
             }else {
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
@@ -42,12 +45,8 @@ public class UserController {
             FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
             return savedUser;
     }}
-//    @PostMapping("/user")
-//    //@PostMapping(consumes = "application/json;charset=UTF-8", value="/user")
-//    public User createUser(@Valid @RequestBody User user) {
-//        return userService.createUser(user);
-//    }
-//
+
+
 //    @PostMapping("/id/image")
 //    public User uploadUserImage(@RequestParam("image")MultipartFile image, @PathVariable Long id){
 //        User user = userService.getUserById(id);
