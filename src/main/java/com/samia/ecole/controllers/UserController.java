@@ -1,5 +1,6 @@
 package com.samia.ecole.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.samia.ecole.DTOsAndMappers.UserDTO;
 import com.samia.ecole.entities.User;
 import com.samia.ecole.services.FileUploadUtil;
 import com.samia.ecole.services.UserService;
@@ -23,18 +24,16 @@ public class UserController {
     private ObjectMapper objectMapper;
    // private final FileService fileservice;
 
-    public UserController(UserService userService, ObjectMapper objectMapper) {
+    public UserController(UserService userService) {
         this.userService = userService;
-
-        this.objectMapper = objectMapper;
     }
     @GetMapping("/users")
-    public List<User> getAllUsers() {
+    public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @PostMapping(value="/user", consumes=MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE ) //consumes = "multipart/mixed"
-    public User createUser(@RequestBody User user, @RequestPart(value="profileImage",required = false) MultipartFile multipartFile) throws IOException {
+    public UserDTO createUser(@RequestBody User user, @RequestPart(value="profileImage",required = false) MultipartFile multipartFile) throws IOException {
         if(multipartFile == null){
                 return userService.createUser(user);
             }else {

@@ -12,9 +12,4 @@ public class EcoleApplication {
 		SpringApplication.run(EcoleApplication.class, args);
 	}
 
-	@Bean
-	public ObjectMapper getObjectMapper(){
-		return new ObjectMapper();
-	}
-
 }
