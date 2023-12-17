@@ -1,5 +1,6 @@
 package com.samia.ecole.controllers;
 
+import com.samia.ecole.DTOsAndMappers.StudentDTO;
 import com.samia.ecole.entities.Student;
 import com.samia.ecole.exceptions.CustomException;
 import com.samia.ecole.services.StudentService;
@@ -15,22 +16,22 @@ import java.io.InputStream;
 import java.util.List;
 
 @RestController
+@RequestMapping("/students")
 public class StudentController {
     //@Value("${ecole.images.userprofiles}")
     //String userprofileimagepath;
     private final StudentService studentService;
-   // private final FileService fileservice;
 
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
-    @GetMapping("/students")
-    public List<Student> getAllStudents(@RequestBody Student student){
+    @GetMapping()
+    public List<StudentDTO> getAllStudents(@RequestBody Student student){
         return studentService.getAllStudents();
     }
     @PostMapping("/student")
-    public Student createStudent(@RequestBody Student student){
-        return studentService.createStudent(student);
+    public StudentDTO createStudent(@RequestBody StudentDTO studentDTO){
+        return studentService.createStudent(studentDTO);
     }
 //    @GetMapping(value = "/images/student/{imagename}", produces = MediaType.IMAGE_JPEG_VALUE)
 //    public void serveImage(@PathVariable("imagename)") String imagename, HttpServletResponse response){
@@ -44,15 +45,15 @@ public class StudentController {
 //            e.printStackTrace();
 //        }
 //    }
-    @GetMapping("/student/{id}")
-    public Student getStudentById(@PathVariable(value="id") Long id){
+    @GetMapping("{id}")
+    public StudentDTO getStudentById(@PathVariable(value="id") Long id){
         return studentService.getStudentById(id);
     }
-    @PutMapping("/student/update/{id}")
-    public Student updateStudent(@PathVariable(value="id") Long id, @RequestBody Student studentDetails){
+    @PutMapping("{id}")
+    public StudentDTO updateStudent(@PathVariable(value="id") Long id, @RequestBody StudentDTO studentDetails){
         return studentService.updateStudent(id,studentDetails);
     }
-    @DeleteMapping("/student/delete/{id}")
+    @DeleteMapping("{id}")
     public void deleteStudent(@PathVariable(value="id") Long id){
         studentService.deleteStudent(id);
     }

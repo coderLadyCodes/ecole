@@ -57,6 +57,9 @@ public class Post{
         this.commentList = commentList;
     }
 
+    public Post(Long id, String title, String postContent, String imagePost, LocalDateTime localDateTime) {
+    }
+
     public Long getId() {
         return id;
     }

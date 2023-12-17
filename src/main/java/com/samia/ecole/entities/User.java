@@ -15,20 +15,20 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private Long id;
-    @NotEmpty
-    @Size(min = 4, message = "name must be min of 4 characters")
+    //@NotEmpty
+    //@Size(min = 4, message = "name must be min of 4 characters")
     @Column(name="name", nullable = false)
     private String name;
-    @Email(message = "Email is not valid")
+    //@Email(message = "Email is not valid")
     @Column(name="email",unique = true, nullable = false)
     private String email;
 
     @Column(name="phone",unique = true)
-    @NotEmpty
-    @Pattern(regexp = "\\d{10}", message = "Phone number is not valid")
+    //@NotEmpty
+    //@Pattern(regexp = "\\d{10}", message = "Phone number is not valid")
     private String phone;
-    @NotEmpty
-    @Size(min = 8, message = "password must be greater than 8 characters")
+    //@NotEmpty
+    //@Size(min = 8, message = "password must be greater than 8 characters")
     //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(name="password", nullable = false)
     private String password;

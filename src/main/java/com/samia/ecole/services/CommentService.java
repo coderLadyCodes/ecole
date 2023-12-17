@@ -30,8 +30,6 @@ public class CommentService {
     }
 
     public CommentDTO createComment(CommentDTO commentDTO){
-//        Post postcomment = postRepository.findById(postid).orElseThrow(() -> new CustomException("Post not found with id : " + postid, HttpStatus.NOT_FOUND));
-//        comment.setPost(postcomment);        //, Long postid
         Comment comment = CommentDTOMapper.mapToComment(commentDTO);
         comment.setLocalDateTime(LocalDateTime.now());
         Comment savedComment = commentRepository.save(comment);
