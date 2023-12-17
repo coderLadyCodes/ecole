@@ -1,8 +1,11 @@
 package com.samia.ecole.DTOsAndMappers;
 
+import jakarta.validation.constraints.NotBlank;
+
 public class UserDTO {
    private Long id;
     private String name;
+    @NotBlank(message = "Email cannot be blank")
     private String email;
     private String phone;
     private String profileImage;

@@ -13,7 +13,6 @@ import jakarta.validation.constraints.Size;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
     //@NotEmpty
     //@Size(min = 4, message = "name must be min of 4 characters")

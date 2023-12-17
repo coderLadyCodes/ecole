@@ -3,9 +3,11 @@ package com.samia.ecole.services;
 import com.samia.ecole.DTOsAndMappers.UserDTO;
 import com.samia.ecole.DTOsAndMappers.UserDTOMapper;
 import com.samia.ecole.entities.User;
+import com.samia.ecole.exceptions.CustomException;
 import com.samia.ecole.exceptions.UserAlreadyExistsException;
 import com.samia.ecole.exceptions.UserNotFoundException;
 import com.samia.ecole.repositories.UserRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,6 +35,8 @@ public class UserService {
         User user = UserDTOMapper.mapToUser(userDTO);
         if(userAlreadyExists(user.getEmail())){
             throw new UserAlreadyExistsException(user.getEmail() + " this user Exists already !");
+        } else if (user.getEmail() == null){
+            throw new CustomException("user can not be null", HttpStatus.NOT_FOUND);
         }
         User savedUser = userRepository.save(user);
         return UserDTOMapper.mapToUserDto(savedUser);
