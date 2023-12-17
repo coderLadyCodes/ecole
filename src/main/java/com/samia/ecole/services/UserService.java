@@ -21,38 +21,39 @@ public class UserService {
         this.userDTOMapper = userDTOMapper;
     }
     public List<UserDTO> getAllUsers(){
-        return userRepository.findAll()
-                .stream()
-                .map(userDTOMapper)
+        List<User> users = userRepository.findAll();
+        return users.stream().map((user) ->UserDTOMapper.mapToUserDto(user))
                 .collect(Collectors.toList());
     }
     public UserDTO getUserById(Long id){
-        return userRepository.findById(id)
-                .map(userDTOMapper)
-                .orElseThrow(()-> new UserNotFoundException("User Not Found"));
+        User user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User Not Found"));
+        return UserDTOMapper.mapToUserDto(user);
     }
     public UserDTO createUser(UserDTO userDTO){
+        User user = UserDTOMapper.mapToUser(userDTO);
         if(userAlreadyExists(user.getEmail())){
             throw new UserAlreadyExistsException(user.getEmail() + " this user Exists already !");
         }
-        return userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        return UserDTOMapper.mapToUserDto(savedUser);
     }
 
     private boolean userAlreadyExists(String email) {
         return userRepository.findByEmail(email).isPresent();
     }
 
-    public UserDTO updateUser(Long id, User userDetails){
+    public UserDTO updateUser(Long id, UserDTO userDetails){
         User user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User not found"));
         user.setName(userDetails.getName());
         user.setEmail(userDetails.getEmail());
         user.setPhone(userDetails.getPhone());
         user.setProfileImage(userDetails.getProfileImage());
-        user.setRole(userDetails.getRole());
+       // user.setRole(userDetails.getRole());
        // user.setPostList(userDetails.getPostList());
-        user.setStudent(userDetails.getStudent());
+        //user.setStudent(userDetails.getStudent());
         //user.setPassword(userDetails.getPassword());
-        return userRepository.save(user);
+        User userUpdated = userRepository.save(user);
+        return UserDTOMapper.mapToUserDto(userUpdated);
     }
     public void deleteUser(Long id){
         User user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User not found"));

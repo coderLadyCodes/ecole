@@ -1,41 +1,49 @@
 package com.samia.ecole.services;
 
+import com.samia.ecole.DTOsAndMappers.CommentDTO;
+import com.samia.ecole.DTOsAndMappers.CommentDTOMapper;
 import com.samia.ecole.entities.Comment;
-import com.samia.ecole.entities.Post;
 import com.samia.ecole.exceptions.CustomException;
 import com.samia.ecole.repositories.CommentRepository;
-import com.samia.ecole.repositories.PostRepository;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentService {
     private final CommentRepository commentRepository;
-    private final PostRepository postRepository;
+    private final  CommentDTOMapper commentDTOMapper;
 
-    public CommentService(CommentRepository commentRepository, PostRepository postRepository) {
+    public CommentService(CommentRepository commentRepository, CommentDTOMapper commentDTOMapper) {
         this.commentRepository = commentRepository;
-        this.postRepository = postRepository;
+        this.commentDTOMapper = commentDTOMapper;
     }
 
-    public List<Comment> getAllComments(){
-        return commentRepository.findAll();
+    public List<CommentDTO> getAllComments(){
+        List<Comment> comments = commentRepository.findAll();
+        return comments.stream().map((comment) ->CommentDTOMapper.mapToCommentDto(comment))
+                .collect(Collectors.toList());
     }
 
-    public Comment createComment(Comment comment){
+    public CommentDTO createComment(CommentDTO commentDTO){
 //        Post postcomment = postRepository.findById(postid).orElseThrow(() -> new CustomException("Post not found with id : " + postid, HttpStatus.NOT_FOUND));
 //        comment.setPost(postcomment);        //, Long postid
+        Comment comment = CommentDTOMapper.mapToComment(commentDTO);
         comment.setLocalDateTime(LocalDateTime.now());
-        return commentRepository.save(comment);
+        Comment savedComment = commentRepository.save(comment);
+        return CommentDTOMapper.mapToCommentDto(savedComment);
     }
 
-    public Comment updateComment(Comment commentDetails,Long id){
+    public CommentDTO updateComment(Long id,CommentDTO commentDetails){
         Comment comment = commentRepository.findById(id).orElseThrow(()-> new CustomException("Comment not found with id :" + id, HttpStatus.NOT_FOUND));
         comment.setCommentContent(commentDetails.getCommentContent());
-        return commentRepository.save(comment);
+        comment.setLocalDateTime(commentDetails.getLocalDateTime());
+        Comment updatedComment = commentRepository.save(comment);
+        return CommentDTOMapper.mapToCommentDto(updatedComment);
     }
 
     public void deleteComment(Long id){

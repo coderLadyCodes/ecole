@@ -25,7 +25,9 @@ public class Comment {
 
     @OneToOne
     @JoinColumn(name = "user")
+    //@JsonBackReference
     //@JsonIgnore
+    //@JsonManagedReference
     private User user;
 
     public Comment() {
@@ -44,6 +46,9 @@ public class Comment {
         this.localDateTime = localDateTime;
         this.post = post;
         this.user = user;
+    }
+
+    public Comment(Long id, String commentContent, LocalDateTime localDateTime) {
     }
 
     public Long getId() {

@@ -68,6 +68,9 @@ public class User {
         this.student = student;
     }
 
+    public User(Long id, String name, String email, String phone, String profileImage) {
+    }
+
     public Long getId() {
         return id;
     }

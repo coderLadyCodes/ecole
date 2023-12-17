@@ -1,7 +1,5 @@
 package com.samia.ecole.controllers;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.samia.ecole.DTOsAndMappers.UserDTO;
-import com.samia.ecole.entities.User;
 import com.samia.ecole.services.FileUploadUtil;
 import com.samia.ecole.services.UserService;
 import jakarta.validation.Valid;
@@ -16,30 +14,30 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 //@CrossOrigin(origins = "*", methods= {RequestMethod.POST, RequestMethod.GET,RequestMethod.PUT})
 @RestController
+@RequestMapping("/users")
 public class UserController {
 //    @Value("${ecole.images.userprofiles}")
 //    String userprofileimagepath;
 
     private final UserService userService;
-    private ObjectMapper objectMapper;
    // private final FileService fileservice;
 
     public UserController(UserService userService) {
         this.userService = userService;
     }
-    @GetMapping("/users")
+    @GetMapping()
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    @PostMapping(value="/user", consumes=MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE ) //consumes = "multipart/mixed"
-    public UserDTO createUser(@RequestBody User user, @RequestPart(value="profileImage",required = false) MultipartFile multipartFile) throws IOException {
+    @PostMapping //consumes = "multipart/mixed"   consumes=MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE
+    public UserDTO createUser(@RequestBody UserDTO userDTO, @RequestParam(value="profileImage",required = false) MultipartFile multipartFile) throws IOException {
         if(multipartFile == null){
-                return userService.createUser(user);
+                return userService.createUser(userDTO);
             }else {
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-            user.setProfileImage(fileName);
-            User savedUser = userService.createUser(user);
+            userDTO.setProfileImage(fileName);
+            UserDTO savedUser = userService.createUser(userDTO);
             String uploadDir = "images/" + savedUser.getId();
             FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
             return savedUser;
@@ -72,15 +70,16 @@ public class UserController {
 //        }
 //    }
 
-    @GetMapping("/user/{id}")
-    public User getUserById(@PathVariable(value="id") Long id){
-       return userService.getUserById(id);
+    @GetMapping("{id}")
+    public UserDTO getUserById(@PathVariable(value="id") Long id){
+        UserDTO userDTO = userService.getUserById(id);
+        return userDTO;
     }
-    @PutMapping("/user/update/{id}")
-    public User updateUser(@Valid @PathVariable(value = "id") Long id, @RequestBody User userDetails){
+    @PutMapping("{id}")
+    public UserDTO updateUser(@Valid @PathVariable(value = "id") Long id, @RequestBody UserDTO userDetails){
         return userService.updateUser(id, userDetails);
     }
-    @DeleteMapping("/user/delete/{id}")
+    @DeleteMapping("{id}")
     public void deleteUser(@PathVariable(value = "id") Long id){
         userService.deleteUser(id);
     }
