@@ -31,7 +31,7 @@ public class Post{
     private User user;
     @OneToMany(mappedBy ="post",cascade = CascadeType.ALL)
     //@JsonManagedReference
-    @JsonIgnore
+    //@JsonIgnore
     //@JsonBackReference
     private List<Comment> commentList;
 

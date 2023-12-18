@@ -1,12 +1,7 @@
 package com.samia.ecole.controllers;
 import com.samia.ecole.DTOsAndMappers.UserDTO;
-import com.samia.ecole.services.FileUploadUtil;
 import com.samia.ecole.services.UserService;
-import jakarta.validation.Valid;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
 import java.util.List;
 
 
@@ -41,7 +36,7 @@ public class UserController {
 //            return savedUser;
 //    }}
     @PostMapping()
-    public UserDTO createUser(@Valid @RequestBody UserDTO userDTO){
+    public UserDTO createUser(@RequestBody UserDTO userDTO){
         return userService.createUser(userDTO);
     }
     @GetMapping("{id}")

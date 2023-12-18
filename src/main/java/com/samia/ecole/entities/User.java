@@ -19,7 +19,7 @@ public class User {
     @Column(name="name", nullable = false)
     private String name;
     //@Email(message = "Email is not valid")
-    @Column(name="email",unique = true, nullable = false)
+    @Column(name="email") //,unique = true, nullable = false
     private String email;
 
     @Column(name="phone",unique = true)
