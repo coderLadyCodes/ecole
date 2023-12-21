@@ -16,11 +16,9 @@ import java.util.stream.Collectors;
 @Service
 public class UserService {
     private final UserRepository userRepository;
-    private final UserDTOMapper userDTOMapper;
 
-    public UserService(UserRepository userRepository, UserDTOMapper userDTOMapper) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.userDTOMapper = userDTOMapper;
     }
     public List<UserDTO> getAllUsers(){
         List<User> users = userRepository.findAll();

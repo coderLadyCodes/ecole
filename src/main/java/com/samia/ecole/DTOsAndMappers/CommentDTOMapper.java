@@ -1,11 +1,6 @@
 package com.samia.ecole.DTOsAndMappers;
-
 import com.samia.ecole.entities.Comment;
-import com.samia.ecole.entities.User;
-import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-@Component
 public class CommentDTOMapper {
     public static CommentDTO mapToCommentDto(Comment comment){
         return new CommentDTO(

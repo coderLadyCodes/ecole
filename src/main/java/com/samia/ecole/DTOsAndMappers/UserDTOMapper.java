@@ -1,10 +1,6 @@
 package com.samia.ecole.DTOsAndMappers;
-
 import com.samia.ecole.entities.User;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
-
-import java.util.function.Function;
 
 @Component
 public class UserDTOMapper{

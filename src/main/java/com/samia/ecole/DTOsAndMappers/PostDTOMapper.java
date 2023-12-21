@@ -1,9 +1,6 @@
 package com.samia.ecole.DTOsAndMappers;
-
 import com.samia.ecole.entities.Post;
-import org.springframework.stereotype.Component;
 
-@Component
 public class PostDTOMapper {
     public static PostDTO mapToPostDTO(Post post){
         return new PostDTO(

@@ -4,7 +4,9 @@ import jakarta.validation.constraints.NotBlank;
 
 public class UserDTO {
    private Long id;
+    @NotBlank
     private String name;
+    @NotBlank
     private String email;
     private String phone;
     private String profileImage;

@@ -1,9 +1,6 @@
 package com.samia.ecole.DTOsAndMappers;
-
 import com.samia.ecole.entities.Student;
-import org.springframework.stereotype.Component;
 
-@Component
 public class StudentDTOMapper {
     public static StudentDTO mapToStudentDto(Student student){
         return new StudentDTO(

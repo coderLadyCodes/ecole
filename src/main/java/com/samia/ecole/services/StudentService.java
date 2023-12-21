@@ -14,11 +14,9 @@ import java.util.stream.Collectors;
 @Service
 public class StudentService {
     private final StudentRepository studentRepository;
-    private final StudentDTOMapper studentDTOMapper;
 
-    public StudentService(StudentRepository studentRepository, StudentDTOMapper studentDTOMapper) {
+    public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
-        this.studentDTOMapper = studentDTOMapper;
     }
     public List<StudentDTO> getAllStudents(){
         List<Student> students = studentRepository.findAll();

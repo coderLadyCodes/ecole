@@ -1,12 +1,5 @@
 package com.samia.ecole.entities;
-
-import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotEmpty;
-
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name="users")
@@ -35,12 +28,13 @@ public class User {
     @Column(name="profile_image")
     private String profileImage;
     @Column(name = "role")
+    @Enumerated(EnumType.STRING)
     private Role role;
 //    @OneToMany//(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
 //    @JsonIgnore
 //    //@JsonBackReference
 //    private List<Post> postList=new ArrayList<>();
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "student")
     private Student student;
     public User() {

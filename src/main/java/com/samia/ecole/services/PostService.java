@@ -2,11 +2,8 @@ package com.samia.ecole.services;
 import com.samia.ecole.DTOsAndMappers.PostDTO;
 import com.samia.ecole.DTOsAndMappers.PostDTOMapper;
 import com.samia.ecole.entities.Post;
-import com.samia.ecole.entities.User;
 import com.samia.ecole.exceptions.CustomException;
-import com.samia.ecole.exceptions.UserNotFoundException;
 import com.samia.ecole.repositories.PostRepository;
-import com.samia.ecole.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -15,11 +12,9 @@ import java.util.stream.Collectors;
 @Service
 public class PostService {
     private final PostRepository postRepository;
-    private final PostDTOMapper postDTOMapper;
 
-    public PostService(PostRepository postRepository, PostDTOMapper postDTOMapper) {
+    public PostService(PostRepository postRepository) {
         this.postRepository = postRepository;
-        this.postDTOMapper = postDTOMapper;
     }
     public List<PostDTO> getAllPosts(){
         List<Post> posts = postRepository.findAll();

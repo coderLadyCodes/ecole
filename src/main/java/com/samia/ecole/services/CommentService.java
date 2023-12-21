@@ -16,11 +16,9 @@ import java.util.stream.Collectors;
 @Service
 public class CommentService {
     private final CommentRepository commentRepository;
-    private final  CommentDTOMapper commentDTOMapper;
 
-    public CommentService(CommentRepository commentRepository, CommentDTOMapper commentDTOMapper) {
+    public CommentService(CommentRepository commentRepository) {
         this.commentRepository = commentRepository;
-        this.commentDTOMapper = commentDTOMapper;
     }
 
     public List<CommentDTO> getAllComments(){
