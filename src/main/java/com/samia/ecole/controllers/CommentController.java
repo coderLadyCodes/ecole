@@ -1,8 +1,6 @@
 package com.samia.ecole.controllers;
 
 import com.samia.ecole.DTOsAndMappers.CommentDTO;
-import com.samia.ecole.DTOsAndMappers.UserDTO;
-import com.samia.ecole.entities.Comment;
 import com.samia.ecole.services.CommentService;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +19,7 @@ public class CommentController {
        return commentService.getAllComments();
     }
     @PostMapping()
-    public CommentDTO createComment(@RequestBody CommentDTO commentDTO){ //@PathVariable(value = "postid") Long postid,
+    public CommentDTO createComment(@RequestBody CommentDTO commentDTO){
         CommentDTO commentCreated = commentService.createComment(commentDTO);
           return commentCreated;
     }

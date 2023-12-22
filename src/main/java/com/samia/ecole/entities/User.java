@@ -34,8 +34,8 @@ public class User {
 //    @JsonIgnore
 //    //@JsonBackReference
 //    private List<Post> postList=new ArrayList<>();
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "student")
+@OneToOne//(cascade={CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval=true)
+    //@JoinColumn(name = "student")
     private Student student;
     public User() {
     }
