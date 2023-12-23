@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 //@CrossOrigin(origins = "*", methods= {RequestMethod.POST, RequestMethod.GET,RequestMethod.PUT})
 @RestController
 @RequestMapping("/users")
@@ -24,7 +24,7 @@ public class UserController {
     }
 
 //    @PostMapping() //consumes = "multipart/mixed"   consumes=MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE
-//    public UserDTO createUser(@RequestBody UserDTO userDTO, @RequestParam(value="profileImage",required = false) MultipartFile multipartFile) throws IOException {
+//    public UserDTO createUser(@RequestBody UserDTO userDTO, @RequestParam(value="profileImage",required = false) MultipartFile multipartFile) throws IOException, IOException {
 //        if(multipartFile == null){
 //                return userService.createUser(userDTO);
 //            }else {
