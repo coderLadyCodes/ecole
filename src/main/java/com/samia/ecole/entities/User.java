@@ -15,7 +15,7 @@ public class User {
     @Column(name="email") //,unique = true, nullable = false
     private String email;
 
-    @Column(name="phone",unique = true)
+    @Column(name="phone")
     //@NotEmpty
     //@Pattern(regexp = "\\d{10}", message = "Phone number is not valid")
     private String phone;
@@ -34,23 +34,22 @@ public class User {
 //    @JsonIgnore
 //    //@JsonBackReference
 //    private List<Post> postList=new ArrayList<>();
-@OneToOne//(cascade={CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval=true)
-    //@JoinColumn(name = "student")
-    private Student student;
+//@OneToOne//(cascade={CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval=true)
+//    //@JoinColumn(name = "student")
+//    private Student student;
     public User() {
     }
 
-    public User(String name, String email, String phone, String password, String profileImage, Role role, Student student) {
+    public User(String name, String email, String phone, String password, String profileImage, Role role) {
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.password = password;
         this.profileImage = profileImage;
         this.role = role;
-        this.student = student;
     }
 
-    public User(Long id, String name, String email, String phone, String password, String profileImage, Role role, Student student) {
+    public User(Long id, String name, String email, String phone, String password, String profileImage, Role role) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -58,7 +57,6 @@ public class User {
         this.password = password;
         this.profileImage = profileImage;
         this.role = role;
-        this.student = student;
     }
 
     public User(Long id, String name, String email, String phone, String profileImage) {
@@ -125,14 +123,6 @@ public class User {
         this.role = role;
     }
 
-    public Student getStudent() {
-        return student;
-    }
-
-    public void setStudent(Student student) {
-        this.student = student;
-    }
-
     @Override
     public String toString() {
         return "User{" +
@@ -143,7 +133,6 @@ public class User {
                 ", password='" + password + '\'' +
                 ", profileImage='" + profileImage + '\'' +
                 ", role=" + role +
-                ", student=" + student +
                 '}';
     }
 }
