@@ -1,4 +1,5 @@
 package com.samia.ecole.entities;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -21,8 +22,8 @@ public class User {
     private String phone;
     //@NotEmpty
     //@Size(min = 8, message = "password must be greater than 8 characters")
-    //@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Column(name="password", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @Column(name="password")
     private String password;
 
     @Column(name="profile_image")

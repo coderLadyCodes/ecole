@@ -41,8 +41,8 @@ public class UserController {
     }
     @GetMapping("{id}")
     public UserDTO getUserById(@PathVariable(value="id") Long id){
-        UserDTO userDTO = userService.getUserById(id);
-        return userDTO;
+           return  userService.getUserById(id);
+
     }
     @PutMapping("{id}")
     public UserDTO updateUser(@PathVariable(value = "id") Long id, @RequestBody UserDTO userDetails){
