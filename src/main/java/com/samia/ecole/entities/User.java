@@ -13,7 +13,7 @@ public class User {
     @Column(name="name", nullable = false)
     private String name;
     //@Email(message = "Email is not valid")
-    @Column(name="email") //,unique = true, nullable = false
+    @Column(name="email",unique = true, nullable = false)
     private String email;
 
     @Column(name="phone")
@@ -35,22 +35,23 @@ public class User {
 //    @JsonIgnore
 //    //@JsonBackReference
 //    private List<Post> postList=new ArrayList<>();
-//@OneToOne//(cascade={CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval=true)
-//    //@JoinColumn(name = "student")
-//    private Student student;
+@OneToOne(cascade={CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval=true)
+    @JoinColumn(name = "student")
+    private Student student;
     public User() {
     }
 
-    public User(String name, String email, String phone, String password, String profileImage, Role role) {
+    public User(String name, String email, String phone, String password, String profileImage, Role role, Student student) {
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.password = password;
         this.profileImage = profileImage;
         this.role = role;
+        this.student = student;
     }
 
-    public User(Long id, String name, String email, String phone, String password, String profileImage, Role role) {
+    public User(Long id, String name, String email, String phone, String password, String profileImage, Role role, Student student) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -58,9 +59,7 @@ public class User {
         this.password = password;
         this.profileImage = profileImage;
         this.role = role;
-    }
-
-    public User(Long id, String name, String email, String phone, String profileImage) {
+        this.student = student;
     }
 
     public Long getId() {
@@ -106,11 +105,6 @@ public class User {
     public String getProfileImage() {
         return profileImage;
     }
-    @Transient
-    public String getProfileImagePath(){
-       if (profileImage == null || id == null) return null;
-       return "images/" + id + "/" + profileImage;
-    }
 
     public void setProfileImage(String profileImage) {
         this.profileImage = profileImage;
@@ -124,6 +118,14 @@ public class User {
         this.role = role;
     }
 
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -134,6 +136,7 @@ public class User {
                 ", password='" + password + '\'' +
                 ", profileImage='" + profileImage + '\'' +
                 ", role=" + role +
+                ", student=" + student +
                 '}';
     }
 }

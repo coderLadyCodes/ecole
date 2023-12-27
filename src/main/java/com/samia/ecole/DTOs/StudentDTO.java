@@ -1,32 +1,24 @@
-package com.samia.ecole.entities;
+package com.samia.ecole.DTOsAndMappers;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 import java.time.LocalDate;
 
-@Entity
-@Table(name="students")
-public class Student {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class StudentDTO {
     private Long id;
-    @Column(name="name", nullable = false)
     private String name;
-    @Column(name="profile_image", nullable = false)
     private String profileImage;
-    @Column(name="birthday", nullable = false)
     private LocalDate birthday;
-    @Column(name="presence", nullable = false)
     private boolean presence;
-    @Column(name="cantine", nullable = false)
     private boolean cantine;
 
-    public Student() {
+    public StudentDTO() {
     }
 
-    public Student(String name, String profileImage, LocalDate birthday, boolean presence, boolean cantine) {
+    public StudentDTO(String name, String profileImage, LocalDate birthday, boolean presence, boolean cantine) {
         this.name = name;
         this.profileImage = profileImage;
         this.birthday = birthday;
@@ -34,7 +26,7 @@ public class Student {
         this.cantine = cantine;
     }
 
-    public Student(Long id, String name, String profileImage, LocalDate birthday, boolean presence, boolean cantine) {
+    public StudentDTO(Long id, String name, String profileImage, LocalDate birthday, boolean presence, boolean cantine) {
         this.id = id;
         this.name = name;
         this.profileImage = profileImage;
@@ -93,7 +85,7 @@ public class Student {
 
     @Override
     public String toString() {
-        return "Student{" +
+        return "StudentDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", profileImage='" + profileImage + '\'' +

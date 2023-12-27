@@ -1,5 +1,5 @@
 package com.samia.ecole.controllers;
-import com.samia.ecole.DTOsAndMappers.UserDTO;
+import com.samia.ecole.DTOs.UserDTO;
 import com.samia.ecole.services.UserService;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;

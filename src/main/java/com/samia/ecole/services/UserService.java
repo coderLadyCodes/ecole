@@ -1,6 +1,6 @@
 package com.samia.ecole.services;
 
-import com.samia.ecole.DTOsAndMappers.UserDTO;
+import com.samia.ecole.DTOs.UserDTO;
 import com.samia.ecole.entities.User;
 import com.samia.ecole.exceptions.UserAlreadyExistsException;
 import com.samia.ecole.exceptions.UserNotFoundException;
@@ -40,7 +40,7 @@ public class UserService {
     public List<UserDTO> getAllUsers(){
         List<User> users = userRepository.findAll();
         users.forEach(user -> {
-            System.out.println("User ID: " + user.getId() + ", Name: " + user.getName() + ", Email: " + user.getEmail());
+            System.out.println("User Id: " + user.getId() + ", Name: " + user.getName() + ", Email: " + user.getEmail()+ ", Photo : " + user.getProfileImage());
         });
         return users.stream().map(this::mapToUserDto)
                 .collect(Collectors.toList());

@@ -1,4 +1,4 @@
-package com.samia.ecole.DTOsAndMappers;
+package com.samia.ecole.DTOs;
 public class UserDTO {
    private Long id;
 
