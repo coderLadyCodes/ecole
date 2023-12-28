@@ -1,7 +1,13 @@
 package com.samia.ecole.controllers;
 import com.samia.ecole.DTOs.UserDTO;
+import com.samia.ecole.services.FileUploadUtil;
 import com.samia.ecole.services.UserService;
+import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.List;
 
 
@@ -23,22 +29,25 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-//    @PostMapping() //consumes = "multipart/mixed"   consumes=MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE
-//    public UserDTO createUser(@RequestBody UserDTO userDTO, @RequestParam(value="profileImage",required = false) MultipartFile multipartFile) throws IOException, IOException {
-//        if(multipartFile == null){
-//                return userService.createUser(userDTO);
-//            }else {
-//            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-//            userDTO.setProfileImage(fileName);
-//            UserDTO savedUser = userService.createUser(userDTO);
-//            String uploadDir = "images/" + savedUser.getId();
-//            FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
-//            return savedUser;
-//    }}
-    @PostMapping()
-    public UserDTO createUser(@RequestBody UserDTO userDTO){
-        return userService.createUser(userDTO);
-    }
+    @PostMapping(consumes = "multipart/mixed") //consumes = "multipart/mixed"   consumes=MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE
+    public UserDTO createUser(@RequestBody UserDTO userDTO, @RequestPart(value="profileImage",required = false) MultipartFile multipartFile) throws IOException, IOException {
+        System.out.println("START");
+        if(multipartFile == null){
+                return userService.createUser(userDTO);
+            }else {
+            System.out.println("FILE EXISTS");
+            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+            userDTO.setProfileImage(fileName);
+            UserDTO savedUser = userService.createUser(userDTO);
+            String uploadDir = "images/" + savedUser.getId();
+            FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+            System.out.println("THE OUTPUT IS LIKELY TO BE : " + uploadDir + fileName + multipartFile);
+            return savedUser;
+    }}
+//    @PostMapping()
+//    public UserDTO createUser(@RequestBody UserDTO userDTO){
+//        return userService.createUser(userDTO);
+//    }
     @GetMapping("{id}")
     public UserDTO getUserById(@PathVariable(value="id") Long id){
            return  userService.getUserById(id);
