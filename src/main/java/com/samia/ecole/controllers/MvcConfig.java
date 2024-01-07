@@ -15,7 +15,7 @@ import java.nio.file.Paths;
 public class MvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        WebMvcConfigurer.super.addCorsMappings(registry);
+        //WebMvcConfigurer.super.addCorsMappings(registry);
         registry.addMapping("/**")//.allowedOrigins("*");
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedOrigins("http://localhost:3000")
@@ -31,7 +31,9 @@ public class MvcConfig implements WebMvcConfigurer {
     private void exposeDirectory(String dirName, ResourceHandlerRegistry registry) {
         Path uploadDir = Paths.get(dirName);
         String uploadPath = uploadDir.toFile().getAbsolutePath();
-        if (dirName.startsWith("../")) dirName = dirName.replace("../", "");
+        if (dirName.startsWith("../")) {
+            dirName = dirName.replace("../", "");
+        }
         registry.addResourceHandler("/" + dirName + "/**").addResourceLocations("file:/" + uploadPath + "/");
     }
 }

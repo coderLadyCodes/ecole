@@ -9,8 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-
-
 @CrossOrigin(origins = "http://localhost:3000")
 //@CrossOrigin(origins = "*", methods= {RequestMethod.POST, RequestMethod.GET,RequestMethod.PUT})
 @RestController
@@ -26,19 +24,16 @@ public class UserController {
         return userService.getAllUsers();
     }
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public UserDTO createUser(@RequestPart UserDTO userDTO, @RequestPart MultipartFile multipartFile) throws IOException {
-
-        if(multipartFile == null){
-            return userService.createUser(userDTO);
-        }else {
-
+    public UserDTO createUser(@RequestPart("userDTO") UserDTO userDTO, @RequestPart("multipartFile") MultipartFile multipartFile) throws IOException {
+        if (multipartFile != null && !multipartFile.isEmpty()) {
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
             userDTO.setProfileImage(fileName);
             UserDTO savedUser = userService.createUser(userDTO);
             String uploadDir = "images/" + savedUser.getId();
             FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
-
             return savedUser;
+        } else {
+            return userService.createUser(userDTO);
         }
     }
     @GetMapping("{id}")
