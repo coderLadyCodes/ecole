@@ -1,7 +1,4 @@
 package com.samia.ecole.controllers;
-
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -18,7 +15,7 @@ public class MvcConfig implements WebMvcConfigurer {
         //WebMvcConfigurer.super.addCorsMappings(registry);
         registry.addMapping("/**")//.allowedOrigins("*");
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .allowedOrigins("http://localhost:3000")
+                .allowedOrigins("http://localhost:3000/")
                 .allowCredentials(true)
                 .maxAge(3600);
 
@@ -36,4 +33,5 @@ public class MvcConfig implements WebMvcConfigurer {
         }
         registry.addResourceHandler("/" + dirName + "/**").addResourceLocations("file:/" + uploadPath + "/");
     }
+
 }
