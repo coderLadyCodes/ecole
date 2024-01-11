@@ -15,10 +15,9 @@ public class MvcConfig implements WebMvcConfigurer {
         //WebMvcConfigurer.super.addCorsMappings(registry);
         registry.addMapping("/**")//.allowedOrigins("*");
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
-                .allowedOrigins("http://localhost:3000/")
+                .allowedOrigins("http://localhost:3000")
                 .allowCredentials(true)
                 .maxAge(3600);
-
     }
 
     @Override
@@ -33,5 +32,4 @@ public class MvcConfig implements WebMvcConfigurer {
         }
         registry.addResourceHandler("/" + dirName + "/**").addResourceLocations("file:/" + uploadPath + "/");
     }
-
 }

@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-@CrossOrigin(origins = "http://localhost:3000/")
+@CrossOrigin(origins = "http://localhost:3000")
 //@CrossOrigin(origins = "*", methods= {RequestMethod.POST, RequestMethod.GET,RequestMethod.PUT})
 @RestController
 @RequestMapping("/users")
@@ -24,7 +24,7 @@ public class UserController {
         return userService.getAllUsers();
     }
     @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public UserDTO createUser(@RequestPart("userDTO") UserDTO userDTO, @RequestPart("multipartFile") MultipartFile multipartFile) throws IOException {
+    public UserDTO createUser(@RequestPart("userDTO") UserDTO userDTO, @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
         if (multipartFile != null && !multipartFile.isEmpty()) {
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
             userDTO.setProfileImage(fileName);
