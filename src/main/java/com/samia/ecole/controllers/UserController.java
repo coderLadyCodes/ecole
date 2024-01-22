@@ -23,7 +23,7 @@ public class UserController {
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
-    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @PostMapping(consumes = "multipart/form-data", produces = "application/json;charset=utf-8") //headers="Content-Type=multipart/form-data"
     public UserDTO createUser(@RequestPart("userDTO") UserDTO userDTO, @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
         if (multipartFile != null && !multipartFile.isEmpty()) {
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
