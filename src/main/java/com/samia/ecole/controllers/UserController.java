@@ -2,16 +2,17 @@ package com.samia.ecole.controllers;
 import com.samia.ecole.DTOs.UserDTO;
 import com.samia.ecole.services.FileUploadUtil;
 import com.samia.ecole.services.UserService;
-import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.annotation.MultipartConfig;
 import java.io.IOException;
 import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 //@CrossOrigin(origins = "*", methods= {RequestMethod.POST, RequestMethod.GET,RequestMethod.PUT})
 @RestController
+@MultipartConfig
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
@@ -23,8 +24,8 @@ public class UserController {
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
-    @PostMapping(consumes = "multipart/form-data", produces = "application/json;charset=utf-8") //headers="Content-Type=multipart/form-data"
-    public UserDTO createUser(@RequestPart("userDTO") UserDTO userDTO, @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
+    @PostMapping( consumes = "multipart/form-data") //headers="Content-Type=multipart/form-data"    consumes = "multipart/form-data", produces = "application/json"
+    public UserDTO createUser(@RequestParam("userDTO") UserDTO userDTO, @RequestParam(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
         if (multipartFile != null && !multipartFile.isEmpty()) {
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
             userDTO.setProfileImage(fileName);
