@@ -1,10 +1,13 @@
 package com.samia.ecole.controllers;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.samia.ecole.DTOs.UserDTO;
 import com.samia.ecole.services.FileUploadUtil;
-import com.samia.ecole.services.UserService;
+import com.samia.ecole.services.UserService; 
+import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartResolver;
 
 import javax.servlet.annotation.MultipartConfig;
 import java.io.IOException;
@@ -16,7 +19,6 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
-
     public UserController(UserService userService) {
         this.userService = userService;
     }
@@ -24,17 +26,20 @@ public class UserController {
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
-    @PostMapping( consumes = "multipart/form-data") //headers="Content-Type=multipart/form-data"    consumes = "multipart/form-data", produces = "application/json"
-    public UserDTO createUser(@RequestParam("userDTO") UserDTO userDTO, @RequestParam(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE) //headers="Content-Type=multipart/form-data"    consumes = "multipart/form-data", produces = "application/json"
+    public UserDTO createUser(@RequestPart String userDTO, @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        UserDTO userdto = mapper.readValue(userDTO, UserDTO.class);
         if (multipartFile != null && !multipartFile.isEmpty()) {
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-            userDTO.setProfileImage(fileName);
-            UserDTO savedUser = userService.createUser(userDTO);
+            userdto.setProfileImage(fileName);
+            UserDTO savedUser = userService.createUser(userdto);
             String uploadDir = "images/" + savedUser.getId();
             FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
             return savedUser;
         } else {
-            return userService.createUser(userDTO);
+            return userService.createUser(userdto);
         }
     }
     @GetMapping("{id}")
