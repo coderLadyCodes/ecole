@@ -1,4 +1,5 @@
 package com.samia.ecole.controllers;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.samia.ecole.DTOs.UserDTO;
 import com.samia.ecole.services.FileUploadUtil;
@@ -46,10 +47,26 @@ public class UserController {
     public UserDTO getUserById(@PathVariable(value="id") Long id){
            return  userService.getUserById(id);
     }
-    @PutMapping("{id}")
-    public UserDTO updateUser(@PathVariable(value = "id") Long id, @RequestBody UserDTO userDetails){
-        return userService.updateUser(id, userDetails);
+//    @PutMapping("{id}")
+//    public UserDTO updateUser(@PathVariable(value = "id") Long id, @RequestBody UserDTO userDetails){
+//        return userService.updateUser(id, userDetails);
+//    }
+@PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+public UserDTO updateUser(@PathVariable(value = "id") Long id, @RequestPart String userDetails,
+                          @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        UserDTO userDetail = mapper.readValue(userDetails, UserDTO.class);
+    if (multipartFile != null && !multipartFile.isEmpty()) {
+        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+        userDetail.setProfileImage(fileName);
+        UserDTO updatedUser = userService.updateUser(id, userDetail);
+        String uploadDir = "images/" + updatedUser.getId();
+        FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+        return updatedUser;
+    } else {
+        return userService.updateUser(id,userDetail);
     }
+}
     @DeleteMapping("{id}")
     public void deleteUser(@PathVariable(value = "id") Long id){
         userService.deleteUser(id);
