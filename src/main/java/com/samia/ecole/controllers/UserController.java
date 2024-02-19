@@ -1,15 +1,12 @@
 package com.samia.ecole.controllers;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.samia.ecole.DTOs.UserDTO;
 import com.samia.ecole.services.FileUploadUtil;
-import com.samia.ecole.services.UserService; 
+import com.samia.ecole.services.UserService;
 import org.springframework.http.MediaType;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartResolver;
-
 import javax.servlet.annotation.MultipartConfig;
 import java.io.IOException;
 import java.util.List;
@@ -27,41 +24,59 @@ public class UserController {
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
-
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE) //headers="Content-Type=multipart/form-data"    consumes = "multipart/form-data", produces = "application/json"
     public UserDTO createUser(@RequestPart String userDTO, @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         UserDTO userdto = mapper.readValue(userDTO, UserDTO.class);
         if (multipartFile != null && !multipartFile.isEmpty()) {
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-            userdto.setProfileImage(fileName);
+
+            int extensionIndex = fileName.lastIndexOf('.');
+            String fileNameWithoutExtension = fileName.substring(0, extensionIndex);
+
+            String shortenedFileName = fileNameWithoutExtension.substring(0, Math.min(fileNameWithoutExtension.length(), 10));
+
+            String profileImageName = shortenedFileName + fileName.substring(extensionIndex);
+            userdto.setProfileImage(profileImageName);
             UserDTO savedUser = userService.createUser(userdto);
+
             String uploadDir = "images/" + savedUser.getId();
+
             FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
             return savedUser;
-        } else {
+        }else{
             return userService.createUser(userdto);
-        }
-    }
+    }}
+
     @GetMapping("{id}")
     public UserDTO getUserById(@PathVariable(value="id") Long id){
            return  userService.getUserById(id);
     }
-//    @PutMapping("{id}")
-//    public UserDTO updateUser(@PathVariable(value = "id") Long id, @RequestBody UserDTO userDetails){
-//        return userService.updateUser(id, userDetails);
-//    }
 @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 public UserDTO updateUser(@PathVariable(value = "id") Long id, @RequestPart String userDetails,
                           @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         UserDTO userDetail = mapper.readValue(userDetails, UserDTO.class);
+        UserDTO originalUser =  userService.getUserById(id);
     if (multipartFile != null && !multipartFile.isEmpty()) {
+
         String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-        userDetail.setProfileImage(fileName);
+        int extensionIndex = fileName.lastIndexOf('.');
+        String fileNameWithoutExtension = fileName.substring(0, extensionIndex);
+
+        String shortenedFileName = fileNameWithoutExtension.substring(0, Math.min(fileNameWithoutExtension.length(), 10));
+
+        String profileImageName = shortenedFileName + fileName.substring(extensionIndex);
+        userDetail.setProfileImage(profileImageName);
         UserDTO updatedUser = userService.updateUser(id, userDetail);
         String uploadDir = "images/" + updatedUser.getId();
+
         FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+
+        if (originalUser.getProfileImage() != null && !originalUser.getProfileImage().isEmpty()) {
+            String previousPath = uploadDir + "/" + originalUser.getProfileImage();
+            FileUploadUtil.deleteFile(previousPath);
+        }
         return updatedUser;
     } else {
         return userService.updateUser(id,userDetail);
