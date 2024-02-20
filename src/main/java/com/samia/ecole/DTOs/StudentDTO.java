@@ -1,10 +1,4 @@
-package com.samia.ecole.DTOsAndMappers;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-
+package com.samia.ecole.DTOs;
 import java.time.LocalDate;
 
 public class StudentDTO {

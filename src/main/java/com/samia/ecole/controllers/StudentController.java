@@ -1,57 +1,97 @@
 package com.samia.ecole.controllers;
 
-import com.samia.ecole.DTOsAndMappers.StudentDTO;
-import com.samia.ecole.entities.Student;
-import com.samia.ecole.exceptions.CustomException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.samia.ecole.DTOs.StudentDTO;
+import com.samia.ecole.services.FileUploadUtil;
 import com.samia.ecole.services.StudentService;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.util.StreamUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import javax.servlet.annotation.MultipartConfig;
+import java.io.IOException;
 import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
+@MultipartConfig
 @RequestMapping("/students")
 public class StudentController {
-    //@Value("${ecole.images.userprofiles}")
-    //String userprofileimagepath;
+
     private final StudentService studentService;
 
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
     }
     @GetMapping()
-    public List<StudentDTO> getAllStudents(@RequestBody Student student){
+    public List<StudentDTO> getAllStudents(){
         return studentService.getAllStudents();
     }
-    @PostMapping()
-    public StudentDTO createStudent(@RequestBody StudentDTO studentDTO){
-        return studentService.createStudent(studentDTO);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public StudentDTO createStudent(@RequestPart String studentDTO, @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        StudentDTO studentdto = mapper.readValue(studentDTO, StudentDTO.class);
+        if (multipartFile != null && !multipartFile.isEmpty()){
+            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+
+            int extensionIndex = fileName.lastIndexOf('.');
+            String fileNameWithoutExtension = fileName.substring(0, extensionIndex);
+
+            String shortenedFileName = fileNameWithoutExtension.substring(0, Math.min(fileNameWithoutExtension.length(), 10));
+
+            String profileImageName = shortenedFileName + fileName.substring(extensionIndex);
+
+            studentdto.setProfileImage(profileImageName);
+
+            StudentDTO savedStudent = studentService.createStudent(studentdto);
+
+            String uploadDir = "images/" + savedStudent.getId();
+
+            FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+            return savedStudent;
+        } else {
+            return studentService.createStudent(studentdto);
+        }
     }
-//    @GetMapping(value = "/images/student/{imagename}", produces = MediaType.IMAGE_JPEG_VALUE)
-//    public void serveImage(@PathVariable("imagename)") String imagename, HttpServletResponse response){
-//        try {
-//            InputStream inputStream = fileservice.serveImage(userprofileimagepath, imagename);
-//            response.setContentType(MediaType.IMAGE_JPEG_VALUE);
-//            StreamUtils.copy(inputStream,response.getOutputStream());
-//        }catch (FileNotFoundException e){
-//            throw new CustomException("File Not Found with the name:" + imagename, HttpStatus.BAD_REQUEST);
-//        }catch ( Exception e){
-//            e.printStackTrace();
-//        }
-//    }
     @GetMapping("{id}")
     public StudentDTO getStudentById(@PathVariable(value="id") Long id){
         return studentService.getStudentById(id);
     }
-    @PutMapping("{id}")
-    public StudentDTO updateStudent(@PathVariable(value="id") Long id, @RequestBody StudentDTO studentDetails){
-        return studentService.updateStudent(id,studentDetails);
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public StudentDTO updateStudent(@PathVariable(value = "id") Long id, @RequestPart String studentDetails,
+                                    @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        StudentDTO studentDetail = mapper.readValue(studentDetails, StudentDTO.class);
+        StudentDTO originalStudent =  studentService.getStudentById(id);
+
+        if (multipartFile != null && !multipartFile.isEmpty()) {
+            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+
+            int extensionIndex = fileName.lastIndexOf('.');
+            String fileNameWithoutExtension = fileName.substring(0, extensionIndex);
+
+            String shortenedFileName = fileNameWithoutExtension.substring(0, Math.min(fileNameWithoutExtension.length(), 10));
+
+            String profileImageName = shortenedFileName + fileName.substring(extensionIndex);
+
+            studentDetail.setProfileImage(profileImageName);
+
+            StudentDTO updatedStudent = studentService.createStudent(studentDetail);
+
+            String uploadDir = "images/" + updatedStudent.getId();
+
+            FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+
+            if (originalStudent.getProfileImage() != null && !originalStudent.getProfileImage().isEmpty()) {
+                String previousPath = uploadDir + "/" + originalStudent.getProfileImage();
+                FileUploadUtil.deleteFile(previousPath);
+            }
+            return updatedStudent;
+        }else {
+            return studentService.updateStudent(id,studentDetail);
+        }
     }
     @DeleteMapping("{id}")
     public void deleteStudent(@PathVariable(value="id") Long id){

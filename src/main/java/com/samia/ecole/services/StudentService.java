@@ -1,9 +1,6 @@
 package com.samia.ecole.services;
-
-import com.samia.ecole.DTOs.UserDTO;
-import com.samia.ecole.DTOsAndMappers.StudentDTO;
+import com.samia.ecole.DTOs.StudentDTO;
 import com.samia.ecole.entities.Student;
-import com.samia.ecole.entities.User;
 import com.samia.ecole.exceptions.CustomException;
 import com.samia.ecole.repositories.StudentRepository;
 import org.springframework.http.HttpStatus;
