@@ -1,18 +1,37 @@
 package com.samia.ecole.DTOs;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.deser.std.NumberDeserializers;
+import com.fasterxml.jackson.databind.ser.std.BooleanSerializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+
 import java.time.LocalDate;
 
 public class StudentDTO {
     private Long id;
     private String name;
     private String profileImage;
+    //@JsonFormat(pattern="dd-MM-yyyy")
+    @JsonProperty("birthday")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate birthday;
-    private boolean presence;
-    private boolean cantine;
+    @JsonProperty("presence")
+    @JsonSerialize( using = BooleanSerializer.class)
+    @JsonDeserialize(using = NumberDeserializers.BooleanDeserializer.class)
+    private Boolean presence;
+    @JsonProperty("cantine")
+    @JsonSerialize( using = BooleanSerializer.class)
+    @JsonDeserialize(using = NumberDeserializers.BooleanDeserializer.class)
+    private Boolean cantine;
 
     public StudentDTO() {
     }
 
-    public StudentDTO(String name, String profileImage, LocalDate birthday, boolean presence, boolean cantine) {
+    public StudentDTO(String name, String profileImage, LocalDate birthday, Boolean presence, Boolean cantine) {
         this.name = name;
         this.profileImage = profileImage;
         this.birthday = birthday;
@@ -20,7 +39,7 @@ public class StudentDTO {
         this.cantine = cantine;
     }
 
-    public StudentDTO(Long id, String name, String profileImage, LocalDate birthday, boolean presence, boolean cantine) {
+    public StudentDTO(Long id, String name, String profileImage, LocalDate birthday, Boolean presence, Boolean cantine) {
         this.id = id;
         this.name = name;
         this.profileImage = profileImage;
@@ -61,19 +80,19 @@ public class StudentDTO {
         this.birthday = birthday;
     }
 
-    public boolean isPresence() {
+    public Boolean getPresence() {
         return presence;
     }
 
-    public void setPresence(boolean presence) {
+    public void setPresence(Boolean presence) {
         this.presence = presence;
     }
 
-    public boolean isCantine() {
+    public Boolean getCantine() {
         return cantine;
     }
 
-    public void setCantine(boolean cantine) {
+    public void setCantine(Boolean cantine) {
         this.cantine = cantine;
     }
 

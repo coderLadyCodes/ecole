@@ -6,6 +6,8 @@ import com.samia.ecole.repositories.StudentRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,14 +18,15 @@ public class StudentService {
     public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
     }
+    DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     public StudentDTO mapToStudentDto(Student student){
         StudentDTO studentDTO =  new StudentDTO();
         studentDTO.setId(student.getId());
         studentDTO.setName(student.getName());
         studentDTO.setProfileImage(student.getProfileImage());
-        studentDTO.setBirthday(student.getBirthday());
-        studentDTO.setPresence(student.isPresence());
-        studentDTO.setCantine(student.isCantine());
+        studentDTO.setBirthday(LocalDate.parse(student.getBirthday().format(dateFormat)));
+        studentDTO.setPresence(student.getPresence());
+        studentDTO.setCantine(student.getCantine());
         return studentDTO;
     }
     public Student mapToStudent(StudentDTO studentDTO){
@@ -31,9 +34,9 @@ public class StudentService {
         student.setId(studentDTO.getId());
         student.setName(studentDTO.getName());
         student.setProfileImage(studentDTO.getProfileImage());
-        student.setBirthday(studentDTO.getBirthday());
-        student.setPresence(studentDTO.isPresence());
-        student.setCantine(studentDTO.isCantine());
+        student.setBirthday(LocalDate.parse(studentDTO.getBirthday().format(dateFormat)));
+        student.setPresence(studentDTO.getPresence());
+        student.setCantine(studentDTO.getCantine());
         return student;
     }
     public List<StudentDTO> getAllStudents(){
@@ -62,9 +65,9 @@ public class StudentService {
         Student student = studentRepository.findById(id).orElseThrow(()-> new CustomException("Student not found", HttpStatus.NOT_FOUND));
         student.setName(studentDetails.getName());
         student.setProfileImage(studentDetails.getProfileImage());
-        student.setBirthday(studentDetails.getBirthday());
-        student.setPresence(studentDetails.isPresence());
-        student.setCantine(studentDetails.isCantine());
+        student.setBirthday(LocalDate.parse(studentDetails.getBirthday().format(dateFormat)));
+        student.setPresence(studentDetails.getPresence());
+        student.setCantine(studentDetails.getCantine());
         Student studentUpdated = studentRepository.save(student);
         return mapToStudentDto(studentUpdated);
     }

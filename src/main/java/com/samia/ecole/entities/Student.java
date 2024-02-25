@@ -1,7 +1,12 @@
 package com.samia.ecole.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.deser.std.NumberDeserializers;
+import com.fasterxml.jackson.databind.ser.std.BooleanSerializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -16,17 +21,27 @@ public class Student {
     private String name;
     @Column(name="profile_image", nullable = false)
     private String profileImage;
+    //@JsonFormat(pattern="dd-MM-yyyy")
+    @JsonProperty("birthday")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     @Column(name="birthday", nullable = false)
     private LocalDate birthday;
+    @JsonProperty("presence")
+    @JsonSerialize( using = BooleanSerializer.class)
+    @JsonDeserialize(using = NumberDeserializers.BooleanDeserializer.class)
     @Column(name="presence", nullable = false)
-    private boolean presence;
+    private Boolean presence;
+    @JsonProperty("cantine")
+    @JsonSerialize( using = BooleanSerializer.class)
+    @JsonDeserialize(using = NumberDeserializers.BooleanDeserializer.class)
     @Column(name="cantine", nullable = false)
-    private boolean cantine;
+    private Boolean cantine;
 
     public Student() {
     }
 
-    public Student(String name, String profileImage, LocalDate birthday, boolean presence, boolean cantine) {
+    public Student(String name, String profileImage, LocalDate birthday, Boolean presence, Boolean cantine) {
         this.name = name;
         this.profileImage = profileImage;
         this.birthday = birthday;
@@ -34,7 +49,7 @@ public class Student {
         this.cantine = cantine;
     }
 
-    public Student(Long id, String name, String profileImage, LocalDate birthday, boolean presence, boolean cantine) {
+    public Student(Long id, String name, String profileImage, LocalDate birthday, Boolean presence, Boolean cantine) {
         this.id = id;
         this.name = name;
         this.profileImage = profileImage;
@@ -75,19 +90,19 @@ public class Student {
         this.birthday = birthday;
     }
 
-    public boolean isPresence() {
+    public Boolean getPresence() {
         return presence;
     }
 
-    public void setPresence(boolean presence) {
+    public void setPresence(Boolean presence) {
         this.presence = presence;
     }
 
-    public boolean isCantine() {
+    public Boolean getCantine() {
         return cantine;
     }
 
-    public void setCantine(boolean cantine) {
+    public void setCantine(Boolean cantine) {
         this.cantine = cantine;
     }
 
