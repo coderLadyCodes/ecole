@@ -1,6 +1,7 @@
 package com.samia.ecole.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.samia.ecole.DTOs.StudentDTO;
 import com.samia.ecole.services.FileUploadUtil;
 import com.samia.ecole.services.StudentService;
@@ -29,8 +30,11 @@ public class StudentController {
         return studentService.getAllStudents();
     }
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public StudentDTO createStudent(@RequestPart String studentDTO, @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
+    public StudentDTO createStudent(@RequestPart String studentDTO,
+                                    @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile)
+                                    throws IOException {
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
         StudentDTO studentdto = mapper.readValue(studentDTO, StudentDTO.class);
         if (multipartFile != null && !multipartFile.isEmpty()){
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
@@ -63,6 +67,7 @@ public class StudentController {
                                     @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
 
         ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
         StudentDTO studentDetail = mapper.readValue(studentDetails, StudentDTO.class);
         StudentDTO originalStudent =  studentService.getStudentById(id);
 

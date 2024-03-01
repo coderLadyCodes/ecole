@@ -1,12 +1,5 @@
 package com.samia.ecole.entities;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.deser.std.NumberDeserializers;
-import com.fasterxml.jackson.databind.ser.std.BooleanSerializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -19,22 +12,23 @@ public class Student {
     private Long id;
     @Column(name="name", nullable = false)
     private String name;
-    @Column(name="profile_image", nullable = false)
+    @Column(name="profile_image")
     private String profileImage;
-    //@JsonFormat(pattern="dd-MM-yyyy")
-    @JsonProperty("birthday")
-    @JsonSerialize(using = LocalDateSerializer.class)
-    @JsonDeserialize(using = LocalDateDeserializer.class)
+
+//    @JsonProperty("birthday")
+//    @JsonSerialize(using = LocalDateSerializer.class)
+//    @JsonDeserialize(using = LocalDateDeserializer.class)
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @Column(name="birthday", nullable = false)
     private LocalDate birthday;
-    @JsonProperty("presence")
-    @JsonSerialize( using = BooleanSerializer.class)
-    @JsonDeserialize(using = NumberDeserializers.BooleanDeserializer.class)
+//    @JsonProperty("presence")
+//    @JsonSerialize( using = BooleanSerializer.class)
+//    @JsonDeserialize()
     @Column(name="presence", nullable = false)
     private Boolean presence;
-    @JsonProperty("cantine")
-    @JsonSerialize( using = BooleanSerializer.class)
-    @JsonDeserialize(using = NumberDeserializers.BooleanDeserializer.class)
+//    @JsonProperty("cantine")
+//    @JsonSerialize( using = BooleanSerializer.class)
+//    @JsonDeserialize()
     @Column(name="cantine", nullable = false)
     private Boolean cantine;
 
