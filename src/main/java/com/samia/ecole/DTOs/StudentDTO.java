@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.BooleanSerializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
@@ -21,11 +20,11 @@ public class StudentDTO {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate birthday;
     @JsonProperty("presence")
-    @JsonSerialize( using = BooleanSerializer.class)
+    @JsonSerialize
     @JsonDeserialize()
     private Boolean presence;
     @JsonProperty("cantine")
-    @JsonSerialize( using = BooleanSerializer.class)
+    @JsonSerialize
     @JsonDeserialize()
     private Boolean cantine;
 

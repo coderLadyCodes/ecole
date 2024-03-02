@@ -83,7 +83,7 @@ public class StudentController {
 
             studentDetail.setProfileImage(profileImageName);
 
-            StudentDTO updatedStudent = studentService.createStudent(studentDetail);
+            StudentDTO updatedStudent = studentService.updateStudent(id, studentDetail);
 
             String uploadDir = "images/" + updatedStudent.getId();
 
