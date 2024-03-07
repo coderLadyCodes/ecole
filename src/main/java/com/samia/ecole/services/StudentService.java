@@ -47,8 +47,11 @@ public class StudentService {
         return mapToStudentDto(student);
     }
     public StudentDTO createStudent(StudentDTO studentDTO){
+        if (studentDTO == null) {
+            throw new IllegalArgumentException("StudentDTO cannot be null");
+        }
         Student student = mapToStudent(studentDTO);
-        if(studentAlreadyExists(student.getId())){
+        if(student.getId() != null && studentAlreadyExists(student.getId())){
             throw  new CustomException("student already exists", HttpStatus.CONFLICT);
         }
         Student savedStudent = studentRepository.save(student);

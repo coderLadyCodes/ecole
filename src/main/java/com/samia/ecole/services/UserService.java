@@ -6,7 +6,6 @@ import com.samia.ecole.exceptions.UserAlreadyExistsException;
 import com.samia.ecole.exceptions.UserNotFoundException;
 import com.samia.ecole.repositories.UserRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,7 +61,6 @@ public class UserService {
         User savedUser = userRepository.save(user);
         return mapToUserDto(savedUser);
     }
-
     private boolean userAlreadyExists(String email) {
         return userRepository.findByEmail(email).isPresent();
     }
