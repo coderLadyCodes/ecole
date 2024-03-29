@@ -1,19 +1,27 @@
 package com.samia.ecole.services;
+
 import com.samia.ecole.DTOs.PostDTO;
 import com.samia.ecole.entities.Post;
+import com.samia.ecole.entities.User;
 import com.samia.ecole.exceptions.CustomException;
+import com.samia.ecole.exceptions.UserNotFoundException;
 import com.samia.ecole.repositories.PostRepository;
+import com.samia.ecole.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class PostService {
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
 
-    public PostService(PostRepository postRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository) {
         this.postRepository = postRepository;
+        this.userRepository = userRepository;
     }
     public  PostDTO mapToPostDTO(Post post){
          PostDTO postDTO = new PostDTO();
@@ -22,15 +30,19 @@ public class PostService {
          postDTO.setPostContent(post.getPostContent());
          postDTO.setImagePost(post.getImagePost());
          postDTO.setLocalDateTime(post.getLocalDateTime());
+         postDTO.setUserId(post.getUser().getId());
         return postDTO;
     }
-    public static Post mapToPost(PostDTO postDTO){
+    public Post mapToPost(PostDTO postDTO){
          Post post = new Post();
          post.setId(postDTO.getId());
          post.setTitle(postDTO.getTitle());
          post.setPostContent(postDTO.getPostContent());
          post.setImagePost(postDTO.getImagePost());
          post.setLocalDateTime(postDTO.getLocalDateTime());
+         User user = new User();
+         user.setId(postDTO.getUserId());
+         post.setUser(user);
         return post;
     }
     public List<PostDTO> getAllPosts(){
@@ -43,7 +55,21 @@ public class PostService {
         return mapToPostDTO(post);
     }
     public PostDTO createPost(PostDTO postDTO){
+        if (postDTO == null) {
+            throw new IllegalArgumentException("postDTO cannot be null");
+        }
+        Long userId = postDTO.getUserId();
+        if (userId == null) {
+            throw new IllegalArgumentException("userId cannot be null for creating a Post");
+        }
+        Optional<User> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isEmpty()){
+            throw new UserNotFoundException("User not found for userId: " + userId);
+        }
+
+        User user = optionalUser.get();
         Post post = mapToPost(postDTO);
+        post.setUser(user);
         Post savedPost = postRepository.save(post);
         return mapToPostDTO(savedPost);
     }

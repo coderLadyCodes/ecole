@@ -40,7 +40,7 @@ public class UserService {
     public List<UserDTO> getAllUsers(){
         List<User> users = userRepository.findAll();
         users.forEach(user -> {
-            System.out.println("User Id: " + user.getId() + ", Name: " + user.getName() + ", Email: " + user.getEmail()+ ", Photo : " + user.getProfileImage());
+            //System.out.println("User Id: " + user.getId() + ", Name: " + user.getName() + ", Email: " + user.getEmail()+ ", Photo : " + user.getProfileImage());
         });
         return users.stream().map(this::mapToUserDto)
                 .collect(Collectors.toList());

@@ -2,6 +2,9 @@ package com.samia.ecole.entities;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name="users")
 public class User {
@@ -31,27 +34,25 @@ public class User {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
-//    @OneToMany//(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-//    @JsonIgnore
-//    //@JsonBackReference
-//    private List<Post> postList=new ArrayList<>();
-@OneToOne(cascade={CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval=true)
-    @JoinColumn(name = "student")
-    private Student student;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> postList=new ArrayList<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Student> studentList = new ArrayList<>();
     public User() {
     }
 
-    public User(String name, String email, String phone, String password, String profileImage, Role role, Student student) {
+    public User(String name, String email, String phone, String password, String profileImage, Role role, List<Post> postList, List<Student> studentList) {
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.password = password;
         this.profileImage = profileImage;
         this.role = role;
-        this.student = student;
+        this.postList = postList;
+        this.studentList = studentList;
     }
 
-    public User(Long id, String name, String email, String phone, String password, String profileImage, Role role, Student student) {
+    public User(Long id, String name, String email, String phone, String password, String profileImage, Role role, List<Post> postList, List<Student> studentList) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -59,7 +60,8 @@ public class User {
         this.password = password;
         this.profileImage = profileImage;
         this.role = role;
-        this.student = student;
+        this.postList = postList;
+        this.studentList = studentList;
     }
 
     public Long getId() {
@@ -118,12 +120,20 @@ public class User {
         this.role = role;
     }
 
-    public Student getStudent() {
-        return student;
+    public List<Post> getPostList() {
+        return postList;
     }
 
-    public void setStudent(Student student) {
-        this.student = student;
+    public void setPostList(List<Post> postList) {
+        this.postList = postList;
+    }
+
+    public List<Student> getStudentList() {
+        return studentList;
+    }
+
+    public void setStudentList(List<Student> studentList) {
+        this.studentList = studentList;
     }
 
     @Override
@@ -136,7 +146,8 @@ public class User {
                 ", password='" + password + '\'' +
                 ", profileImage='" + profileImage + '\'' +
                 ", role=" + role +
-                ", student=" + student +
+                ", postList=" + postList +
+                ", studentList=" + studentList +
                 '}';
     }
 }

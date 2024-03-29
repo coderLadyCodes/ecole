@@ -1,9 +1,5 @@
 package com.samia.ecole.entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -17,7 +13,7 @@ public class Comment {
     @Column(name="comment_content")
     private String commentContent;
     @Column(name="local_date_time")
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
+    //@JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime localDateTime;
     @ManyToOne
     @JoinColumn(name = "post")

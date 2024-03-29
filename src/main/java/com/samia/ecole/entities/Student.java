@@ -14,42 +14,35 @@ public class Student {
     private String name;
     @Column(name="profile_image")
     private String profileImage;
-
-//    @JsonProperty("birthday")
-//    @JsonSerialize(using = LocalDateSerializer.class)
-//    @JsonDeserialize(using = LocalDateDeserializer.class)
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     @Column(name="birthday", nullable = false)
     private LocalDate birthday;
-//    @JsonProperty("presence")
-//    @JsonSerialize( using = BooleanSerializer.class)
-//    @JsonDeserialize()
     @Column(name="presence", nullable = false)
     private Boolean presence;
-//    @JsonProperty("cantine")
-//    @JsonSerialize( using = BooleanSerializer.class)
-//    @JsonDeserialize()
     @Column(name="cantine", nullable = false)
     private Boolean cantine;
-
+    @ManyToOne()
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
     public Student() {
     }
 
-    public Student(String name, String profileImage, LocalDate birthday, Boolean presence, Boolean cantine) {
+    public Student(String name, String profileImage, LocalDate birthday, Boolean presence, Boolean cantine, User user) {
         this.name = name;
         this.profileImage = profileImage;
         this.birthday = birthday;
         this.presence = presence;
         this.cantine = cantine;
+        this.user = user;
     }
 
-    public Student(Long id, String name, String profileImage, LocalDate birthday, Boolean presence, Boolean cantine) {
+    public Student(Long id, String name, String profileImage, LocalDate birthday, Boolean presence, Boolean cantine, User user) {
         this.id = id;
         this.name = name;
         this.profileImage = profileImage;
         this.birthday = birthday;
         this.presence = presence;
         this.cantine = cantine;
+        this.user = user;
     }
 
     public Long getId() {
@@ -100,6 +93,14 @@ public class Student {
         this.cantine = cantine;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
@@ -109,6 +110,7 @@ public class Student {
                 ", birthday=" + birthday +
                 ", presence=" + presence +
                 ", cantine=" + cantine +
+                ", user=" + user +
                 '}';
     }
 }

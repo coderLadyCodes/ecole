@@ -1,5 +1,6 @@
 package com.samia.ecole.DTOs;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -17,24 +18,28 @@ public class PostDTO {
     @JsonProperty("local_date_time")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime localDateTime;
+    private Long userId;
 
     public PostDTO() {
     }
 
-    public PostDTO(String title, String postContent, String imagePost, LocalDateTime localDateTime) {
+    public PostDTO(String title, String postContent, String imagePost, LocalDateTime localDateTime, Long userId) {
         this.title = title;
         this.postContent = postContent;
         this.imagePost = imagePost;
         this.localDateTime = localDateTime;
+        this.userId = userId;
     }
 
-    public PostDTO(Long id, String title, String postContent, String imagePost, LocalDateTime localDateTime) {
+    public PostDTO(Long id, String title, String postContent, String imagePost, LocalDateTime localDateTime, Long userId) {
         this.id = id;
         this.title = title;
         this.postContent = postContent;
         this.imagePost = imagePost;
         this.localDateTime = localDateTime;
+        this.userId = userId;
     }
 
     public Long getId() {
@@ -77,6 +82,14 @@ public class PostDTO {
         this.localDateTime = localDateTime;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
     @Override
     public String toString() {
         return "PostDTO{" +
@@ -85,6 +98,7 @@ public class PostDTO {
                 ", postContent='" + postContent + '\'' +
                 ", imagePost='" + imagePost + '\'' +
                 ", localDateTime=" + localDateTime +
+                ", userId=" + userId +
                 '}';
     }
 }

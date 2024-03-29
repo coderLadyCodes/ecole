@@ -27,25 +27,28 @@ public class StudentDTO {
     @JsonSerialize
     @JsonDeserialize()
     private Boolean cantine;
+    private Long userId;
 
     public StudentDTO() {
     }
 
-    public StudentDTO(String name, String profileImage, LocalDate birthday, Boolean presence, Boolean cantine) {
+    public StudentDTO(String name, String profileImage, LocalDate birthday, Boolean presence, Boolean cantine, Long userId) {
         this.name = name;
         this.profileImage = profileImage;
         this.birthday = birthday;
         this.presence = presence;
         this.cantine = cantine;
+        this.userId = userId;
     }
 
-    public StudentDTO(Long id, String name, String profileImage, LocalDate birthday, Boolean presence, Boolean cantine) {
+    public StudentDTO(Long id, String name, String profileImage, LocalDate birthday, Boolean presence, Boolean cantine, Long userId) {
         this.id = id;
         this.name = name;
         this.profileImage = profileImage;
         this.birthday = birthday;
         this.presence = presence;
         this.cantine = cantine;
+        this.userId = userId;
     }
 
     public Long getId() {
@@ -96,6 +99,14 @@ public class StudentDTO {
         this.cantine = cantine;
     }
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
     @Override
     public String toString() {
         return "StudentDTO{" +
@@ -105,6 +116,7 @@ public class StudentDTO {
                 ", birthday=" + birthday +
                 ", presence=" + presence +
                 ", cantine=" + cantine +
+                ", userId=" + userId +
                 '}';
     }
 }

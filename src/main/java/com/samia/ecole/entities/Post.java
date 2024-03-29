@@ -1,14 +1,9 @@
 package com.samia.ecole.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name="posts")
@@ -23,46 +18,35 @@ public class Post{
     @Column(name="image_post")
     private String imagePost;
     @JsonProperty("local_date_time")
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @Column(name="local_date_time")
     private LocalDateTime localDateTime;
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE, optional = false)
-    @JoinColumn(name = "user")
-    //@JsonManagedReference
-    //@JsonIgnore
-    //@JsonBackReference
-    @Transient
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
-    @OneToMany(mappedBy ="post",cascade = CascadeType.ALL)
-    //@JsonManagedReference
-    @Transient
-    //@JsonBackReference
-    private List<Comment> commentList;
+//    @OneToMany(mappedBy ="post",cascade = CascadeType.ALL)
+//    //@JsonManagedReference
+//    @Transient
+//    //@JsonBackReference
+//    private List<Comment> commentList;
 
     public Post() {
     }
 
-    public Post(String title, String postContent, String imagePost, LocalDateTime localDateTime, User user, List<Comment> commentList) {
+    public Post(String title, String postContent, String imagePost, LocalDateTime localDateTime, User user) {
         this.title = title;
         this.postContent = postContent;
         this.imagePost = imagePost;
         this.localDateTime = localDateTime;
         this.user = user;
-        this.commentList = commentList;
     }
 
-    public Post(Long id, String title, String postContent, String imagePost, LocalDateTime localDateTime, User user, List<Comment> commentList) {
+    public Post(Long id, String title, String postContent, String imagePost, LocalDateTime localDateTime, User user) {
         this.id = id;
         this.title = title;
         this.postContent = postContent;
         this.imagePost = imagePost;
         this.localDateTime = localDateTime;
         this.user = user;
-        this.commentList = commentList;
-    }
-
-    public Post(Long id, String title, String postContent, String imagePost, LocalDateTime localDateTime) {
     }
 
     public Long getId() {
@@ -113,14 +97,6 @@ public class Post{
         this.user = user;
     }
 
-    public List<Comment> getCommentList() {
-        return commentList;
-    }
-
-    public void setCommentList(List<Comment> commentList) {
-        this.commentList = commentList;
-    }
-
     @Override
     public String toString() {
         return "Post{" +
@@ -130,7 +106,6 @@ public class Post{
                 ", imagePost='" + imagePost + '\'' +
                 ", localDateTime=" + localDateTime +
                 ", user=" + user +
-                ", commentList=" + commentList +
                 '}';
     }
 }
