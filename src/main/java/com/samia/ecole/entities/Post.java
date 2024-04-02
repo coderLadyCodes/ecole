@@ -20,7 +20,7 @@ public class Post{
     @JsonProperty("local_date_time")
     @Column(name="local_date_time")
     private LocalDateTime localDateTime;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 //    @OneToMany(mappedBy ="post",cascade = CascadeType.ALL)

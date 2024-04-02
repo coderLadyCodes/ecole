@@ -1,22 +1,31 @@
 package com.samia.ecole.services;
 
 import com.samia.ecole.DTOs.UserDTO;
+import com.samia.ecole.entities.Role;
 import com.samia.ecole.entities.User;
+import com.samia.ecole.entities.Validation;
+import com.samia.ecole.exceptions.CustomException;
 import com.samia.ecole.exceptions.UserAlreadyExistsException;
 import com.samia.ecole.exceptions.UserNotFoundException;
 import com.samia.ecole.repositories.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
-
-
-    public UserService(UserRepository userRepository) {
+    private final BCryptPasswordEncoder passwordEncoder;
+    private final ValidationService validationService;
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, ValidationService validationService) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.validationService = validationService;
     }
 
     public UserDTO mapToUserDto(User user) {
@@ -50,15 +59,56 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User Not Found"));
         return mapToUserDto(user);
     }
+    public User userCreation(User user){
+       User cuser = new User();
+        if (!cuser.getEmail().contains("@")) {
+            throw new RuntimeException("votre email est invalide");
+        }
+        if (!cuser.getEmail().contains(".")) {
+            throw new RuntimeException("votre email est invalide");
+        }
+        if(userAlreadyExists(cuser.getEmail())){
+            throw new UserAlreadyExistsException(cuser.getEmail() + " this user Exists already !");
+        } else if (cuser.getEmail() == null){
+            throw new UserNotFoundException("user can not be null");
+        }
+
+        String pwdEncoded = this.passwordEncoder.encode(cuser.getPassword());
+        cuser.setPassword(pwdEncoded);
+        cuser.setRole(Role.PARENT);
+        User savedUser = userRepository.save(cuser);
+        this.validationService.enregistrer(savedUser);
+        return savedUser;
+    }
+    public void activation(Map<String, String> activation){
+        Validation validation = validationService.codeValidation(activation.get("code"));
+        if(Instant.now().isAfter(validation.getExpiration())) {
+            throw new CustomException("ce code a expiré", HttpStatus.CONFLICT);
+        }
+        User userActivated = userRepository.findById(validation.getUser().getId()).orElseThrow(()-> new UserNotFoundException("Utilisateur inconnu"));
+        userActivated.setActif(true);
+        userRepository.save(userActivated);
+    }
 
     public UserDTO createUser(UserDTO userDTO){
         User user = mapToUser(userDTO);
+        if (!user.getEmail().contains("@")) {
+            throw new RuntimeException("votre email est invalide");
+        }
+        if (!user.getEmail().contains(".")) {
+            throw new RuntimeException("votre email est invalide");
+        }
         if(userAlreadyExists(user.getEmail())){
             throw new UserAlreadyExistsException(user.getEmail() + " this user Exists already !");
         } else if (user.getEmail() == null){
             throw new UserNotFoundException("user can not be null");
         }
+
+        String pwdEncoded = this.passwordEncoder.encode(user.getPassword());
+        user.setPassword(pwdEncoded);
+        user.setRole(Role.PARENT);
         User savedUser = userRepository.save(user);
+        this.validationService.enregistrer(savedUser);
         return mapToUserDto(savedUser);
     }
     private boolean userAlreadyExists(String email) {

@@ -15,13 +15,13 @@ public class Comment {
     @Column(name="local_date_time")
     //@JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime localDateTime;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "post")
     //@JsonBackReference
     //@JsonIgnore
     private Post post;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user")
     //@JsonBackReference
     //@JsonIgnore

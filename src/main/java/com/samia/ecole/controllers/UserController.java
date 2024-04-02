@@ -2,6 +2,7 @@ package com.samia.ecole.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.samia.ecole.DTOs.UserDTO;
+import com.samia.ecole.entities.User;
 import com.samia.ecole.services.FileUploadUtil;
 import com.samia.ecole.services.UserService;
 import org.springframework.http.MediaType;
@@ -12,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.annotation.MultipartConfig;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000")
 //@CrossOrigin(origins = "*", methods= {RequestMethod.POST, RequestMethod.GET,RequestMethod.PUT})
@@ -22,6 +24,14 @@ public class UserController {
     private final UserService userService;
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+    @PostMapping("/signup")
+    public User signup(@RequestBody User user){
+        return userService.userCreation(user);
+    }
+    @PostMapping("/activation")
+    public void activation(@RequestBody  Map<String, String> activation){
+         userService.activation(activation);
     }
     @GetMapping()
     public List<UserDTO> getAllUsers() {

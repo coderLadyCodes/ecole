@@ -20,7 +20,7 @@ public class Student {
     private Boolean presence;
     @Column(name="cantine", nullable = false)
     private Boolean cantine;
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     public Student() {

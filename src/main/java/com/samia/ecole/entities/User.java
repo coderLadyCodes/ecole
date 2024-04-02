@@ -1,13 +1,19 @@
 package com.samia.ecole.entities;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Entity
 @Table(name="users")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,14 +40,50 @@ public class User {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
     private List<Post> postList=new ArrayList<>();
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Student> studentList = new ArrayList<>();
+    @Column(name = "active_account")
+    private boolean actif = false;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE"+this.role.toString()));
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return this.actif;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return this.actif;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return this.actif;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.actif;
+    }
     public User() {
     }
 
-    public User(String name, String email, String phone, String password, String profileImage, Role role, List<Post> postList, List<Student> studentList) {
+    public User(String name, String email, String phone, String password, String profileImage, Role role, List<Post> postList, List<Student> studentList, boolean actif) {
         this.name = name;
         this.email = email;
         this.phone = phone;
@@ -50,9 +92,10 @@ public class User {
         this.role = role;
         this.postList = postList;
         this.studentList = studentList;
+        this.actif = actif;
     }
 
-    public User(Long id, String name, String email, String phone, String password, String profileImage, Role role, List<Post> postList, List<Student> studentList) {
+    public User(Long id, String name, String email, String phone, String password, String profileImage, Role role, List<Post> postList, List<Student> studentList, boolean actif) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -62,6 +105,7 @@ public class User {
         this.role = role;
         this.postList = postList;
         this.studentList = studentList;
+        this.actif = actif;
     }
 
     public Long getId() {
@@ -94,10 +138,6 @@ public class User {
 
     public void setPhone(String phone) {
         this.phone = phone;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void setPassword(String password) {
@@ -136,6 +176,14 @@ public class User {
         this.studentList = studentList;
     }
 
+    public boolean isActif() {
+        return actif;
+    }
+
+    public void setActif(boolean actif) {
+        this.actif = actif;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -148,6 +196,7 @@ public class User {
                 ", role=" + role +
                 ", postList=" + postList +
                 ", studentList=" + studentList +
+                ", actif=" + actif +
                 '}';
     }
 }
