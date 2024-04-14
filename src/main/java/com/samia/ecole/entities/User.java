@@ -32,7 +32,7 @@ public class User implements UserDetails {
     //@NotEmpty
     //@Size(min = 8, message = "password must be greater than 8 characters")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @Column(name="password")
+    @Column(name="password", nullable = false)
     private String password;
 
     @Column(name="profile_image")

@@ -7,23 +7,26 @@ public class UserDTO {
     private String email;
     private String phone;
     private String profileImage;
+    private String password;
 
     public UserDTO() {
     }
 
-    public UserDTO(String name, String email, String phone, String profileImage) {
+    public UserDTO(String name, String email, String phone, String profileImage, String password) {
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.profileImage = profileImage;
+        this.password = password;
     }
 
-    public UserDTO(Long id, String name, String email, String phone, String profileImage) {
+    public UserDTO(Long id, String name, String email, String phone, String profileImage, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.profileImage = profileImage;
+        this.password = password;
     }
 
     public Long getId() {
@@ -66,6 +69,14 @@ public class UserDTO {
         this.profileImage = profileImage;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     @Override
     public String toString() {
         return "UserDTO{" +
@@ -74,6 +85,7 @@ public class UserDTO {
                 ", email='" + email + '\'' +
                 ", phone='" + phone + '\'' +
                 ", profileImage='" + profileImage + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
 }

@@ -10,9 +10,13 @@ public class Validation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "creation")
     private Instant creation;
+    @Column(name = "expiration")
     private Instant expiration;
+    @Column(name = "activation")
     private Instant activation;
+    @Column(name = "code")
     private String code;
     @OneToOne(targetEntity = User.class,cascade = CascadeType.ALL)
     @JoinColumn(nullable = false, name = "user_id")

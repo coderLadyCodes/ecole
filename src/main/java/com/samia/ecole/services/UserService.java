@@ -33,6 +33,7 @@ public class UserService {
         userDTO.setId(user.getId());
         userDTO.setName(user.getName());
         userDTO.setEmail(user.getEmail());
+        userDTO.setPassword(user.getPassword());
         userDTO.setPhone(user.getPhone());
         userDTO.setProfileImage(user.getProfileImage());
         return userDTO;
@@ -42,6 +43,7 @@ public class UserService {
         user.setId(userDTO.getId());
         user.setName(userDTO.getName());
         user.setEmail(userDTO.getEmail());
+        user.setPassword(userDTO.getPassword());
         user.setPhone(userDTO.getPhone());
         user.setProfileImage(userDTO.getProfileImage());
         return user;
@@ -59,52 +61,24 @@ public class UserService {
         User user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User Not Found"));
         return mapToUserDto(user);
     }
-    public User userCreation(User user){
-       User cuser = new User();
-        if (!cuser.getEmail().contains("@")) {
-            throw new RuntimeException("votre email est invalide");
-        }
-        if (!cuser.getEmail().contains(".")) {
-            throw new RuntimeException("votre email est invalide");
-        }
-        if(userAlreadyExists(cuser.getEmail())){
-            throw new UserAlreadyExistsException(cuser.getEmail() + " this user Exists already !");
-        } else if (cuser.getEmail() == null){
-            throw new UserNotFoundException("user can not be null");
-        }
-
-        String pwdEncoded = this.passwordEncoder.encode(cuser.getPassword());
-        cuser.setPassword(pwdEncoded);
-        cuser.setRole(Role.PARENT);
-        User savedUser = userRepository.save(cuser);
-        this.validationService.enregistrer(savedUser);
-        return savedUser;
-    }
-    public void activation(Map<String, String> activation){
-        Validation validation = validationService.codeValidation(activation.get("code"));
-        if(Instant.now().isAfter(validation.getExpiration())) {
-            throw new CustomException("ce code a expiré", HttpStatus.CONFLICT);
-        }
-        User userActivated = userRepository.findById(validation.getUser().getId()).orElseThrow(()-> new UserNotFoundException("Utilisateur inconnu"));
-        userActivated.setActif(true);
-        userRepository.save(userActivated);
-    }
-
     public UserDTO createUser(UserDTO userDTO){
         User user = mapToUser(userDTO);
-        if (!user.getEmail().contains("@")) {
-            throw new RuntimeException("votre email est invalide");
-        }
-        if (!user.getEmail().contains(".")) {
-            throw new RuntimeException("votre email est invalide");
-        }
+//        if (!user.getEmail().contains("@")) {
+//            throw new RuntimeException("votre email est invalide");
+//        }
+//        if (!user.getEmail().contains(".")) {
+//            throw new RuntimeException("votre email est invalide");
+//        }
         if(userAlreadyExists(user.getEmail())){
             throw new UserAlreadyExistsException(user.getEmail() + " this user Exists already !");
         } else if (user.getEmail() == null){
             throw new UserNotFoundException("user can not be null");
         }
+        if (user.getPassword() == null || user.getPassword().isEmpty()) {
+            throw new IllegalArgumentException("Password cannot be null or empty");
+        }
 
-        String pwdEncoded = this.passwordEncoder.encode(user.getPassword());
+        String pwdEncoded = passwordEncoder.encode(user.getPassword());
         user.setPassword(pwdEncoded);
         user.setRole(Role.PARENT);
         User savedUser = userRepository.save(user);
@@ -113,6 +87,16 @@ public class UserService {
     }
     private boolean userAlreadyExists(String email) {
         return userRepository.findByEmail(email).isPresent();
+    }
+
+    public void activation(Map<String, String> activation){
+        Validation validation = validationService.codeValidation(activation.get("code"));
+        if(Instant.now().isAfter(validation.getExpiration())) {
+            throw new CustomException("ce code a expiré", HttpStatus.CONFLICT);
+        }
+        User userActivated = userRepository.findById(validation.getUser().getId()).orElseThrow(()-> new UserNotFoundException("Utilisateur inconnu"));
+        userActivated.setActif(true);
+        userRepository.save(userActivated);
     }
 
     public UserDTO updateUser(Long id, UserDTO userDetails){

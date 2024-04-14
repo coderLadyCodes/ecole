@@ -2,10 +2,10 @@ package com.samia.ecole.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.samia.ecole.DTOs.UserDTO;
-import com.samia.ecole.entities.User;
 import com.samia.ecole.services.FileUploadUtil;
 import com.samia.ecole.services.UserService;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,32 +15,33 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:3000")
-//@CrossOrigin(origins = "*", methods= {RequestMethod.POST, RequestMethod.GET,RequestMethod.PUT})
 @RestController
 @MultipartConfig
-@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
-    public UserController(UserService userService) {
+    private final BCryptPasswordEncoder passwordEncoder;
+    public UserController(UserService userService, BCryptPasswordEncoder passwordEncoder) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
     }
-    @PostMapping("/signup")
-    public User signup(@RequestBody User user){
-        return userService.userCreation(user);
-    }
-    @PostMapping("/activation")
-    public void activation(@RequestBody  Map<String, String> activation){
-         userService.activation(activation);
-    }
-    @GetMapping()
+//    @GetMapping("/signup")
+//    public String showSignupForm(){
+//        return "SIGN UP";
+//    }
+    @GetMapping("/users")
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/dashboard")
+    public String dashboar(){
+        return "dashboard";
+    }
+    @PostMapping(value ="/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO createUser(@RequestPart String userDTO, @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         UserDTO userdto = mapper.readValue(userDTO, UserDTO.class);
+        //String encodedPassword = passwordEncoder.encode(userdto.getPassword());
+        //userdto.setPassword(encodedPassword);
         if (multipartFile != null && !multipartFile.isEmpty()) {
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
@@ -65,12 +66,15 @@ public class UserController {
         }
     }
 
-
-    @GetMapping("{id}")
+    @PostMapping("/activation")
+    public void activation(@RequestBody Map<String, String> activation){
+        userService.activation(activation);
+    }
+    @GetMapping("/users/{id}")
     public UserDTO getUserById(@PathVariable(value="id") Long id){
            return  userService.getUserById(id);
     }
-@PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+@PutMapping(value = "/users/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 public UserDTO updateUser(@PathVariable(value = "id") Long id,
                           @RequestPart String userDetails,
                           @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
@@ -105,7 +109,7 @@ public UserDTO updateUser(@PathVariable(value = "id") Long id,
         return userService.updateUser(id,userDetail);
     }
 }
-    @DeleteMapping("{id}")
+    @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable(value = "id") Long id){
         userService.deleteUser(id);
     }

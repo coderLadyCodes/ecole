@@ -15,11 +15,15 @@ public class NotificationService {
 
     public void envoyer(Validation validation){
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setFrom("no-replay@coderlady.tech");
+        simpleMailMessage.setFrom("notreplay@gmail.fr");
         simpleMailMessage.setTo(validation.getUser().getEmail());
         simpleMailMessage.setSubject("Votre Code d'activation");
 
-        String text = String.format("Bonjour %s, <br /> Votre code d'activation pour le site de l'école est %s",
+        String text = String.format("""
+                        Bonjour %s,
+                        Votre code d'activation pour le site de l'école est :  %s
+                        Clickez http://localhost:3000/activation ici pour activer votre compte</a>
+                        """,
                 validation.getUser().getName(),
                 validation.getCode());
         simpleMailMessage.setText(text);
