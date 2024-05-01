@@ -18,7 +18,7 @@ public class Validation {
     private Instant activation;
     @Column(name = "code")
     private String code;
-    @OneToOne(targetEntity = User.class,cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
 

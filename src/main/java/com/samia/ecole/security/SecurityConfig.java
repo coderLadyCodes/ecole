@@ -49,6 +49,9 @@ public class SecurityConfig {
                                                 .requestMatchers("/activation").permitAll()
                                                 .requestMatchers(POST,"/dashboard").permitAll()
                                                 .requestMatchers(POST,"/connexion").permitAll()
+                                                .requestMatchers(POST,"/refresh-token").permitAll()
+                                                .requestMatchers(POST,"/change-password").permitAll()
+                                                .requestMatchers(POST,"/new-password").permitAll()
                                                 .anyRequest().authenticated()
                         )
                         .sessionManagement(httpSecuritySessionManagementConfigurer ->

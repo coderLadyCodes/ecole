@@ -4,14 +4,16 @@ import com.samia.ecole.entities.User;
 import com.samia.ecole.entities.Validation;
 import com.samia.ecole.exceptions.CustomException;
 import com.samia.ecole.repositories.ValidationRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Random;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
-
+@Transactional
 @Service
 public class ValidationService {
     private final ValidationRepository validationRepository;
@@ -38,5 +40,9 @@ public class ValidationService {
     }
     public Validation codeValidation (String code){
         return validationRepository.findByCode(code).orElseThrow(()->new CustomException("code not found", HttpStatus.NOT_FOUND));
+    }
+    @Scheduled(cron = "0 */1 * * * *")
+    public void clean(){
+        this.validationRepository.deleteByExpirationBefore(Instant.now());
     }
 }

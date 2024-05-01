@@ -67,7 +67,7 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException("Password cannot be null or empty");
         }
 
-        String pwdEncoded = passwordEncoder.encode(user.getPassword());
+        String pwdEncoded = this.passwordEncoder.encode(user.getPassword());
         user.setPassword(pwdEncoded);
         user.setRole(Role.PARENT);
         User savedUser = userRepository.save(user);
@@ -114,5 +114,21 @@ public class UserService implements UserDetailsService {
     public void deleteUser(Long id){
         User user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User not found"));
         userRepository.deleteById(id);
+    }
+
+    public void changePassword(Map<String, String> parametres) {
+        User user = this.loadUserByUsername(parametres.get("email"));
+        this.validationService.enregistrer(user);
+    }
+
+    public void newPassword(Map<String, String> parametres) {
+        User user = this.loadUserByUsername(parametres.get("email"));
+        final Validation validation = validationService.codeValidation(parametres.get("code"));
+        if(validation.getUser().getEmail().equals(user.getEmail())){
+            String pwdEncoded = this.passwordEncoder.encode(parametres.get("password"));
+            user.setPassword(pwdEncoded);
+            this.userRepository.save(user);
+        }
+
     }
 }

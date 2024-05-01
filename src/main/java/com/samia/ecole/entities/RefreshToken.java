@@ -1,7 +1,6 @@
 package com.samia.ecole.entities;
 
 import jakarta.persistence.*;
-import org.springframework.data.annotation.Id;
 
 import java.time.Instant;
 

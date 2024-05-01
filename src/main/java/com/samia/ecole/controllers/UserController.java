@@ -65,10 +65,6 @@ public class UserController {
     public void activation(@RequestBody Map<String, String> activation){
         userService.activation(activation);
     }
-    @PostMapping("/refresh-token")
-    public Map<String, String> refreshToken(@RequestBody Map<String, String> refreshTokenRequest){
-        return this.jwtService.refreshToken(refreshTokenRequest);
-    }
     @PostMapping("/connexion")
     public Map<String, String> connexion(@RequestBody AuthentificationDTO authentificationDTO){
         final Authentication authenticate = authenticationManager.authenticate(
@@ -78,6 +74,18 @@ public class UserController {
             return this.jwtService.generate(authentificationDTO.username());
         }
         return  null;
+    }
+    @PostMapping("/refresh-token")
+    public Map<String, String> refreshToken(@RequestBody Map<String, String> refreshTokenRequest){
+        return this.jwtService.refreshToken(refreshTokenRequest);
+    }
+    @PostMapping("/change-password")
+    public void  passwordChange(@RequestBody Map<String, String> activation){
+        this.userService.changePassword(activation);
+    }
+    @PostMapping("/new-password")
+    public void  newPassword(@RequestBody Map<String, String> activation){
+        this.userService.newPassword(activation);
     }
     @PostMapping("/logout")
     public void logout(){
