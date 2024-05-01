@@ -21,8 +21,12 @@ public class NotificationService {
 
         String text = String.format("""
                         Bonjour %s,
+                        
                         Votre code d'activation pour le site de l'école est :  %s
-                        Clickez http://localhost:3000/activation ici pour activer votre compte</a>
+                        
+                        Ce code est valable pendant 10 minutes.
+                        
+                        Suivez ce lien  http://localhost:3000/activation  pour activer votre compte ou retournez à la page d'activation.
                         """,
                 validation.getUser().getName(),
                 validation.getCode());

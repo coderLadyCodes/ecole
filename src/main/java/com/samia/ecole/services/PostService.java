@@ -62,12 +62,12 @@ public class PostService {
         if (userId == null) {
             throw new IllegalArgumentException("userId cannot be null for creating a Post");
         }
+        //(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<User> optionalUser = userRepository.findById(userId);
         if (optionalUser.isEmpty()){
             throw new UserNotFoundException("User not found for userId: " + userId);
         }
-
-        User user = optionalUser.get();
+        User user =optionalUser.get();
         Post post = mapToPost(postDTO);
         post.setUser(user);
         Post savedPost = postRepository.save(post);

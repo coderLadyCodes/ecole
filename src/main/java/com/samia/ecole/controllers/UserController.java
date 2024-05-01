@@ -1,11 +1,15 @@
 package com.samia.ecole.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.samia.ecole.DTOs.AuthentificationDTO;
 import com.samia.ecole.DTOs.UserDTO;
+import com.samia.ecole.security.JwtService;
 import com.samia.ecole.services.FileUploadUtil;
 import com.samia.ecole.services.UserService;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,19 +22,13 @@ import java.util.Map;
 @RestController
 @MultipartConfig
 public class UserController {
+    private final AuthenticationManager authenticationManager;
     private final UserService userService;
-    private final BCryptPasswordEncoder passwordEncoder;
-    public UserController(UserService userService, BCryptPasswordEncoder passwordEncoder) {
+    private final JwtService jwtService;
+    public UserController(AuthenticationManager authenticationManager, UserService userService, JwtService jwtService) {
+        this.authenticationManager = authenticationManager;
         this.userService = userService;
-        this.passwordEncoder = passwordEncoder;
-    }
-//    @GetMapping("/signup")
-//    public String showSignupForm(){
-//        return "SIGN UP";
-//    }
-    @GetMapping("/users")
-    public List<UserDTO> getAllUsers() {
-        return userService.getAllUsers();
+        this.jwtService = jwtService;
     }
     @GetMapping("/dashboard")
     public String dashboar(){
@@ -40,8 +38,6 @@ public class UserController {
     public UserDTO createUser(@RequestPart String userDTO, @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         UserDTO userdto = mapper.readValue(userDTO, UserDTO.class);
-        //String encodedPassword = passwordEncoder.encode(userdto.getPassword());
-        //userdto.setPassword(encodedPassword);
         if (multipartFile != null && !multipartFile.isEmpty()) {
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
@@ -65,10 +61,27 @@ public class UserController {
             return userService.createUser(userdto);
         }
     }
-
     @PostMapping("/activation")
     public void activation(@RequestBody Map<String, String> activation){
         userService.activation(activation);
+    }
+    @PostMapping("/refresh-token")
+    public Map<String, String> refreshToken(@RequestBody Map<String, String> refreshTokenRequest){
+        return this.jwtService.refreshToken(refreshTokenRequest);
+    }
+    @PostMapping("/connexion")
+    public Map<String, String> connexion(@RequestBody AuthentificationDTO authentificationDTO){
+        final Authentication authenticate = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authentificationDTO.username(), authentificationDTO.password())
+        );
+        if(authenticate.isAuthenticated()){
+            return this.jwtService.generate(authentificationDTO.username());
+        }
+        return  null;
+    }
+    @PostMapping("/logout")
+    public void logout(){
+        this.jwtService.deconnexion();
     }
     @GetMapping("/users/{id}")
     public UserDTO getUserById(@PathVariable(value="id") Long id){
@@ -109,6 +122,10 @@ public UserDTO updateUser(@PathVariable(value = "id") Long id,
         return userService.updateUser(id,userDetail);
     }
 }
+    @GetMapping("/users")
+    public List<UserDTO> getAllUsers() {
+        return userService.getAllUsers();
+    }
     @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable(value = "id") Long id){
         userService.deleteUser(id);

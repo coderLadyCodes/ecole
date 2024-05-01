@@ -2,12 +2,19 @@ package com.samia.ecole.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -20,6 +27,15 @@ import static org.springframework.http.HttpMethod.POST;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserDetailsService userDetailsService;
+    private final JwtFilter jwtFilter;
+    public SecurityConfig(BCryptPasswordEncoder bCryptPasswordEncoder, UserDetailsService userDetailsService, JwtFilter jwtFilter) {
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.userDetailsService = userDetailsService;
+        this.jwtFilter = jwtFilter;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return
@@ -29,11 +45,17 @@ public class SecurityConfig {
                         .authorizeHttpRequests(
                                 authorize ->
                                         authorize
-                                                .requestMatchers("/signup").permitAll()
-                                                .requestMatchers(POST,"/activation").permitAll()
-                                                .requestMatchers("/dashboard").permitAll()
+                                                .requestMatchers(POST,"/signup").permitAll()
+                                                .requestMatchers("/activation").permitAll()
+                                                .requestMatchers(POST,"/dashboard").permitAll()
+                                                .requestMatchers(POST,"/connexion").permitAll()
                                                 .anyRequest().authenticated()
-                        ).build();
+                        )
+                        .sessionManagement(httpSecuritySessionManagementConfigurer ->
+                                httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                        )
+                        .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                        .build();
     }
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
@@ -48,7 +70,15 @@ public class SecurityConfig {
         return source;
     }
     @Bean
-    public BCryptPasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider(){
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
+        daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder);
+        return daoAuthenticationProvider;
     }
 }
