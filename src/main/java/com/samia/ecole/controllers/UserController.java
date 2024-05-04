@@ -7,6 +7,7 @@ import com.samia.ecole.security.JwtService;
 import com.samia.ecole.services.FileUploadUtil;
 import com.samia.ecole.services.UserService;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -95,8 +96,8 @@ public class UserController {
     public UserDTO getUserById(@PathVariable(value="id") Long id){
            return  userService.getUserById(id);
     }
-@PutMapping(value = "/users/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-public UserDTO updateUser(@PathVariable(value = "id") Long id,
+    @PutMapping(value = "/users/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+     public UserDTO updateUser(@PathVariable(value = "id") Long id,
                           @RequestPart String userDetails,
                           @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
@@ -130,6 +131,7 @@ public UserDTO updateUser(@PathVariable(value = "id") Long id,
         return userService.updateUser(id,userDetail);
     }
 }
+    @PreAuthorize("hasAnyAuthority('ROLE_SUPER_ADMIN','ROLE_ADMIN')")
     @GetMapping("/users")
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();

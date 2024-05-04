@@ -132,7 +132,8 @@ public class Jwt {
     public Builder expire(boolean expire){
         this.expire = expire;
         return this;
-    }public Builder user(User user){
+    }
+    public Builder user(User user){
         this.user = user;
         return this;
     }

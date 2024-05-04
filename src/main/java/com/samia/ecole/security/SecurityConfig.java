@@ -47,11 +47,13 @@ public class SecurityConfig {
                                         authorize
                                                 .requestMatchers(POST,"/signup").permitAll()
                                                 .requestMatchers("/activation").permitAll()
-                                                .requestMatchers(POST,"/dashboard").permitAll()
+                                                .requestMatchers("/dashboard").permitAll()
                                                 .requestMatchers(POST,"/connexion").permitAll()
                                                 .requestMatchers(POST,"/refresh-token").permitAll()
                                                 .requestMatchers(POST,"/change-password").permitAll()
                                                 .requestMatchers(POST,"/new-password").permitAll()
+                                                //.requestMatchers(GET,"/users").hasAnyRole("SUPER_ADMIN", "ADMIN")
+                                                //.requestMatchers(GET,"/users").hasAnyAuthority("SUPER_ADMIN", "ADMIN")
                                                 .anyRequest().authenticated()
                         )
                         .sessionManagement(httpSecuritySessionManagementConfigurer ->

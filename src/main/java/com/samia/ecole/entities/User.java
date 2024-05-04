@@ -199,4 +199,76 @@ public class User implements UserDetails {
                 ", actif=" + actif +
                 '}';
     }
+
+    private User(Builder builder){
+        this.id = builder.id;
+        this.name = builder.name;
+        this.email = builder.email;
+        this.phone = builder.phone;
+        this.password = builder.password;
+        this.profileImage = builder.profileImage;
+        this.role = builder.role;
+        this.postList = builder.postList;
+        this.studentList = builder.studentList;
+        this.actif = builder.actif;
+    }
+    public static Builder builder(){
+        return new Builder();
+    }
+    public static class Builder{
+        private Long id;
+        private String name;
+        private String email;
+        private String phone;
+        private String password;
+        private String profileImage;
+        private Role role;
+        private List<Post> postList=new ArrayList<>();
+        private List<Student> studentList = new ArrayList<>();
+        private boolean actif = false;
+
+        public Builder id(Long id){
+            this.id = id;
+            return this;
+        }
+        public Builder name(String name){
+            this.name = name;
+            return this;
+        }
+        public Builder email(String email){
+            this.email = email;
+            return this;
+        }
+        public Builder phone(String phone){
+            this.phone = phone;
+            return this;
+        }
+        public Builder password(String password){
+            this.password = password;
+            return this;
+        }
+        public Builder profileImage(String profileImage){
+            this.profileImage = profileImage;
+            return this;
+        }
+        public Builder role(Role role){
+            this.role = role;
+            return this;
+        }
+        public Builder postList(List<Post> postList){
+            this.postList = postList;
+            return this;
+        }
+        public Builder studentList(List<Student> studentList){
+            this.studentList = studentList;
+            return this;
+        }
+        public Builder actif(boolean actif){
+            this.actif = actif;
+            return this;
+        }
+        public User build(){
+            return new User(this);
+        }
+    }
 }
