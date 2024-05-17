@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,6 +39,7 @@ public class UserService implements UserDetailsService {
         userDTO.setPassword(user.getPassword());
         userDTO.setPhone(user.getPhone());
         userDTO.setProfileImage(user.getProfileImage());
+        userDTO.setRole(user.getRole());
         return userDTO;
     }
     public User mapToUser(UserDTO userDTO){
@@ -48,17 +50,19 @@ public class UserService implements UserDetailsService {
         user.setPassword(userDTO.getPassword());
         user.setPhone(userDTO.getPhone());
         user.setProfileImage(userDTO.getProfileImage());
+        user.setRole(userDTO.getRole());
         return user;
     }
     public UserDTO createUser(UserDTO userDTO){
         User user = mapToUser(userDTO);
-//        if (!user.getEmail().contains("@")) {
-//            throw new RuntimeException("votre email est invalide");
-//        }
-//        if (!user.getEmail().contains(".")) {
-//            throw new RuntimeException("votre email est invalide");
-//        }
-        if(userAlreadyExists(user.getEmail())){
+        if (!user.getEmail().contains("@")) {
+            throw new RuntimeException("votre email est invalide");
+        }
+        if (!user.getEmail().contains(".")) {
+            throw new RuntimeException("votre email est invalide");
+        }
+        final Optional<User> userOptional = userRepository.findByEmail(user.getEmail());
+        if(userOptional.isPresent()){
             throw new UserAlreadyExistsException(user.getEmail() + " this user Exists already !");
         } else if (user.getEmail() == null){
             throw new UserNotFoundException("user can not be null");
@@ -67,16 +71,34 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException("Password cannot be null or empty");
         }
 
-        String pwdEncoded = this.passwordEncoder.encode(user.getPassword());
+        final String pwdEncoded = this.passwordEncoder.encode(user.getPassword());
         user.setPassword(pwdEncoded);
-        user.setRole(Role.PARENT);
-        User savedUser = userRepository.save(user);
-        this.validationService.enregistrer(savedUser);
-        return mapToUserDto(savedUser);
+            // whattttttttttttttt???????????????????????????????????????????????????????????????????????????????????????
+        //user.setRole(Role.PARENT);
+        if(user.getRole() != null && user.getRole().equals(Role.SUPER_ADMIN)){
+            user.setRole(Role.SUPER_ADMIN);
+            user.setActif(true);
+        }
+        if(user.getRole() != null && user.getRole().equals(Role.ADMIN)){
+          user.setRole(Role.ADMIN);
+            user.setActif(true);
+        }
+
+        if(user.getRole().equals(Role.PARENT)) {
+            user.setActif(true);
+        }
+        user = this.userRepository.save(user);
+        this.validationService.enregistrer(user);
+//        if(user.getRole() != null && user.getRole().equals(Role.PARENT)){
+//            user.setRole(Role.PARENT);
+//            user.setActif(true);
+//            this.validationService.enregistrer(user);
+//        }
+        return mapToUserDto(user);
     }
-    private boolean userAlreadyExists(String email) {
-        return userRepository.findByEmail(email).isPresent();
-    }
+//    private boolean userAlreadyExists(String email) {
+//        return userRepository.findByEmail(email).isPresent();
+//    }
     public void activation(Map<String, String> activation){
         Validation validation = validationService.codeValidation(activation.get("code"));
         if(Instant.now().isAfter(validation.getExpiration())) {
@@ -88,14 +110,15 @@ public class UserService implements UserDetailsService {
     }
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username).orElseThrow(()-> new UserNotFoundException("User Not Found"));
+        return userRepository.findByEmail(username).orElseThrow(()-> new UserNotFoundException("Aucun utilisateur trouvé dans la bd"));
     }
     public UserDTO updateUser(Long id, UserDTO userDetails){
-        User user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User not found"));
+        User user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("user not found ! "));
         user.setName(userDetails.getName());
         user.setEmail(userDetails.getEmail());
         user.setPhone(userDetails.getPhone());
         user.setProfileImage(userDetails.getProfileImage());
+        user.setRole(userDetails.getRole());
         User userUpdated = userRepository.save(user);
         return mapToUserDto(userUpdated);
     }

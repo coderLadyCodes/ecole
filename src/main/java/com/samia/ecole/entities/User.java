@@ -48,7 +48,8 @@ public class User implements UserDetails {
     private boolean actif = false;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE"+this.role.toString()));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+this.role.toString()));
+        //return this.role.getAuthorities();
     }
 
     @Override

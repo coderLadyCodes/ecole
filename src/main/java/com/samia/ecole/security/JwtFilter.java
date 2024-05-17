@@ -11,13 +11,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 @Service
 public class JwtFilter extends OncePerRequestFilter {
+    private final HandlerExceptionResolver handlerExceptionResolver;
     private final UserService userService;
     private final JwtService jwtService;
-    public JwtFilter(UserService userService, JwtService jwtService) {
+    public JwtFilter(HandlerExceptionResolver handlerExceptionResolver, UserService userService, JwtService jwtService) {
+        this.handlerExceptionResolver = handlerExceptionResolver;
         this.userService = userService;
         this.jwtService = jwtService;
     }
@@ -28,7 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
     Jwt tokenInDb = null;
     String username = null;
     boolean isTokenExpired = true;
-
+    try {
     final String authorization = request.getHeader("Authorization");
     if(authorization != null && authorization.startsWith("Bearer ")){
         token = authorization.substring(7);
@@ -45,5 +48,8 @@ public class JwtFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
     }
     filterChain.doFilter(request,response);
+    } catch (Exception exception){
+    handlerExceptionResolver.resolveException(request, response, null, exception);
+    }
     }
 }

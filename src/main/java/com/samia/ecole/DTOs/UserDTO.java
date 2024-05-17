@@ -1,32 +1,35 @@
 package com.samia.ecole.DTOs;
+
+import com.samia.ecole.entities.Role;
+
 public class UserDTO {
    private Long id;
-
     private String name;
-
     private String email;
     private String phone;
     private String profileImage;
     private String password;
-
+    private Role role;
     public UserDTO() {
     }
 
-    public UserDTO(String name, String email, String phone, String profileImage, String password) {
+    public UserDTO(String name, String email, String phone, String profileImage, String password, Role role) {
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.profileImage = profileImage;
         this.password = password;
+        this.role = role;
     }
 
-    public UserDTO(Long id, String name, String email, String phone, String profileImage, String password) {
+    public UserDTO(Long id, String name, String email, String phone, String profileImage, String password, Role role) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.profileImage = profileImage;
         this.password = password;
+        this.role = role;
     }
 
     public Long getId() {
@@ -77,6 +80,14 @@ public class UserDTO {
         this.password = password;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
         return "UserDTO{" +
@@ -86,6 +97,7 @@ public class UserDTO {
                 ", phone='" + phone + '\'' +
                 ", profileImage='" + profileImage + '\'' +
                 ", password='" + password + '\'' +
+                ", role=" + role +
                 '}';
     }
 }

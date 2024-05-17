@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,10 +22,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 
 @Configuration
+@EnableMethodSecurity
 @EnableWebSecurity
 public class SecurityConfig {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -46,14 +49,14 @@ public class SecurityConfig {
                                 authorize ->
                                         authorize
                                                 .requestMatchers(POST,"/signup").permitAll()
-                                                .requestMatchers("/activation").permitAll()
-                                                .requestMatchers("/dashboard").permitAll()
+                                                .requestMatchers(POST,"/activation").permitAll()
+                                                .requestMatchers(POST,"/identification").permitAll()
                                                 .requestMatchers(POST,"/connexion").permitAll()
                                                 .requestMatchers(POST,"/refresh-token").permitAll()
                                                 .requestMatchers(POST,"/change-password").permitAll()
                                                 .requestMatchers(POST,"/new-password").permitAll()
                                                 //.requestMatchers(GET,"/users").hasAnyRole("SUPER_ADMIN", "ADMIN")
-                                                //.requestMatchers(GET,"/users").hasAnyAuthority("SUPER_ADMIN", "ADMIN")
+                                                .requestMatchers(GET,"/users").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .anyRequest().authenticated()
                         )
                         .sessionManagement(httpSecuritySessionManagementConfigurer ->

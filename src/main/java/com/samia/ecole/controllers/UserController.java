@@ -31,9 +31,9 @@ public class UserController {
         this.userService = userService;
         this.jwtService = jwtService;
     }
-    @GetMapping("/dashboard")
-    public String dashboar(){
-        return "dashboard";
+    @GetMapping("/identification")
+    public String identification(){
+        return "identifier";
     }
     @PostMapping(value ="/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO createUser(@RequestPart String userDTO, @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
@@ -72,7 +72,14 @@ public class UserController {
                 new UsernamePasswordAuthenticationToken(authentificationDTO.username(), authentificationDTO.password())
         );
         if(authenticate.isAuthenticated()){
-            return this.jwtService.generate(authentificationDTO.username());
+//            Map<String, String> tokenMap = this.jwtService.generate(authentificationDTO.username());
+//            System.out.println("THE TOKEN IS : " + tokenMap);
+//            if(tokenMap != null && tokenMap.containsKey("bearer") && tokenMap.get("bearer") != null) {
+//                return tokenMap;
+//            }else {
+//                throw new RuntimeException("Failed to generate JWT token");
+//            }
+               return this.jwtService.generate(authentificationDTO.username());
         }
         return  null;
     }
@@ -131,7 +138,7 @@ public class UserController {
         return userService.updateUser(id,userDetail);
     }
 }
-    @PreAuthorize("hasAnyAuthority('ROLE_SUPER_ADMIN','ROLE_ADMIN')")
+    @PreAuthorize("hasAnyAuthority('SUPER_ADMIN','ADMIN')")
     @GetMapping("/users")
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();

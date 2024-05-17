@@ -7,7 +7,6 @@ import com.samia.ecole.repositories.JwtRepository;
 import com.samia.ecole.services.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.util.Date;
 import java.util.List;
@@ -97,10 +96,14 @@ public class JwtService {
 
     private Claims getAllClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(this.getKey())
+//                .setSigningKey(this.getKey())
+//                .build()
+//                .parseClaimsJws(token)
+//                .getBody();
+                .verifyWith(this.getKey())
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     private Map<String, String> generateJwt(User user) {
@@ -115,23 +118,23 @@ public class JwtService {
 
         final String bearer = Jwts.builder()
                 // THIS DEPRECATED, CODE COMMENTED IS CORRECT (ALSO CHANGE GETALLCLAIMS ABOVE)
-                .setIssuedAt(new Date(currentTime))
-                .setExpiration(new Date(expirationTime))
-                .setSubject(user.getEmail())
-                .setClaims(claims)
-                .signWith(getKey(), SignatureAlgorithm.HS512)
-                .compact();
-//                  .issuer("self")
-//                  .issuedAt(new Date(currentTime))
-//                  .expiration(new Date(expirationTime))
-//                  .subject(user.getEmail())
-//                  .claims(claims)
-//                  .signWith(getKey())
-//                  .compact();
+//                .setIssuedAt(new Date(currentTime))
+//                .setExpiration(new Date(expirationTime))
+//                .setSubject(user.getEmail())
+//                .setClaims(claims)
+//                .signWith(getKey(), SignatureAlgorithm.HS512)
+//                .compact();
+                  .issuer("self")
+                  .issuedAt(new Date(currentTime))
+                  .expiration(new Date(expirationTime))
+                  .subject(user.getEmail())
+                  .claims(claims)
+                  .signWith(getKey())
+                  .compact();
         return Map.of(BEARER, bearer);
     }
 
-    private Key getKey() {
+    private SecretKey getKey() { //changed the Key return to SecretKey
         final byte[] decoder = Decoders.BASE64.decode(ENCRIPTION_KEY);
         return Keys.hmacShaKeyFor(decoder);
     }
