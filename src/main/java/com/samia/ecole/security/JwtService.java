@@ -9,6 +9,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -26,6 +27,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @Configuration
 @PropertySource("classpath:secrets.properties")
 public class JwtService {
@@ -112,6 +114,7 @@ public class JwtService {
 
         final Map<String, Object> claims =  Map.of(
                 "name", user.getName(),
+                //"role", user.getRole().name(),
                 Claims.EXPIRATION,new Date(expirationTime),
                 Claims.SUBJECT,user.getEmail()
         );

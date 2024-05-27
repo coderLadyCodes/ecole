@@ -3,6 +3,7 @@ package com.samia.ecole.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.samia.ecole.DTOs.AuthentificationDTO;
 import com.samia.ecole.DTOs.UserDTO;
+import com.samia.ecole.entities.User;
 import com.samia.ecole.security.JwtService;
 import com.samia.ecole.services.FileUploadUtil;
 import com.samia.ecole.services.UserService;
@@ -11,6 +12,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -71,18 +73,15 @@ public class UserController {
         final Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authentificationDTO.username(), authentificationDTO.password())
         );
-        if(authenticate.isAuthenticated()){
-//            Map<String, String> tokenMap = this.jwtService.generate(authentificationDTO.username());
-//            System.out.println("THE TOKEN IS : " + tokenMap);
-//            if(tokenMap != null && tokenMap.containsKey("bearer") && tokenMap.get("bearer") != null) {
-//                return tokenMap;
-//            }else {
-//                throw new RuntimeException("Failed to generate JWT token");
-//            }
-               return this.jwtService.generate(authentificationDTO.username());
+        if(authenticate.isAuthenticated()) {
+            Map<String, String> tokens = this.jwtService.generate(authentificationDTO.username());
+            User user = (User) authenticate.getPrincipal();
+            tokens.put("role", user.getRole().name());
+            return tokens;
         }
         return  null;
     }
+
     @PostMapping("/refresh-token")
     public Map<String, String> refreshToken(@RequestBody Map<String, String> refreshTokenRequest){
         return this.jwtService.refreshToken(refreshTokenRequest);
@@ -95,9 +94,10 @@ public class UserController {
     public void  newPassword(@RequestBody Map<String, String> activation){
         this.userService.newPassword(activation);
     }
-    @PostMapping("/logout")
+    @PostMapping("/deconnexion")
     public void logout(){
         this.jwtService.deconnexion();
+        SecurityContextHolder.clearContext();
     }
     @GetMapping("/users/{id}")
     public UserDTO getUserById(@PathVariable(value="id") Long id){

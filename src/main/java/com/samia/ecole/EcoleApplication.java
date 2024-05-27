@@ -1,6 +1,7 @@
 package com.samia.ecole;
 
 import com.samia.ecole.repositories.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -16,7 +17,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableMethodSecurity
 @EnableWebSecurity
 public class EcoleApplication implements CommandLineRunner {
-
+    @Value("${admin.email}")
+    private String adminEmail;
+    @Value("${admin.password}")
+    private String adminPassword;
+    @Value("${superAdmin.email}")
+    private String superAdminEmail;
+    @Value("${superAdmin.password}")
+    private String superAdminPassword;
     private final UserRepository userRepository;
 	private final PasswordEncoder passwordEncoder;
 
@@ -34,21 +42,21 @@ public class EcoleApplication implements CommandLineRunner {
 //		User superAdmin = User.builder()
 //				.actif(true)
 //				.name("super admin")
-//				.password(passwordEncoder.encode("superAdmin"))
-//				.email("me@outlook.fr")
+//				.password(passwordEncoder.encode(superAdminPassword))
+//				.email(superAdminEmail)
 //				.role(Role.SUPER_ADMIN)
 //				.build();
-//		superAdmin = this.userRepository.findByEmail("me@outlook.fr").orElse(superAdmin);
+//		superAdmin = this.userRepository.findByEmail(superAdminEmail).orElse(superAdmin);
 //		this.userRepository.save(superAdmin);
-//
+
 //		User admin = User.builder()
 //				.actif(true)
 //				.name("admin")
-//				.password(passwordEncoder.encode("admin"))
-//				.email("admin@outlook.fr")
+//				.password(passwordEncoder.encode(adminPassword))
+//				.email(adminEmail)
 //				.role(Role.ADMIN)
 //				.build();
-//		admin = this.userRepository.findByEmail("admin@outlook.fr").orElse(admin);
+//		admin = this.userRepository.findByEmail(adminEmail).orElse(admin);
 //		this.userRepository.save(admin);
 //
 //		User parent = User.builder()
@@ -61,6 +69,5 @@ public class EcoleApplication implements CommandLineRunner {
 //		parent = this.userRepository.findByEmail("parent@outlook.fr").orElse(parent);
 //		this.userRepository.save(parent);
 	}
-
 }
 

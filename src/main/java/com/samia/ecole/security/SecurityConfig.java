@@ -21,6 +21,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -45,6 +46,8 @@ public class SecurityConfig {
                 httpSecurity
                         .cors(Customizer.withDefaults())
                         .csrf(AbstractHttpConfigurer::disable)
+//                        .csrf((csrf) -> csrf
+//                                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                         .authorizeHttpRequests(
                                 authorize ->
                                         authorize
@@ -55,6 +58,7 @@ public class SecurityConfig {
                                                 .requestMatchers(POST,"/refresh-token").permitAll()
                                                 .requestMatchers(POST,"/change-password").permitAll()
                                                 .requestMatchers(POST,"/new-password").permitAll()
+                                                .requestMatchers(POST,"/deconnexion").permitAll()
                                                 //.requestMatchers(GET,"/users").hasAnyRole("SUPER_ADMIN", "ADMIN")
                                                 .requestMatchers(GET,"/users").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .anyRequest().authenticated()
@@ -63,6 +67,7 @@ public class SecurityConfig {
                                 httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                         )
                         .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                        .logout(AbstractHttpConfigurer::disable)
                         .build();
     }
     @Bean
@@ -70,8 +75,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-        //configuration.setAllowedHeaders(List.of("Authorization"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(List.of("Authorization","Content-Type", "*"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

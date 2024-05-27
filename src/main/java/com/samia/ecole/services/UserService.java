@@ -55,26 +55,22 @@ public class UserService implements UserDetailsService {
     }
     public UserDTO createUser(UserDTO userDTO){
         User user = mapToUser(userDTO);
-        if (!user.getEmail().contains("@")) {
-            throw new RuntimeException("votre email est invalide");
-        }
-        if (!user.getEmail().contains(".")) {
-            throw new RuntimeException("votre email est invalide");
+        if (user.getEmail() == null || !user.getEmail().contains("@") || !user.getEmail().contains(".")) {
+            throw new RuntimeException("Votre email est invalide");
         }
         final Optional<User> userOptional = userRepository.findByEmail(user.getEmail());
         if(userOptional.isPresent()){
             throw new UserAlreadyExistsException(user.getEmail() + " this user Exists already !");
-        } else if (user.getEmail() == null){
+        }
+        if (user.getEmail() == null){
             throw new UserNotFoundException("user can not be null");
         }
         if (user.getPassword() == null || user.getPassword().isEmpty()) {
             throw new IllegalArgumentException("Password cannot be null or empty");
         }
 
-        final String pwdEncoded = this.passwordEncoder.encode(user.getPassword());
-        user.setPassword(pwdEncoded);
-            // whattttttttttttttt???????????????????????????????????????????????????????????????????????????????????????
-        //user.setRole(Role.PARENT);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRole(Role.PARENT);
         if(user.getRole() != null && user.getRole().equals(Role.SUPER_ADMIN)){
             user.setRole(Role.SUPER_ADMIN);
             user.setActif(true);
@@ -87,18 +83,19 @@ public class UserService implements UserDetailsService {
         if(user.getRole().equals(Role.PARENT)) {
             user.setActif(true);
         }
-        user = this.userRepository.save(user);
-        this.validationService.enregistrer(user);
-//        if(user.getRole() != null && user.getRole().equals(Role.PARENT)){
-//            user.setRole(Role.PARENT);
-//            user.setActif(true);
-//            this.validationService.enregistrer(user);
+//        Role role = user.getRole();
+//        if (role == null){
+//            role  = Role.PARENT;
+//        }else if (role != Role.PARENT && role != Role.ADMIN && role != Role.SUPER_ADMIN) {
+//            throw new IllegalArgumentException("roles doit etre spécifié");
 //        }
+//        user.setRole(role);
+//        user.setActif(true);
+        user = userRepository.save(user);
+        this.validationService.enregistrer(user);
         return mapToUserDto(user);
     }
-//    private boolean userAlreadyExists(String email) {
-//        return userRepository.findByEmail(email).isPresent();
-//    }
+
     public void activation(Map<String, String> activation){
         Validation validation = validationService.codeValidation(activation.get("code"));
         if(Instant.now().isAfter(validation.getExpiration())) {
