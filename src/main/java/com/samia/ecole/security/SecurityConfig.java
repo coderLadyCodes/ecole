@@ -23,8 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.*;
 
 
 @Configuration
@@ -51,6 +50,7 @@ public class SecurityConfig {
                         .authorizeHttpRequests(
                                 authorize ->
                                         authorize
+                                                .requestMatchers(GET,"/images/**").permitAll()
                                                 .requestMatchers(POST,"/signup").permitAll()
                                                 .requestMatchers(POST,"/activation").permitAll()
                                                 .requestMatchers(POST,"/identification").permitAll()
@@ -59,6 +59,11 @@ public class SecurityConfig {
                                                 .requestMatchers(POST,"/change-password").permitAll()
                                                 .requestMatchers(POST,"/new-password").permitAll()
                                                 .requestMatchers(POST,"/deconnexion").permitAll()
+                                                .requestMatchers(GET,"/users/{id}").permitAll()
+                                                .requestMatchers(PUT,"/users/{id}").permitAll()
+                                                .requestMatchers(POST,"/students").permitAll()
+                                                .requestMatchers(GET,"/students/{id}").permitAll()
+                                                .requestMatchers(PUT,"/students/{id}").permitAll()
                                                 //.requestMatchers(GET,"/users").hasAnyRole("SUPER_ADMIN", "ADMIN")
                                                 .requestMatchers(GET,"/users").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .anyRequest().authenticated()
@@ -77,6 +82,7 @@ public class SecurityConfig {
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(List.of("Authorization","Content-Type", "*"));
         configuration.setAllowCredentials(true);
+        configuration.setExposedHeaders(List.of("Authorization"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;

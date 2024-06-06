@@ -1,5 +1,7 @@
 package com.samia.ecole;
 
+import com.samia.ecole.entities.Role;
+import com.samia.ecole.entities.User;
 import com.samia.ecole.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -39,35 +41,38 @@ public class EcoleApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-//		User superAdmin = User.builder()
-//				.actif(true)
-//				.name("super admin")
-//				.password(passwordEncoder.encode(superAdminPassword))
-//				.email(superAdminEmail)
-//				.role(Role.SUPER_ADMIN)
-//				.build();
-//		superAdmin = this.userRepository.findByEmail(superAdminEmail).orElse(superAdmin);
-//		this.userRepository.save(superAdmin);
+		User superAdmin = User.builder()
+				.actif(true)
+				.name("super admin")
+				.password(passwordEncoder.encode(superAdminPassword))
+				.email(superAdminEmail)
+				.phone("0707070707")
+				.role(Role.SUPER_ADMIN)
+				.build();
+		superAdmin = this.userRepository.findByEmail(superAdminEmail).orElse(superAdmin);
+		this.userRepository.save(superAdmin);
 
-//		User admin = User.builder()
-//				.actif(true)
-//				.name("admin")
-//				.password(passwordEncoder.encode(adminPassword))
-//				.email(adminEmail)
-//				.role(Role.ADMIN)
-//				.build();
-//		admin = this.userRepository.findByEmail(adminEmail).orElse(admin);
-//		this.userRepository.save(admin);
-//
-//		User parent = User.builder()
-//				.actif(true)
-//				.name("parent")
-//				.password(passwordEncoder.encode("parent"))
-//				.email("parent@outlook.fr")
-//				.role(Role.PARENT)
-//				.build();
-//		parent = this.userRepository.findByEmail("parent@outlook.fr").orElse(parent);
-//		this.userRepository.save(parent);
+		User admin = User.builder()
+				.actif(true)
+				.name("admin admin")
+				.password(passwordEncoder.encode(adminPassword))
+				.email(adminEmail)
+				.phone("0606060606")
+				.role(Role.ADMIN)
+				.build();
+		admin = this.userRepository.findByEmail(adminEmail).orElse(admin);
+		this.userRepository.save(admin);
+
+		User parent = User.builder()
+				.actif(true)
+				.name("parent parent")
+				.password(passwordEncoder.encode("parent"))
+				.email("parent@outlook.fr")
+				.phone("0125874569")
+				.role(Role.PARENT)
+				.build();
+		parent = this.userRepository.findByEmail("parent@outlook.fr").orElse(parent);
+		this.userRepository.save(parent);
 	}
 }
 

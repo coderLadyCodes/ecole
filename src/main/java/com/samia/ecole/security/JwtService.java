@@ -43,7 +43,7 @@ public class JwtService {
         this.jwtRepository = jwtRepository;
     }
     public Jwt tokenByValue(String value) {
-        return this.jwtRepository.findByValeur(value).orElseThrow(()-> new RuntimeException("Token inconnu"));
+        return this.jwtRepository.findByValeurAndDesactiveAndExpire(value, false, false).orElseThrow(()-> new RuntimeException("Token inconnu"));
     }
     public Map<String, String> generate(String username){
         User user = this.userService.loadUserByUsername(username);

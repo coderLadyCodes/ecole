@@ -16,7 +16,7 @@ public class Validation {
     private Instant expiration;
     @Column(name = "activation")
     private Instant activation;
-    @Column(name = "code")
+    @Column(name = "code", unique = true)
     private String code;
     @OneToOne(cascade = {CascadeType.MERGE, CascadeType.DETACH})
     @JoinColumn(nullable = false, name = "user_id")

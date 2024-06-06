@@ -10,9 +10,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.Random;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
+
 @Transactional
 @Service
 public class ValidationService {
@@ -23,20 +25,46 @@ public class ValidationService {
         this.validationRepository = validationRepository;
         this.notificationService = notificationService;
     }
+//    public void enregistrer(User user){
+//        Validation validation =  new Validation();
+//        validation.setUser(user);
+//        Instant creation = Instant.now();
+//        validation.setCreation(creation);
+//        Instant expiration = creation.plus(10, MINUTES);
+//        validation.setExpiration(expiration);
+//
+//        Random random = new Random();
+//        int randomInteger = random.nextInt(999999);
+//        String code = String.format("%06d", randomInteger);
+//        validation.setCode(code);
+//        this.validationRepository.save(validation);
+//        this.notificationService.envoyer(validation);
+//    }
     public void enregistrer(User user){
-        Validation validation =  new Validation();
-        validation.setUser(user);
-        Instant creation = Instant.now();
-        validation.setCreation(creation);
-        Instant expiration = creation.plus(10, MINUTES);
-        validation.setExpiration(expiration);
-
+        Optional<Validation> existingValidation = validationRepository.findByUser(user);
+        if (existingValidation.isPresent()){
+            Validation validation = existingValidation.get();
+            validation.setCreation(Instant.now());
+            validation.setExpiration(validation.getCreation().plus(10, MINUTES));
+            validation.setCode(generateCode());
+            this.validationRepository.save(validation);
+            this.notificationService.envoyer(validation);
+        } else {
+            Validation validation =  new Validation();
+            validation.setUser(user);
+            Instant creation = Instant.now();
+            validation.setCreation(creation);
+            Instant expiration = creation.plus(10, MINUTES);
+            validation.setExpiration(expiration);
+            validation.setCode(generateCode());
+            validationRepository.save(validation);
+            this.notificationService.envoyer(validation);
+        }
+    }
+    private String generateCode() {
         Random random = new Random();
         int randomInteger = random.nextInt(999999);
-        String code = String.format("%06d", randomInteger);
-        validation.setCode(code);
-        this.validationRepository.save(validation);
-        this.notificationService.envoyer(validation);
+        return String.format("%06d", randomInteger);
     }
     public Validation codeValidation (String code){
         return validationRepository.findByCode(code).orElseThrow(()->new CustomException("code not found", HttpStatus.NOT_FOUND));

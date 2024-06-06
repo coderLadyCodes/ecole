@@ -16,6 +16,8 @@ public class Student {
     private String profileImage;
     @Column(name="birthday", nullable = false)
     private LocalDate birthday;
+    @Column(name="classe", nullable = false)
+    private String classe;
     @Column(name="presence", nullable = false)
     private Boolean presence;
     @Column(name="cantine", nullable = false)
@@ -26,20 +28,22 @@ public class Student {
     public Student() {
     }
 
-    public Student(String name, String profileImage, LocalDate birthday, Boolean presence, Boolean cantine, User user) {
+    public Student(String name, String profileImage, LocalDate birthday, String classe, Boolean presence, Boolean cantine, User user) {
         this.name = name;
         this.profileImage = profileImage;
         this.birthday = birthday;
+        this.classe = classe;
         this.presence = presence;
         this.cantine = cantine;
         this.user = user;
     }
 
-    public Student(Long id, String name, String profileImage, LocalDate birthday, Boolean presence, Boolean cantine, User user) {
+    public Student(Long id, String name, String profileImage, LocalDate birthday, String classe, Boolean presence, Boolean cantine, User user) {
         this.id = id;
         this.name = name;
         this.profileImage = profileImage;
         this.birthday = birthday;
+        this.classe = classe;
         this.presence = presence;
         this.cantine = cantine;
         this.user = user;
@@ -77,6 +81,14 @@ public class Student {
         this.birthday = birthday;
     }
 
+    public String getClasse() {
+        return classe;
+    }
+
+    public void setClasse(String classe) {
+        this.classe = classe;
+    }
+
     public Boolean getPresence() {
         return presence;
     }
@@ -108,6 +120,7 @@ public class Student {
                 ", name='" + name + '\'' +
                 ", profileImage='" + profileImage + '\'' +
                 ", birthday=" + birthday +
+                ", classe='" + classe + '\'' +
                 ", presence=" + presence +
                 ", cantine=" + cantine +
                 ", user=" + user +

@@ -7,6 +7,8 @@ import com.samia.ecole.entities.User;
 import com.samia.ecole.security.JwtService;
 import com.samia.ecole.services.FileUploadUtil;
 import com.samia.ecole.services.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -69,7 +71,7 @@ public class UserController {
         userService.activation(activation);
     }
     @PostMapping("/connexion")
-    public Map<String, String> connexion(@RequestBody AuthentificationDTO authentificationDTO){
+    public Map<String, String> connexion(@RequestBody AuthentificationDTO authentificationDTO, HttpServletResponse httpServletResponse){
         final Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authentificationDTO.username(), authentificationDTO.password())
         );
@@ -77,6 +79,17 @@ public class UserController {
             Map<String, String> tokens = this.jwtService.generate(authentificationDTO.username());
             User user = (User) authenticate.getPrincipal();
             tokens.put("role", user.getRole().name());
+            tokens.put("id", String.valueOf(user.getId()));
+            tokens.put("userName", user.getName()); //???????????????
+
+            String jwtToken = tokens.get("bearer");
+            Cookie cookie = new Cookie("token", jwtToken);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(false);
+            cookie.setPath("/");
+            cookie.setMaxAge(7 * 24 * 60 * 60);
+            httpServletResponse.addCookie(cookie);
+            //tokens.remove("bearer");
             return tokens;
         }
         return  null;

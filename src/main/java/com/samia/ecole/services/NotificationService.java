@@ -26,7 +26,8 @@ public class NotificationService {
                         
                         Ce code est valable pendant 10 minutes.
                         
-                        Suivez ce lien  http://localhost:3000/activation  pour activer votre compte ou retournez à la page d'activation.
+                        Retournez sur le site de l'école, et suivez les instructions.
+                        
                         """,
                 validation.getUser().getName(),
                 validation.getCode());

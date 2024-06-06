@@ -4,6 +4,7 @@ import com.samia.ecole.entities.Jwt;
 import com.samia.ecole.services.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,29 +28,52 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-    String token;
-    Jwt tokenInDb = null;
-    String username = null;
-    boolean isTokenExpired = true;
-    try {
-    final String authorization = request.getHeader("Authorization");
-    if(authorization != null && authorization.startsWith("Bearer ")){
-        token = authorization.substring(7);
-        tokenInDb = this.jwtService.tokenByValue(token);
-        isTokenExpired = jwtService.isTokenExpired(token);
-        username = jwtService.extractUsername(token);
-    }
-    if(!isTokenExpired
-            && tokenInDb.getUser().getEmail().equals(username)
-            && SecurityContextHolder.getContext().getAuthentication() == null) {
+        String token = null;
+        Jwt tokenInDb = null;
+        String username = null;
+        boolean isTokenExpired = true;
+//        try {
+//            final String authorization = request.getHeader("Authorization");
+//            if (authorization != null && authorization.startsWith("Bearer ")) {
+//                token = authorization.substring(7);
+//                tokenInDb = this.jwtService.tokenByValue(token);
+//                isTokenExpired = jwtService.isTokenExpired(token);
+//                username = jwtService.extractUsername(token);
+//            }
+            try {
+                // Extract JWT token from cookies
+                Cookie[] cookies = request.getCookies();
+                if (cookies != null) {
+                    for (Cookie cookie : cookies) {
+                        if ("token".equals(cookie.getName())) {
+                            token = cookie.getValue();
+                            break;
+                        }
+                    }
+                }
 
-        UserDetails userDetails = userService.loadUserByUsername(username);
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails,true, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                if (token != null) {
+                    tokenInDb = this.jwtService.tokenByValue(token);
+                    isTokenExpired = jwtService.isTokenExpired(token);
+                    username = jwtService.extractUsername(token);
+
+                if (!isTokenExpired
+                        //&& username != null
+                        && tokenInDb.getUser().getEmail().equals(username)
+
+                        && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                    UserDetails userDetails = userService.loadUserByUsername(username);
+                    if (userDetails != null) {
+                        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, true, userDetails.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                    }
+                }
+                }
+
+            } catch (Exception exception) {
+                handlerExceptionResolver.resolveException(request, response, null, exception);
+            }
+          filterChain.doFilter(request, response);
+        }
     }
-    filterChain.doFilter(request,response);
-    } catch (Exception exception){
-    handlerExceptionResolver.resolveException(request, response, null, exception);
-    }
-    }
-}

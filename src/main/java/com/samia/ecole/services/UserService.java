@@ -95,7 +95,6 @@ public class UserService implements UserDetailsService {
         this.validationService.enregistrer(user);
         return mapToUserDto(user);
     }
-
     public void activation(Map<String, String> activation){
         Validation validation = validationService.codeValidation(activation.get("code"));
         if(Instant.now().isAfter(validation.getExpiration())) {
@@ -103,6 +102,7 @@ public class UserService implements UserDetailsService {
         }
         User userActivated = userRepository.findById(validation.getUser().getId()).orElseThrow(()-> new UserNotFoundException("Utilisateur inconnu"));
         userActivated.setActif(true);
+        validation.setActivation(Instant.now());
         userRepository.save(userActivated);
     }
     @Override
@@ -115,15 +115,12 @@ public class UserService implements UserDetailsService {
         user.setEmail(userDetails.getEmail());
         user.setPhone(userDetails.getPhone());
         user.setProfileImage(userDetails.getProfileImage());
-        user.setRole(userDetails.getRole());
+       // user.setRole(userDetails.getRole());
         User userUpdated = userRepository.save(user);
         return mapToUserDto(userUpdated);
     }
     public List<UserDTO> getAllUsers(){
         List<User> users = userRepository.findAll();
-        users.forEach(user -> {
-            //System.out.println("User Id: " + user.getId() + ", Name: " + user.getName() + ", Email: " + user.getEmail()+ ", Photo : " + user.getProfileImage());
-        });
         return users.stream().map(this::mapToUserDto)
                 .collect(Collectors.toList());
     }
@@ -138,7 +135,11 @@ public class UserService implements UserDetailsService {
 
     public void changePassword(Map<String, String> parametres) {
         User user = this.loadUserByUsername(parametres.get("email"));
-        this.validationService.enregistrer(user);
+        if (user != null) {
+            this.validationService.enregistrer(user);
+        } else {
+            throw new UsernameNotFoundException("User not found with email: " + parametres.get("email"));
+        }
     }
 
     public void newPassword(Map<String, String> parametres) {
@@ -149,6 +150,5 @@ public class UserService implements UserDetailsService {
             user.setPassword(pwdEncoded);
             this.userRepository.save(user);
         }
-
     }
 }
