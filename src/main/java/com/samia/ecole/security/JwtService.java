@@ -141,13 +141,12 @@ public class JwtService {
         final byte[] decoder = Decoders.BASE64.decode(ENCRIPTION_KEY);
         return Keys.hmacShaKeyFor(decoder);
     }
-
     public void deconnexion() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Jwt jwt = this.jwtRepository.findUserValidToken(user.getEmail(),false, false).orElseThrow(()-> new RuntimeException("Token invalide"));
-        jwt.setExpire(true);
-        jwt.setDesactive(true);
-        this.jwtRepository.save(jwt);
+    User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    Jwt jwt = this.jwtRepository.findUserValidToken(user.getEmail(),false, false).orElseThrow(()-> new RuntimeException("Token invalide"));
+    jwt.setExpire(true);
+    jwt.setDesactive(true);
+    this.jwtRepository.save(jwt);
     }
     //@Scheduled(cron = "@daily")
     @Scheduled(cron = "0 */1 * * * *")

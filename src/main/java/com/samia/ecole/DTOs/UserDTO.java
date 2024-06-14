@@ -1,5 +1,6 @@
 package com.samia.ecole.DTOs;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.samia.ecole.entities.Role;
 
 public class UserDTO {
@@ -8,6 +9,7 @@ public class UserDTO {
     private String email;
     private String phone;
     private String profileImage;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private Role role;
     public UserDTO() {

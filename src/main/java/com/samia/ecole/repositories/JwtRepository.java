@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 public interface JwtRepository extends JpaRepository<Jwt, Long> {
    //Optional<Jwt> findByValeur(String valeur);
    Optional<Jwt> findByValeurAndDesactiveAndExpire(String valeur, boolean desactive, boolean expire);
-   @Query("FROM Jwt j WHERE j.desactive = :desactive AND j.expire = :expire AND j.user.email = :email")
+   @Query("FROM Jwt j WHERE j.expire = :expire AND j.desactive = :desactive AND j.user.email = :email")
    Optional<Jwt> findUserValidToken(String email, boolean desactive, boolean expire);
 
    @Query("FROM Jwt j WHERE j.user.email = :email")

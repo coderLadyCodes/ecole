@@ -8,6 +8,7 @@ import com.samia.ecole.security.JwtService;
 import com.samia.ecole.services.FileUploadUtil;
 import com.samia.ecole.services.UserService;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,6 +24,7 @@ import javax.servlet.annotation.MultipartConfig;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
 
 @RestController
 @MultipartConfig
@@ -72,33 +74,81 @@ public class UserController {
     }
     @PostMapping("/connexion")
     public Map<String, String> connexion(@RequestBody AuthentificationDTO authentificationDTO, HttpServletResponse httpServletResponse){
-        final Authentication authenticate = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authentificationDTO.username(), authentificationDTO.password())
-        );
-        if(authenticate.isAuthenticated()) {
+        final Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authentificationDTO.username(), authentificationDTO.password()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        if(authentication.isAuthenticated()) {
             Map<String, String> tokens = this.jwtService.generate(authentificationDTO.username());
-            User user = (User) authenticate.getPrincipal();
+            User user = (User) authentication.getPrincipal();
             tokens.put("role", user.getRole().name());
             tokens.put("id", String.valueOf(user.getId()));
-            tokens.put("userName", user.getName()); //???????????????
+            tokens.put("userName", user.getName());
 
             String jwtToken = tokens.get("bearer");
             Cookie cookie = new Cookie("token", jwtToken);
             cookie.setHttpOnly(true);
             cookie.setSecure(false);
             cookie.setPath("/");
-            cookie.setMaxAge(7 * 24 * 60 * 60);
+            cookie.setMaxAge( 30 * 60 * 1000);
             httpServletResponse.addCookie(cookie);
             //tokens.remove("bearer");
+             //Set refresh token as HttpOnly cookie
+            String refreshToken = tokens.get("refresh");
+            Cookie refreshTokenCookie = new Cookie("refresh", refreshToken);
+            refreshTokenCookie.setHttpOnly(true);
+            refreshTokenCookie.setSecure(false);
+            refreshTokenCookie.setPath("/");
+            refreshTokenCookie.setMaxAge( 30 * 60 * 1000);
+            httpServletResponse.addCookie(refreshTokenCookie);
+
             return tokens;
         }
         return  null;
     }
 
     @PostMapping("/refresh-token")
-    public Map<String, String> refreshToken(@RequestBody Map<String, String> refreshTokenRequest){
-        return this.jwtService.refreshToken(refreshTokenRequest);
+    public Map<String, String> refreshToken(@RequestBody Map<String, String> refreshTokenRequest, HttpServletRequest request, HttpServletResponse response) {
+        String refresh = null;
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refresh".equals(cookie.getName())) {
+                    refresh = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (refresh != null) {
+            try {
+                refreshTokenRequest.put("refresh", refresh);
+                Map<String, String> tokens = jwtService.refreshToken(refreshTokenRequest);
+                System.out.println("refresh token request is : " + refreshTokenRequest);
+                String newAccessToken = tokens.get("bearer");
+
+                // Set new access token as HttpOnly cookie
+                Cookie newAccessTokenCookie = new Cookie("token", newAccessToken);
+                newAccessTokenCookie.setHttpOnly(true);
+                newAccessTokenCookie.setSecure(false);
+                newAccessTokenCookie.setPath("/");
+                newAccessTokenCookie.setMaxAge(30 * 60 * 1000);
+
+                response.addCookie(newAccessTokenCookie);
+                System.out.println("access token cookie : " + newAccessTokenCookie);
+
+                return tokens;
+            } catch (RuntimeException e) {
+                throw new RuntimeException("Not authorized");
+            }
+        }
+        throw new RuntimeException("Refresh token not found");
     }
+//    @PostMapping("/refresh-token")
+//    public Map<String, String> refreshToken(@RequestBody Map<String, String> refreshTokenRequest){
+//        return this.jwtService.refreshToken(refreshTokenRequest);
+//    }
+
     @PostMapping("/change-password")
     public void  passwordChange(@RequestBody Map<String, String> activation){
         this.userService.changePassword(activation);
@@ -107,8 +157,22 @@ public class UserController {
     public void  newPassword(@RequestBody Map<String, String> activation){
         this.userService.newPassword(activation);
     }
+//    @PostMapping("/deconnexion")
+//    public void logout(){
+//        this.jwtService.deconnexion();
+//        SecurityContextHolder.clearContext();
+//    }
     @PostMapping("/deconnexion")
-    public void logout(){
+    public void logout(HttpServletResponse response){
+        Cookie tokenCookie = new Cookie("token", null);
+        tokenCookie.setPath("/");
+        tokenCookie.setMaxAge(0);
+        response.addCookie(tokenCookie);
+
+        Cookie refreshTokenCookie = new Cookie("refresh", null);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(0);
+        response.addCookie(refreshTokenCookie);
         this.jwtService.deconnexion();
         SecurityContextHolder.clearContext();
     }

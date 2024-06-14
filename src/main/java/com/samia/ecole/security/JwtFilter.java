@@ -15,6 +15,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
+import java.util.Arrays;
+
 @Service
 public class JwtFilter extends OncePerRequestFilter {
     private final HandlerExceptionResolver handlerExceptionResolver;
@@ -27,38 +29,26 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException, ServletException, ServletException {
         String token = null;
         Jwt tokenInDb = null;
         String username = null;
         boolean isTokenExpired = true;
-//        try {
-//            final String authorization = request.getHeader("Authorization");
-//            if (authorization != null && authorization.startsWith("Bearer ")) {
-//                token = authorization.substring(7);
-//                tokenInDb = this.jwtService.tokenByValue(token);
-//                isTokenExpired = jwtService.isTokenExpired(token);
-//                username = jwtService.extractUsername(token);
-//            }
+
             try {
-                // Extract JWT token from cookies
                 Cookie[] cookies = request.getCookies();
-                if (cookies != null) {
-                    for (Cookie cookie : cookies) {
-                        if ("token".equals(cookie.getName())) {
-                            token = cookie.getValue();
-                            break;
-                        }
-                    }
+                 String authorization = request.getHeader("Authorization");
+                if(cookies != null && authorization == null){
+                    authorization = this.getCookieValue(request, "token");
+                }
+                if (cookies != null && authorization != null && authorization.startsWith("Bearer ")) {
+                token = authorization.substring(7);
+                tokenInDb = this.jwtService.tokenByValue(token);
+                isTokenExpired = jwtService.isTokenExpired(token);
+                username = jwtService.extractUsername(token);
                 }
 
-                if (token != null) {
-                    tokenInDb = this.jwtService.tokenByValue(token);
-                    isTokenExpired = jwtService.isTokenExpired(token);
-                    username = jwtService.extractUsername(token);
-
                 if (!isTokenExpired
-                        //&& username != null
                         && tokenInDb.getUser().getEmail().equals(username)
 
                         && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -69,11 +59,19 @@ public class JwtFilter extends OncePerRequestFilter {
                         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     }
                 }
-                }
 
             } catch (Exception exception) {
                 handlerExceptionResolver.resolveException(request, response, null, exception);
             }
           filterChain.doFilter(request, response);
         }
+    private String getCookieValue(HttpServletRequest req, String cookieName) {
+        String token =  Arrays.stream(req.getCookies())
+                .filter(c -> c.getName().equals(cookieName))
+                .findFirst()
+                .map(Cookie::getValue)
+                .orElse(null);
+        return String.format("Bearer %s", token);
     }
+    }
+

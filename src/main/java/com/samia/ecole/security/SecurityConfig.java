@@ -58,7 +58,6 @@ public class SecurityConfig {
                                                 .requestMatchers(POST,"/refresh-token").permitAll()
                                                 .requestMatchers(POST,"/change-password").permitAll()
                                                 .requestMatchers(POST,"/new-password").permitAll()
-                                                .requestMatchers(POST,"/deconnexion").permitAll()
                                                 .requestMatchers(GET,"/users/{id}").permitAll()
                                                 .requestMatchers(PUT,"/users/{id}").permitAll()
                                                 .requestMatchers(POST,"/students").permitAll()
