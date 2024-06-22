@@ -69,7 +69,6 @@ public class StudentController {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         StudentDTO studentDetail = mapper.readValue(studentDetails, StudentDTO.class);
-        //studentDetail.setUserId(userId);
         StudentDTO originalStudent =  studentService.getStudentById(id);
         if (multipartFile != null && !multipartFile.isEmpty()) {
             String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());

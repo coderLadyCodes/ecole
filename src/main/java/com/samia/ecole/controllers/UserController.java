@@ -11,7 +11,6 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -215,7 +214,7 @@ public class UserController {
         return userService.updateUser(id,userDetail);
     }
 }
-    @PreAuthorize("hasAnyAuthority('SUPER_ADMIN','ADMIN')")
+    //@PreAuthorize("hasAnyAuthority('SUPER_ADMIN','ADMIN')")
     @GetMapping("/users")
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
