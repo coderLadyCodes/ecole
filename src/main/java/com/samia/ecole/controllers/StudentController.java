@@ -98,6 +98,7 @@ public class StudentController {
             return studentService.updateStudent(id,studentDetail);
         }
     }
+    //@PreAuthorize("hasAnyAuthority('SUPER_ADMIN','ADMIN')")
     @DeleteMapping("{id}")
     public void deleteStudent(@PathVariable(value="id") Long id){
         studentService.deleteStudent(id);

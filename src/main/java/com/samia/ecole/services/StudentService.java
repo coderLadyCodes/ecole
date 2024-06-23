@@ -113,7 +113,8 @@ public class StudentService {
         Student studentUpdated = studentRepository.save(student);
         return mapToStudentDto(studentUpdated);
     }
-    public void deleteStudent(Long id){
+    public void deleteStudent(Long id){     // ONLY ADMIN AND SUPER ADMIN CAN DO THAT
+        //User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Student student = studentRepository.findById(id).orElseThrow(()-> new CustomException("Student not found", HttpStatus.NOT_FOUND));
         studentRepository.deleteById(id);
     }
