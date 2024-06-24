@@ -14,7 +14,6 @@ import javax.servlet.annotation.MultipartConfig;
 import java.io.IOException;
 import java.util.List;
 
-//@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @MultipartConfig
 @RequestMapping("/students")
@@ -28,6 +27,10 @@ public class StudentController {
     @GetMapping()
     public List<StudentDTO> getAllStudents(){
         return studentService.getAllStudents();
+    }
+    @GetMapping("/user/{userId}")
+    public List<StudentDTO> getStudentsByUserId(@PathVariable(value="userId") Long userId){
+        return studentService.getStudentsByUserId(userId);
     }
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public StudentDTO createStudent(@RequestPart String studentDTO,
@@ -58,7 +61,7 @@ public class StudentController {
             return studentService.createStudent(studentdto);
         }
     }
-    @GetMapping("{id}")
+    @GetMapping("/student/{id}")
     public StudentDTO getStudentById(@PathVariable(value="id") Long id){
         return studentService.getStudentById(id);
     }

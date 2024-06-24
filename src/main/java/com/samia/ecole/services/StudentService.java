@@ -48,8 +48,15 @@ public class StudentService {
         student.setUser(user);
         return student;
     }
+    // ONLY SUPER_ADMIN AND ADMIN CAN GET THE ALL STUDENTS OF ALL PARENTS
     public List<StudentDTO> getAllStudents(){
         List<Student> students = studentRepository.findAll();
+        return students.stream().map((this::mapToStudentDto))
+                .collect(Collectors.toList());
+    }
+    // EACH PARENT GETS THEIR STUDENTS LIST
+    public List<StudentDTO> getStudentsByUserId(Long userId){
+        List<Student> students = studentRepository.getStudentsByUserId(userId);
         return students.stream().map((this::mapToStudentDto))
                 .collect(Collectors.toList());
     }
