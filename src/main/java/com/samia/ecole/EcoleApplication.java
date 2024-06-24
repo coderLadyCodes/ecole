@@ -1,7 +1,9 @@
 package com.samia.ecole;
 
 import com.samia.ecole.entities.Role;
+import com.samia.ecole.entities.Student;
 import com.samia.ecole.entities.User;
+import com.samia.ecole.repositories.StudentRepository;
 import com.samia.ecole.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -12,6 +14,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.LocalDate;
 
 @EnableScheduling
 @SpringBootApplication
@@ -28,15 +32,16 @@ public class EcoleApplication implements CommandLineRunner {
     @Value("${superAdmin.password}")
     private String superAdminPassword;
     private final UserRepository userRepository;
+	private final StudentRepository studentRepository;
 	private final PasswordEncoder passwordEncoder;
 
-    public EcoleApplication(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public EcoleApplication(UserRepository userRepository, StudentRepository studentRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.studentRepository = studentRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     public static void main(String[] args) {
-		//System.setProperty("spring.devtools.restart.enabled", "false");
 		SpringApplication.run(EcoleApplication.class, args);
 	}
 
@@ -74,6 +79,9 @@ public class EcoleApplication implements CommandLineRunner {
 				.build();
 		parent = this.userRepository.findByEmail("parent@outlook.fr").orElse(parent);
 		this.userRepository.save(parent);
+
+		studentRepository.save(new Student("student1",null, LocalDate.of(2020, 1, 8), "classee1" , true, true, parent));
+		studentRepository.save(new Student("student2",null, LocalDate.of(2020, 2, 2), "classee2" , false, false, parent));
 	}
 }
 

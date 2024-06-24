@@ -22,7 +22,7 @@ public class Student {
     private Boolean presence;
     @Column(name="cantine", nullable = false)
     private Boolean cantine;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
     public Student() {
@@ -123,7 +123,21 @@ public class Student {
                 ", classe='" + classe + '\'' +
                 ", presence=" + presence +
                 ", cantine=" + cantine +
-                ", user=" + user +
+                //", user=" + user +
                 '}';
     }
+//    @Override
+//    public String toString() {
+//        String userString = (user != null) ? "user=" + user.getId() : "user=null";
+//        return "Student{" +
+//                "id=" + id +
+//                ", name='" + name + '\'' +
+//                ", profileImage='" + profileImage + '\'' +
+//                ", birthday=" + birthday +
+//                ", classe='" + classe + '\'' +
+//                ", presence=" + presence +
+//                ", cantine=" + cantine +
+//                ", " + userString +
+//                '}';
+//    }
 }
