@@ -7,7 +7,9 @@ import com.samia.ecole.exceptions.CustomException;
 import com.samia.ecole.exceptions.UserNotFoundException;
 import com.samia.ecole.repositories.PostRepository;
 import com.samia.ecole.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -58,16 +61,20 @@ public class PostService {
         if (postDTO == null) {
             throw new IllegalArgumentException("postDTO cannot be null");
         }
-        Long userId = postDTO.getUserId();
-        if (userId == null) {
-            throw new IllegalArgumentException("userId cannot be null for creating a Post");
-        }
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        //userId = user.getId();
+        //Long userId = postDTO.getUserId();
+//        if (userId == null) {
+//            throw new IllegalArgumentException("userId cannot be null for creating a Post");
+//        }
         //(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Optional<User> optionalUser = userRepository.findById(userId);
+        Optional<User> optionalUser = userRepository.findById(user.getId());
         if (optionalUser.isEmpty()){
-            throw new UserNotFoundException("User not found for userId: " + userId);
+            throw new UserNotFoundException("User not found for userId: + userId" );
         }
-        User user =optionalUser.get();
+        //User user =optionalUser.get();
+        //user.setRole(Role.ADMIN);
+        //user.setRole(Role.SUPER_ADMIN);
         Post post = mapToPost(postDTO);
         post.setUser(user);
         Post savedPost = postRepository.save(post);

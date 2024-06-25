@@ -193,8 +193,8 @@ public class User implements UserDetails {
                 ", password='" + password + '\'' +
                 ", profileImage='" + profileImage + '\'' +
                 ", role=" + role +
-                ", postList=" + postList +
-                ", studentList=" + studentList +
+                //", postList=" + postList +
+                //", studentList=" + studentList +
                 ", actif=" + actif +
                 '}';
     }
