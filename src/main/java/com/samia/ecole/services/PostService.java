@@ -90,7 +90,11 @@ public class PostService {
         return mapToPostDTO(postUpdated);
     }
     public void deletePost(Long id){
-        postRepository.findById(id).orElseThrow(()-> new CustomException("Post not found with id :" + id, HttpStatus.NOT_FOUND));
+        Post post = postRepository.findById(id).orElseThrow(()-> new CustomException("Post not found with id :" + id, HttpStatus.NOT_FOUND));
+        User user = post.getUser();
+        if (user != null){
+            user.getPostList().remove(post);
+        }
         postRepository.deleteById(id);
     }
 

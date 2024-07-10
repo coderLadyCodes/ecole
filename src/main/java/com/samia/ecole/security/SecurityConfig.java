@@ -69,7 +69,7 @@ public class SecurityConfig {
                                                 .requestMatchers(GET,"/students").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .requestMatchers(DELETE,"/students/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .requestMatchers(POST,"/posts").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
-                                                .requestMatchers(GET,"/posts/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "PARENT")
+                                                .requestMatchers(GET,"/posts/post/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "PARENT")
                                                 .requestMatchers(GET,"/posts").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "PARENT")
                                                 .requestMatchers(DELETE,"/posts{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .anyRequest().authenticated()
