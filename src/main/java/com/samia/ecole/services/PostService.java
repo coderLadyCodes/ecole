@@ -48,10 +48,17 @@ public class PostService {
          post.setUser(user);
         return post;
     }
+    // SUPER ADMIN CAN CHANGE THE DETAILS IN getAllPosts()
     public List<PostDTO> getAllPosts(){
         List<Post> posts = postRepository.findAll();
         return posts.stream().map(this::mapToPostDTO)
                 .collect(Collectors.toList());
+    }
+    // EACH ADMIN GETS THE LIST OF POSTS
+    public List<PostDTO> getPostByUserId(Long userId){
+    List<Post> posts = postRepository.getPostByUserId(userId);
+    return posts.stream().map((this::mapToPostDTO))
+            .collect(Collectors.toList());
     }
     public PostDTO getPostById(Long id){
         Post post = postRepository.findById(id).orElseThrow(()-> new CustomException("post not found with id :" + id, HttpStatus.NOT_FOUND));

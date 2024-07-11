@@ -10,16 +10,6 @@ import java.nio.file.Paths;
 @EnableWebMvc
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
-//    @Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//        //WebMvcConfigurer.super.addCorsMappings(registry);
-//        registry.addMapping("/**")//.allowedOrigins("*");
-//                .allowedMethods("GET", "POST", "PUT", "DELETE")
-//                .allowedOrigins("http://localhost:3000")
-//                .allowCredentials(true)
-//                .maxAge(3600);
-//    }
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         exposeDirectory("images", registry);

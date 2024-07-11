@@ -27,6 +27,11 @@ public class PostController{
     public List<PostDTO> getAllPosts(){
         return postService.getAllPosts();
     }
+    @GetMapping("/user/{userId}")
+    public List<PostDTO> getPostByUserId(@PathVariable(value = "userId") Long userId){
+        return postService.getPostByUserId(userId);
+
+    }
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public PostDTO createPost(@RequestPart String postDTO,@RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
