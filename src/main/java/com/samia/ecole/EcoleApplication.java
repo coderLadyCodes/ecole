@@ -72,7 +72,7 @@ public class EcoleApplication implements CommandLineRunner {
 		User parent = User.builder()
 				.actif(true)
 				.name("parent parent")
-				.password(passwordEncoder.encode("parent"))
+				.password(passwordEncoder.encode("p"))
 				.email("parent@outlook.fr")
 				.phone("0125874569")
 				.role(Role.PARENT)

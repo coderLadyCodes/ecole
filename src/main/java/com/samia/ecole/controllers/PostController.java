@@ -28,8 +28,8 @@ public class PostController{
         return postService.getAllPosts();
     }
     @GetMapping("/user/{userId}")
-    public List<PostDTO> getPostByUserId(@PathVariable(value = "userId") Long userId){
-        return postService.getPostByUserId(userId);
+    public List<PostDTO> getPostsByUserId(@PathVariable(value = "userId") Long userId){
+        return postService.getPostsByUserId(userId);
 
     }
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

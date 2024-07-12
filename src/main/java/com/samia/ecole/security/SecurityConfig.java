@@ -71,7 +71,8 @@ public class SecurityConfig {
                                                 .requestMatchers(POST,"/posts").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .requestMatchers(GET,"/posts/post/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "PARENT")
                                                 .requestMatchers(GET,"/posts").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "PARENT")
-                                                .requestMatchers(DELETE,"/posts{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
+                                                .requestMatchers(DELETE,"/posts/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
+                                                .requestMatchers(PUT,"/posts/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .requestMatchers(GET,"/posts/user/{userId}").permitAll()  //NOT SURE FOR PERMITALL
                                                 .anyRequest().authenticated()
                         )

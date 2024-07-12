@@ -66,7 +66,8 @@ public class StudentController {
         return studentService.getStudentById(id);
     }
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public StudentDTO updateStudent(@PathVariable(value = "id") Long id, @RequestPart String studentDetails,
+    public StudentDTO updateStudent(@PathVariable(value = "id") Long id,
+                                    @RequestPart String studentDetails,
                                     @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
 
         ObjectMapper mapper = new ObjectMapper();

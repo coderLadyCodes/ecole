@@ -55,8 +55,8 @@ public class PostService {
                 .collect(Collectors.toList());
     }
     // EACH ADMIN GETS THE LIST OF POSTS
-    public List<PostDTO> getPostByUserId(Long userId){
-    List<Post> posts = postRepository.getPostByUserId(userId);
+    public List<PostDTO> getPostsByUserId(Long userId){
+    List<Post> posts = postRepository.getPostsByUserId(userId);
     return posts.stream().map((this::mapToPostDTO))
             .collect(Collectors.toList());
     }
