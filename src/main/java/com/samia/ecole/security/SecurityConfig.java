@@ -69,8 +69,8 @@ public class SecurityConfig {
                                                 .requestMatchers(GET,"/students").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .requestMatchers(DELETE,"/students/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .requestMatchers(POST,"/posts").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
-                                                .requestMatchers(GET,"/posts/post/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "PARENT")
-                                                .requestMatchers(GET,"/posts").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "PARENT")
+                                                .requestMatchers(GET,"/posts/post/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_PARENT")
+                                                .requestMatchers(GET,"/posts").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_PARENT")
                                                 .requestMatchers(DELETE,"/posts/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .requestMatchers(PUT,"/posts/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .requestMatchers(GET,"/posts/user/{userId}").permitAll()  //NOT SURE FOR PERMITALL
