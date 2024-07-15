@@ -44,6 +44,7 @@ public class User implements UserDetails {
     private List<Student> studentList = new ArrayList<>();
     @Column(name = "active_account")
     private boolean actif = false;
+    private Long classroomId;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         //return Collections.singletonList(new SimpleGrantedAuthority("ROLE_"+this.role.toString()));
@@ -82,7 +83,7 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(String name, String email, String phone, String password, String profileImage, Role role, List<Post> postList, List<Student> studentList, boolean actif) {
+    public User(String name, String email, String phone, String password, String profileImage, Role role, List<Post> postList, List<Student> studentList, boolean actif, Long classroomId) {
         this.name = name;
         this.email = email;
         this.phone = phone;
@@ -92,9 +93,10 @@ public class User implements UserDetails {
         this.postList = postList;
         this.studentList = studentList;
         this.actif = actif;
+        this.classroomId = classroomId;
     }
 
-    public User(Long id, String name, String email, String phone, String password, String profileImage, Role role, List<Post> postList, List<Student> studentList, boolean actif) {
+    public User(Long id, String name, String email, String phone, String password, String profileImage, Role role, List<Post> postList, List<Student> studentList, boolean actif, Long classroomId) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -105,6 +107,7 @@ public class User implements UserDetails {
         this.postList = postList;
         this.studentList = studentList;
         this.actif = actif;
+        this.classroomId = classroomId;
     }
 
     public Long getId() {
@@ -183,6 +186,14 @@ public class User implements UserDetails {
         this.actif = actif;
     }
 
+    public Long getClassroomId() {
+        return classroomId;
+    }
+
+    public void setClassroomId(Long classroomId) {
+        this.classroomId = classroomId;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -196,6 +207,7 @@ public class User implements UserDetails {
                 //", postList=" + postList +
                 //", studentList=" + studentList +
                 ", actif=" + actif +
+                ", classroomId=" + classroomId +
                 '}';
     }
 
@@ -210,6 +222,7 @@ public class User implements UserDetails {
         this.postList = builder.postList;
         this.studentList = builder.studentList;
         this.actif = builder.actif;
+        this.classroomId = builder.classroomId;
     }
     public static Builder builder(){
         return new Builder();
@@ -225,6 +238,7 @@ public class User implements UserDetails {
         private List<Post> postList=new ArrayList<>();
         private List<Student> studentList = new ArrayList<>();
         private boolean actif = false;
+        private Long classroomId;
 
         public Builder id(Long id){
             this.id = id;
@@ -264,6 +278,10 @@ public class User implements UserDetails {
         }
         public Builder actif(boolean actif){
             this.actif = actif;
+            return this;
+        }
+        public Builder classroomId(Long classroomId){
+            this.classroomId = classroomId;
             return this;
         }
         public User build(){

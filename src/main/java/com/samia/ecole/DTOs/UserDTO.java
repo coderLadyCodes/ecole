@@ -12,19 +12,19 @@ public class UserDTO {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private Role role;
+    private Long classroomId;
     public UserDTO() {
     }
-
-    public UserDTO(String name, String email, String phone, String profileImage, String password, Role role) {
+    public UserDTO(String name, String email, String phone, String profileImage, String password, Role role, Long classroomId) {
         this.name = name;
         this.email = email;
         this.phone = phone;
         this.profileImage = profileImage;
         this.password = password;
         this.role = role;
+        this.classroomId = classroomId;
     }
-
-    public UserDTO(Long id, String name, String email, String phone, String profileImage, String password, Role role) {
+    public UserDTO(Long id, String name, String email, String phone, String profileImage, String password, Role role, Long classroomId) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -32,8 +32,8 @@ public class UserDTO {
         this.profileImage = profileImage;
         this.password = password;
         this.role = role;
+        this.classroomId = classroomId;
     }
-
     public Long getId() {
         return id;
     }
@@ -90,6 +90,13 @@ public class UserDTO {
         this.role = role;
     }
 
+    public Long getClassroomId() {
+        return classroomId;
+    }
+
+    public void setClassroomId(Long classroomId) {
+        this.classroomId = classroomId;
+    }
     @Override
     public String toString() {
         return "UserDTO{" +
@@ -100,6 +107,7 @@ public class UserDTO {
                 ", profileImage='" + profileImage + '\'' +
                 ", password='" + password + '\'' +
                 ", role=" + role +
+                ", classroomId=" + classroomId +
                 '}';
     }
 }

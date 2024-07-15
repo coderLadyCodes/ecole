@@ -74,6 +74,11 @@ public class SecurityConfig {
                                                 .requestMatchers(DELETE,"/posts/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .requestMatchers(PUT,"/posts/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .requestMatchers(GET,"/posts/user/{userId}").permitAll()  //NOT SURE FOR PERMITALL
+                                                .requestMatchers(POST,"/classroom").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
+                                                .requestMatchers(DELETE,"/classroom/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
+                                                .requestMatchers(PUT,"/classroom/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
+                                                .requestMatchers(GET,"/classroom/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
+                                                .requestMatchers(GET,"/classroom").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .anyRequest().authenticated()
                         )
                         .sessionManagement(httpSecuritySessionManagementConfigurer ->

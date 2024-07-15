@@ -40,6 +40,7 @@ public class UserService implements UserDetailsService {
         userDTO.setPhone(user.getPhone());
         userDTO.setProfileImage(user.getProfileImage());
         userDTO.setRole(user.getRole());
+        userDTO.setClassroomId(user.getClassroomId());
         return userDTO;
     }
     public User mapToUser(UserDTO userDTO){
@@ -51,6 +52,10 @@ public class UserService implements UserDetailsService {
         user.setPhone(userDTO.getPhone());
         user.setProfileImage(userDTO.getProfileImage());
         user.setRole(userDTO.getRole());
+        user.setClassroomId(userDTO.getClassroomId());
+//        Classroom classroom = new Classroom();
+//        classroom.setId(userDTO.getClassroomId());
+//        user.setClassroom(classroom);
         return user;
     }
     public UserDTO createUser(UserDTO userDTO){
@@ -83,14 +88,6 @@ public class UserService implements UserDetailsService {
         if(user.getRole().equals(Role.PARENT)) {
             user.setActif(true);
         }
-//        Role role = user.getRole();
-//        if (role == null){
-//            role  = Role.PARENT;
-//        }else if (role != Role.PARENT && role != Role.ADMIN && role != Role.SUPER_ADMIN) {
-//            throw new IllegalArgumentException("roles doit etre spécifié");
-//        }
-//        user.setRole(role);
-//        user.setActif(true);
         user = userRepository.save(user);
         this.validationService.enregistrer(user);
         return mapToUserDto(user);
@@ -116,6 +113,8 @@ public class UserService implements UserDetailsService {
         user.setPhone(userDetails.getPhone());
         user.setProfileImage(userDetails.getProfileImage());
        // user.setRole(userDetails.getRole());
+        //user.getClassroom().setId(userDetails.getClassroomId());  NOT SURE IF IT WORKS
+        user.setClassroomId(user.getClassroomId());
         User userUpdated = userRepository.save(user);
         return mapToUserDto(userUpdated);
     }
