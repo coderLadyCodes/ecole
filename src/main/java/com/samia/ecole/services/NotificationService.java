@@ -1,8 +1,11 @@
 package com.samia.ecole.services;
 
+import com.samia.ecole.entities.Classroom;
+import com.samia.ecole.entities.User;
 import com.samia.ecole.entities.Validation;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,6 +34,23 @@ public class NotificationService {
                         """,
                 validation.getUser().getName(),
                 validation.getCode());
+        simpleMailMessage.setText(text);
+        javaMailSender.send(simpleMailMessage);
+    }
+    public void envoyerCodeClasse(Classroom classroom){
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setFrom("notreplay@gmail.fr");
+        simpleMailMessage.setTo("(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()");
+        simpleMailMessage.setSubject(" Le code d'accés à la classe");
+        String text = String.format("""
+                Bonjour %s,
+                
+                Le code d'accés à la classe %s est : %s
+                Merci.
+                """,
+                (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
+                classroom.getGrade(),
+                classroom.getClassroomCode());
         simpleMailMessage.setText(text);
         javaMailSender.send(simpleMailMessage);
     }

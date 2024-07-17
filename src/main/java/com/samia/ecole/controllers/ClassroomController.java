@@ -1,6 +1,7 @@
 package com.samia.ecole.controllers;
 
 import com.samia.ecole.entities.Classroom;
+import com.samia.ecole.exceptions.UnauthorizedException;
 import com.samia.ecole.services.ClassroomService;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ public class ClassroomController {
     }
 
     @PostMapping
-    public Classroom createClassroom(@RequestBody Classroom classroom){
+    public Classroom createClassroom(@RequestBody Classroom classroom) throws UnauthorizedException {
         return classroomService.createClassroom(classroom);
     }
     @PutMapping("{id}")

@@ -1,8 +1,10 @@
 package com.samia.ecole.services;
 
 import com.samia.ecole.entities.Classroom;
+import com.samia.ecole.entities.Role;
 import com.samia.ecole.entities.User;
 import com.samia.ecole.exceptions.CustomException;
+import com.samia.ecole.exceptions.UnauthorizedException;
 import com.samia.ecole.repositories.ClassroomRepository;
 import com.samia.ecole.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
@@ -10,14 +12,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class ClassroomService {
     private final ClassroomRepository classroomRepository;
     private final UserRepository userRepository;
-    public ClassroomService(ClassroomRepository classroomRepository, UserRepository userRepository) {
+    private  final  NotificationService notificationService;
+    public ClassroomService(ClassroomRepository classroomRepository, UserRepository userRepository, NotificationService notificationService) {
         this.classroomRepository = classroomRepository;
         this.userRepository = userRepository;
+        this.notificationService = notificationService;
     }
     public List<Classroom> getAllClassrooms(){
         return classroomRepository.findAll();
@@ -25,22 +30,40 @@ public class ClassroomService {
     public  Classroom getClassroomById(Long id){
         return classroomRepository.findById(id).orElseThrow(()-> new CustomException("Cette Classe n'existe pas", HttpStatus.NOT_FOUND));
     }
-    public Classroom createClassroom(Classroom classroom){ // NOT SURE WHO CAN CREATE CLASSROOM
+    public Classroom createClassroom(Classroom classroom) throws UnauthorizedException { // NOT SURE WHO CAN CREATE CLASSROOM
         User userContext = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Role userRole = userContext.getRole();
+        if (userRole != Role.ADMIN && userRole != Role.SUPER_ADMIN) {
+            throw new UnauthorizedException("User does not have permission to create a classroom.");
+        }
         Long userid = userContext.getId();
+        Classroom classroom1 = getClassroom(classroom, userid);
+        Classroom savedClassroom = classroomRepository.save(classroom1);
+        notificationService.envoyerCodeClasse(savedClassroom);
+        userContext.setClassroomId(savedClassroom.getId());
+        userRepository.save(userContext);
+        return savedClassroom;
+    }
+
+    private static Classroom getClassroom(Classroom classroom, Long userid) {
         Classroom classroom1 = new Classroom();
         classroom1.setGrade(classroom.getGrade());
         classroom1.setUserId(userid);
-        Classroom savedClassroom = classroomRepository.save(classroom1);
-        userContext.setClassroomId(savedClassroom.getId());
-        userRepository.save(userContext);
-
-        return savedClassroom;
+        // set the classroom code
+        Random random = new Random();
+        int randomInt = random.nextInt(999999999);
+        char randomLetter1 = (char) ('A' + random.nextInt(26));
+        char randomLetter2 = (char) ('A' + random.nextInt(26));
+        String code = String.format("E%cM%04dS%cM", randomLetter1, randomInt, randomLetter2);
+        classroom1.setClassroomCode(code);
+        return classroom1;
     }
+
     public Classroom updateClassroom(Long id, Classroom classroomDetails){
         Classroom classroom = classroomRepository.findById(id).orElseThrow(()-> new CustomException("Cette Classe n'existe pas", HttpStatus.NOT_FOUND));
         classroom.setGrade(classroomDetails.getGrade());
         classroom.setUserId(classroomDetails.getUserId());
+        classroom.setClassroomCode(classroomDetails.getClassroomCode());
         return classroomRepository.save(classroom);
     }
     public void deleteClassroom(Long id){ // NOT SURE WHO CAN DELETE CLASSROOM
