@@ -37,10 +37,11 @@ public class NotificationService {
         simpleMailMessage.setText(text);
         javaMailSender.send(simpleMailMessage);
     }
-    public void envoyerCodeClasse(Classroom classroom){
+    public void envoyerCode(Classroom classroom){
+        User userContext = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setFrom("notreplay@gmail.fr");
-        simpleMailMessage.setTo("(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal()");
+        simpleMailMessage.setTo(userContext.getUsername());
         simpleMailMessage.setSubject(" Le code d'accés à la classe");
         String text = String.format("""
                 Bonjour %s,
@@ -48,7 +49,7 @@ public class NotificationService {
                 Le code d'accés à la classe %s est : %s
                 Merci.
                 """,
-                (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
+                userContext.getUsername(),
                 classroom.getGrade(),
                 classroom.getClassroomCode());
         simpleMailMessage.setText(text);

@@ -39,7 +39,7 @@ public class ClassroomService {
         Long userid = userContext.getId();
         Classroom classroom1 = getClassroom(classroom, userid);
         Classroom savedClassroom = classroomRepository.save(classroom1);
-        notificationService.envoyerCodeClasse(savedClassroom);
+        notificationService.envoyerCode(savedClassroom);
         userContext.setClassroomId(savedClassroom.getId());
         userRepository.save(userContext);
         return savedClassroom;
