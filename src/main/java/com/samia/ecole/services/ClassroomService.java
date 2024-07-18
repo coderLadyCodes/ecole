@@ -12,6 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -76,5 +78,30 @@ public class ClassroomService {
             userRepository.save(user);
         }
         classroomRepository.delete(classroom);
+    }
+
+    public void activation(Map<String, String> activation) {
+        String userIdStr = activation.get("userId");
+        String classroomCode = activation.get("classroomCode");
+        if (userIdStr != null && classroomCode != null) {
+            Long userId = Long.parseLong(userIdStr);
+
+            Optional<User> optionalUser = userRepository.findById(userId);
+            if (optionalUser.isPresent()) {
+                User user = optionalUser.get();
+
+                Classroom classroom = classroomRepository.findByClassroomCode(classroomCode);
+                if (classroom != null) {
+                    user.setClassroomId(classroom.getId());
+                    userRepository.save(user);
+                } else {
+                    throw new CustomException("Invalid classroom code", HttpStatus.BAD_REQUEST);
+                }
+            } else {
+                throw new CustomException("User not found", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            throw new CustomException("Missing userId or classroomCode", HttpStatus.BAD_REQUEST);
+        }
     }
 }

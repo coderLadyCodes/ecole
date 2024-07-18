@@ -6,6 +6,7 @@ import com.samia.ecole.services.ClassroomService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("classroom")
@@ -19,6 +20,10 @@ public class ClassroomController {
     @PostMapping
     public Classroom createClassroom(@RequestBody Classroom classroom) throws UnauthorizedException {
         return classroomService.createClassroom(classroom);
+    }
+    @PostMapping("/activation")
+    public void activation(@RequestBody Map<String, String> activation){
+        classroomService.activation(activation);
     }
     @PutMapping("{id}")
     public Classroom updateClassroom(@PathVariable(value = "id") Long id, @RequestBody Classroom classroomDetails){
