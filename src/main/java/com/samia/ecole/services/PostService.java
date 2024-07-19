@@ -5,6 +5,7 @@ import com.samia.ecole.entities.Post;
 import com.samia.ecole.entities.User;
 import com.samia.ecole.exceptions.CustomException;
 import com.samia.ecole.exceptions.UserNotFoundException;
+import com.samia.ecole.repositories.ClassroomRepository;
 import com.samia.ecole.repositories.PostRepository;
 import com.samia.ecole.repositories.UserRepository;
 import jakarta.transaction.Transactional;
@@ -21,10 +22,12 @@ import java.util.stream.Collectors;
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
+    private final ClassroomRepository classroomRepository;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, ClassroomRepository classroomRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.classroomRepository = classroomRepository;
     }
     public  PostDTO mapToPostDTO(Post post){
          PostDTO postDTO = new PostDTO();
@@ -57,6 +60,11 @@ public class PostService {
     // EACH ADMIN GETS THE LIST OF POSTS
     public List<PostDTO> getPostsByUserId(Long userId){
     List<Post> posts = postRepository.getPostsByUserId(userId);
+    return posts.stream().map((this::mapToPostDTO))
+            .collect(Collectors.toList());
+    }
+    public List<PostDTO> getPostByClassroomId(Long classroomId){
+    List<Post> posts = postRepository.getPostByClassroomId(classroomId);
     return posts.stream().map((this::mapToPostDTO))
             .collect(Collectors.toList());
     }

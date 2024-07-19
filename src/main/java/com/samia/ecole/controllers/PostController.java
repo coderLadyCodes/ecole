@@ -30,7 +30,11 @@ public class PostController{
     @GetMapping("/user/{userId}")
     public List<PostDTO> getPostsByUserId(@PathVariable(value = "userId") Long userId){
         return postService.getPostsByUserId(userId);
+    }
 
+    @GetMapping("/classroom/{classroomId}")
+    public List<PostDTO> getPostByClassroomId(@PathVariable(value = "classroomId") Long classroomId){
+        return postService.getPostByClassroomId(classroomId);
     }
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public PostDTO createPost(@RequestPart String postDTO,@RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
