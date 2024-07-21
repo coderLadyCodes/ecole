@@ -83,7 +83,15 @@ public class ClassroomService {
     public void activation(Map<String, String> activation) {
         String userIdStr = activation.get("userId");
         String classroomCode = activation.get("classroomCode");
-        if (userIdStr != null && classroomCode != null) {
+//        if (userIdStr != null && classroomCode != null) {
+
+        if (userIdStr == null || userIdStr.trim().isEmpty()) {
+            throw new CustomException("Missing userId", HttpStatus.BAD_REQUEST);
+        }
+
+        if (classroomCode == null || classroomCode.trim().isEmpty()) {
+            throw new CustomException("Missing or empty classroomCode", HttpStatus.BAD_REQUEST);
+        }
             Long userId = Long.parseLong(userIdStr);
 
             Optional<User> optionalUser = userRepository.findById(userId);
@@ -100,8 +108,8 @@ public class ClassroomService {
             } else {
                 throw new CustomException("User not found", HttpStatus.NOT_FOUND);
             }
-        } else {
-            throw new CustomException("Missing userId or classroomCode", HttpStatus.BAD_REQUEST);
-        }
+//        } else {
+//            throw new CustomException("Missing userId or classroomCode", HttpStatus.BAD_REQUEST);
+//        }
     }
 }
