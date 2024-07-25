@@ -11,10 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class ClassroomService {
@@ -80,36 +77,38 @@ public class ClassroomService {
         classroomRepository.delete(classroom);
     }
 
-    public void activation(Map<String, String> activation) {
+    public Map<String, Object> activation(Map<String, String> activation) {
         String userIdStr = activation.get("userId");
         String classroomCode = activation.get("classroomCode");
-//        if (userIdStr != null && classroomCode != null) {
 
-        if (userIdStr == null || userIdStr.trim().isEmpty()) {
-            throw new CustomException("Missing userId", HttpStatus.BAD_REQUEST);
-        }
-
-        if (classroomCode == null || classroomCode.trim().isEmpty()) {
-            throw new CustomException("Missing or empty classroomCode", HttpStatus.BAD_REQUEST);
-        }
+        if (userIdStr != null && classroomCode != null) {
             Long userId = Long.parseLong(userIdStr);
 
+            // Find the user by ID
             Optional<User> optionalUser = userRepository.findById(userId);
             if (optionalUser.isPresent()) {
                 User user = optionalUser.get();
 
+                // Find the classroom by classroomCode
                 Classroom classroom = classroomRepository.findByClassroomCode(classroomCode);
                 if (classroom != null) {
+                    // Assign the classroom to the user
                     user.setClassroomId(classroom.getId());
                     userRepository.save(user);
+
+                    Map<String, Object> response = new HashMap<>();
+                    response.put("classroomId", classroom.getId());
+                    response.put("classroomCode", classroomCode);
+                    response.put("userId", userId);
+                    return response;
                 } else {
                     throw new CustomException("Invalid classroom code", HttpStatus.BAD_REQUEST);
                 }
             } else {
                 throw new CustomException("User not found", HttpStatus.NOT_FOUND);
             }
-//        } else {
-//            throw new CustomException("Missing userId or classroomCode", HttpStatus.BAD_REQUEST);
-//        }
-    }
+        } else {
+            throw new CustomException("Missing userId or classroomCode", HttpStatus.BAD_REQUEST);
+        }
+            }
 }

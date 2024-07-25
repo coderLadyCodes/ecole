@@ -22,8 +22,8 @@ public class ClassroomController {
         return classroomService.createClassroom(classroom);
     }
     @PostMapping("/activation")
-    public void activation(@RequestBody Map<String, String> activation){
-        classroomService.activation(activation);
+    public Map<String, Object> activation(@RequestBody Map<String, String> activation){
+        return classroomService.activation(activation);
     }
     @PutMapping("{id}")
     public Classroom updateClassroom(@PathVariable(value = "id") Long id, @RequestBody Classroom classroomDetails){
