@@ -14,6 +14,7 @@ public class PostDTO {
     private String title;
     private String postContent;
     private String imagePost;
+    private Long classroomId;
 
     @JsonProperty("local_date_time")
     @JsonSerialize(using = LocalDateTimeSerializer.class)

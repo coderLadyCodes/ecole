@@ -1,10 +1,10 @@
 package com.samia.ecole.services;
 
 import com.samia.ecole.DTOs.PostDTO;
+import com.samia.ecole.entities.Classroom;
 import com.samia.ecole.entities.Post;
 import com.samia.ecole.entities.User;
 import com.samia.ecole.exceptions.CustomException;
-import com.samia.ecole.exceptions.UserNotFoundException;
 import com.samia.ecole.repositories.ClassroomRepository;
 import com.samia.ecole.repositories.PostRepository;
 import com.samia.ecole.repositories.UserRepository;
@@ -77,19 +77,20 @@ public class PostService {
             throw new IllegalArgumentException("postDTO cannot be null");
         }
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        //userId = user.getId();
-        //Long userId = postDTO.getUserId();
-//        if (userId == null) {
-//            throw new IllegalArgumentException("userId cannot be null for creating a Post");
+//        Optional<User> optionalUser = userRepository.findById(user.getId());
+//        if (optionalUser.isEmpty()){
+//            throw new UserNotFoundException("User not found for userId: + userId" );
 //        }
-        //(User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Optional<User> optionalUser = userRepository.findById(user.getId());
-        if (optionalUser.isEmpty()){
-            throw new UserNotFoundException("User not found for userId: + userId" );
+//        User userEntity =optionalUser.get();
+        Long classroomId = user.getClassroomId();
+        if (classroomId == null) {
+            throw new IllegalArgumentException("User is not associated with any classroom");
         }
-        //User user =optionalUser.get();
-        //user.setRole(Role.ADMIN);
-        //user.setRole(Role.SUPER_ADMIN);
+        Optional<Classroom> optionalClassroom = classroomRepository.findById(classroomId);
+        if (optionalClassroom.isEmpty()) {
+            throw new IllegalArgumentException("Classroom not found for classroomId: " + classroomId);
+        }
+
         Post post = mapToPost(postDTO);
         post.setUser(user);
         Post savedPost = postRepository.save(post);

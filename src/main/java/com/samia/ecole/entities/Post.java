@@ -23,6 +23,7 @@ public class Post{
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+    private Long classroomId;
 //    @OneToMany(mappedBy ="post",cascade = CascadeType.ALL)
 //    //@JsonManagedReference
 //    @Transient
