@@ -33,21 +33,23 @@ public class Post{
     public Post() {
     }
 
-    public Post(String title, String postContent, String imagePost, LocalDateTime localDateTime, User user) {
+    public Post(String title, String postContent, String imagePost, LocalDateTime localDateTime, User user, Long classroomId) {
         this.title = title;
         this.postContent = postContent;
         this.imagePost = imagePost;
         this.localDateTime = localDateTime;
         this.user = user;
+        this.classroomId = classroomId;
     }
 
-    public Post(Long id, String title, String postContent, String imagePost, LocalDateTime localDateTime, User user) {
+    public Post(Long id, String title, String postContent, String imagePost, LocalDateTime localDateTime, User user, Long classroomId) {
         this.id = id;
         this.title = title;
         this.postContent = postContent;
         this.imagePost = imagePost;
         this.localDateTime = localDateTime;
         this.user = user;
+        this.classroomId = classroomId;
     }
 
     public Long getId() {
@@ -98,6 +100,14 @@ public class Post{
         this.user = user;
     }
 
+    public Long getClassroomId() {
+        return classroomId;
+    }
+
+    public void setClassroomId(Long classroomId) {
+        this.classroomId = classroomId;
+    }
+
     @Override
     public String toString() {
         return "Post{" +
@@ -107,6 +117,7 @@ public class Post{
                 ", imagePost='" + imagePost + '\'' +
                 ", localDateTime=" + localDateTime +
                 ", user=" + user +
+                ", classroomId=" + classroomId +
                 '}';
     }
 }

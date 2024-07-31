@@ -69,7 +69,7 @@ public class PostController{
         public PostDTO getPostById(@PathVariable(value="id") Long id){
             return postService.getPostById(id);
         }
-                                           // UPDATE POST
+
         @PutMapping("{id}")
         public PostDTO updatePost(@PathVariable(value = "id") Long id,
                                   @RequestPart String postDetails,

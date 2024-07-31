@@ -37,6 +37,7 @@ public class PostService {
          postDTO.setImagePost(post.getImagePost());
          postDTO.setLocalDateTime(post.getLocalDateTime());
          postDTO.setUserId(post.getUser().getId());
+         postDTO.setClassroomId(post.getClassroomId());
         return postDTO;
     }
     public Post mapToPost(PostDTO postDTO){
@@ -49,6 +50,7 @@ public class PostService {
          User user = new User();
          user.setId(postDTO.getUserId());
          post.setUser(user);
+         post.setClassroomId(post.getClassroomId());
         return post;
     }
     // SUPER ADMIN CAN CHANGE THE DETAILS IN getAllPosts()
@@ -77,11 +79,6 @@ public class PostService {
             throw new IllegalArgumentException("postDTO cannot be null");
         }
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        Optional<User> optionalUser = userRepository.findById(user.getId());
-//        if (optionalUser.isEmpty()){
-//            throw new UserNotFoundException("User not found for userId: + userId" );
-//        }
-//        User userEntity =optionalUser.get();
         Long classroomId = user.getClassroomId();
         if (classroomId == null) {
             throw new IllegalArgumentException("User is not associated with any classroom");
@@ -93,6 +90,7 @@ public class PostService {
 
         Post post = mapToPost(postDTO);
         post.setUser(user);
+        post.setClassroomId(optionalClassroom.get().getId());
         Post savedPost = postRepository.save(post);
         return mapToPostDTO(savedPost);
     }

@@ -14,33 +14,34 @@ public class PostDTO {
     private String title;
     private String postContent;
     private String imagePost;
-    private Long classroomId;
-
     @JsonProperty("local_date_time")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime localDateTime;
     private Long userId;
+    private Long classroomId;
 
     public PostDTO() {
     }
 
-    public PostDTO(String title, String postContent, String imagePost, LocalDateTime localDateTime, Long userId) {
+    public PostDTO(String title, String postContent, String imagePost, LocalDateTime localDateTime, Long userId, Long classroomId) {
         this.title = title;
         this.postContent = postContent;
         this.imagePost = imagePost;
         this.localDateTime = localDateTime;
         this.userId = userId;
+        this.classroomId = classroomId;
     }
 
-    public PostDTO(Long id, String title, String postContent, String imagePost, LocalDateTime localDateTime, Long userId) {
+    public PostDTO(Long id, String title, String postContent, String imagePost, LocalDateTime localDateTime, Long userId, Long classroomId) {
         this.id = id;
         this.title = title;
         this.postContent = postContent;
         this.imagePost = imagePost;
         this.localDateTime = localDateTime;
         this.userId = userId;
+        this.classroomId = classroomId;
     }
 
     public Long getId() {
@@ -91,6 +92,14 @@ public class PostDTO {
         this.userId = userId;
     }
 
+    public Long getClassroomId() {
+        return classroomId;
+    }
+
+    public void setClassroomId(Long classroomId) {
+        this.classroomId = classroomId;
+    }
+
     @Override
     public String toString() {
         return "PostDTO{" +
@@ -100,6 +109,7 @@ public class PostDTO {
                 ", imagePost='" + imagePost + '\'' +
                 ", localDateTime=" + localDateTime +
                 ", userId=" + userId +
+                ", classroomId=" + classroomId +
                 '}';
     }
 }
