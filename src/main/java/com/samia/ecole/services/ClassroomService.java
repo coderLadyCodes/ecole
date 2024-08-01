@@ -29,7 +29,7 @@ public class ClassroomService {
     public  Classroom getClassroomById(Long id){
         return classroomRepository.findById(id).orElseThrow(()-> new CustomException("Cette Classe n'existe pas", HttpStatus.NOT_FOUND));
     }
-    public Classroom createClassroom(Classroom classroom) throws UnauthorizedException { // NOT SURE WHO CAN CREATE CLASSROOM
+    public Classroom createClassroom(Classroom classroom) throws UnauthorizedException {
         User userContext = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Role userRole = userContext.getRole();
         if (userRole != Role.ADMIN && userRole != Role.SUPER_ADMIN) {
@@ -37,6 +37,7 @@ public class ClassroomService {
         }
         Long userid = userContext.getId();
         Classroom classroom1 = getClassroom(classroom, userid);
+        classroom1.setTeacher(userContext.getName());
         Classroom savedClassroom = classroomRepository.save(classroom1);
         notificationService.envoyerCode(savedClassroom);
         userContext.setClassroomId(savedClassroom.getId());
@@ -63,6 +64,7 @@ public class ClassroomService {
         classroom.setGrade(classroomDetails.getGrade());
         classroom.setUserId(classroomDetails.getUserId());
         classroom.setClassroomCode(classroomDetails.getClassroomCode());
+        classroom.setTeacher(classroomDetails.getTeacher());
         return classroomRepository.save(classroom);
     }
     public void deleteClassroom(Long id){ // NOT SURE WHO CAN DELETE CLASSROOM
@@ -100,6 +102,7 @@ public class ClassroomService {
                     response.put("classroomId", classroom.getId());
                     response.put("classroomCode", classroomCode);
                     response.put("userId", userId);
+                    response.put("teacher", user.getName());
                     return response;
                 } else {
                     throw new CustomException("Invalid classroom code", HttpStatus.BAD_REQUEST);

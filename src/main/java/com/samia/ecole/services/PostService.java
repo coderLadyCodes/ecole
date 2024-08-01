@@ -3,6 +3,7 @@ package com.samia.ecole.services;
 import com.samia.ecole.DTOs.PostDTO;
 import com.samia.ecole.entities.Classroom;
 import com.samia.ecole.entities.Post;
+import com.samia.ecole.entities.Role;
 import com.samia.ecole.entities.User;
 import com.samia.ecole.exceptions.CustomException;
 import com.samia.ecole.repositories.ClassroomRepository;
@@ -79,10 +80,26 @@ public class PostService {
             throw new IllegalArgumentException("postDTO cannot be null");
         }
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Long classroomId = user.getClassroomId();
-        if (classroomId == null) {
-            throw new IllegalArgumentException("User is not associated with any classroom");
+        Role userRole = user.getRole();
+
+//        Long classroomId = user.getClassroomId();
+//        if (classroomId == null) {
+//            throw new IllegalArgumentException("User is not associated with any classroom");
+//        }
+//        Optional<Classroom> optionalClassroom = classroomRepository.findById(classroomId);
+//        if (optionalClassroom.isEmpty()) {
+//            throw new IllegalArgumentException("Classroom not found for classroomId: " + classroomId);
+//        }
+        Long classroomId;
+        if (Role.SUPER_ADMIN.equals(userRole)) {
+            classroomId = postDTO.getClassroomId();
+        } else {
+            classroomId = user.getClassroomId();
+            if (classroomId == null) {
+                throw new IllegalArgumentException("User is not associated with any classroom");
+            }
         }
+
         Optional<Classroom> optionalClassroom = classroomRepository.findById(classroomId);
         if (optionalClassroom.isEmpty()) {
             throw new IllegalArgumentException("Classroom not found for classroomId: " + classroomId);

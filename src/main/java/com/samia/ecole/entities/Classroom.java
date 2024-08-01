@@ -12,21 +12,25 @@ public class Classroom {
     @Enumerated(EnumType.STRING)
     private Grade grade;
     private Long userId;
+
+    private String teacher;
     @Column(name = "classroom_code", unique = true)
     private String classroomCode;
     public Classroom() {
     }
 
-    public Classroom(Grade grade, Long userId, String classroomCode) {
+    public Classroom(Grade grade, Long userId, String teacher, String classroomCode) {
         this.grade = grade;
         this.userId = userId;
+        this.teacher = teacher;
         this.classroomCode = classroomCode;
     }
 
-    public Classroom(Long id, Grade grade, Long userId, String classroomCode) {
+    public Classroom(Long id, Grade grade, Long userId, String teacher, String classroomCode) {
         this.id = id;
         this.grade = grade;
         this.userId = userId;
+        this.teacher = teacher;
         this.classroomCode = classroomCode;
     }
 
@@ -54,6 +58,14 @@ public class Classroom {
         this.userId = userId;
     }
 
+    public String getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(String teacher) {
+        this.teacher = teacher;
+    }
+
     public String getClassroomCode() {
         return classroomCode;
     }
@@ -68,6 +80,7 @@ public class Classroom {
                 "id=" + id +
                 ", grade=" + grade +
                 ", userId=" + userId +
+                ", teacher='" + teacher + '\'' +
                 ", classroomCode='" + classroomCode + '\'' +
                 '}';
     }

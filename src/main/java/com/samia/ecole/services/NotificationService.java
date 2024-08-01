@@ -46,11 +46,12 @@ public class NotificationService {
         String text = String.format("""
                 Bonjour %s,
                 
-                Le code d'accés à la classe %s est : %s
+                Le code d'accés à la classe : %s, du  prof : %s  est : %s
                 Merci.
                 """,
                 userContext.getUsername(),
                 classroom.getGrade(),
+                userContext.getName(),
                 classroom.getClassroomCode());
         simpleMailMessage.setText(text);
         javaMailSender.send(simpleMailMessage);
