@@ -53,9 +53,6 @@ public class UserService implements UserDetailsService {
         user.setProfileImage(userDTO.getProfileImage());
         user.setRole(userDTO.getRole());
         user.setClassroomId(userDTO.getClassroomId());
-//        Classroom classroom = new Classroom();
-//        classroom.setId(userDTO.getClassroomId());
-//        user.setClassroom(classroom);
         return user;
     }
     public UserDTO createUser(UserDTO userDTO){
@@ -126,6 +123,11 @@ public class UserService implements UserDetailsService {
     public UserDTO getUserById(Long id){
         User user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User Not Found"));
         return mapToUserDto(user);
+    }
+    public List<UserDTO> getUsersByClassroomId(Long classroomId){
+        List<User> users = userRepository.findByClassroomId(classroomId);
+        return users.stream().map(this::mapToUserDto)
+                .collect(Collectors.toList());
     }
     public void deleteUser(Long id){
         User user = userRepository.findById(id).orElseThrow(()-> new UserNotFoundException("User not found"));

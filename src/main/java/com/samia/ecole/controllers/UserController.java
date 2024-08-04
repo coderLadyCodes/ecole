@@ -219,7 +219,11 @@ public class UserController {
     public List<UserDTO> getAllUsers() {
         return userService.getAllUsers();
     }
-    //@PreAuthorize("hasAnyAuthority('SUPER_ADMIN','ADMIN')")
+
+    @GetMapping("/classroom/{classroomId}/users")
+    public List<UserDTO> getUsersByClassroomId(@PathVariable(value = "classroomId") Long classroomId){
+        return userService.getUsersByClassroomId(classroomId);
+    }
     @DeleteMapping("/users/{id}")
     public void deleteUser(@PathVariable(value = "id") Long id){
         userService.deleteUser(id);
