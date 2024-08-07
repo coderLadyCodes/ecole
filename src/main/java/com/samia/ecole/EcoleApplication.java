@@ -80,8 +80,8 @@ public class EcoleApplication implements CommandLineRunner {
 		parent = this.userRepository.findByEmail("parent@outlook.fr").orElse(parent);
 		this.userRepository.save(parent);
 
-		studentRepository.save(new Student("student1",null, LocalDate.of(2020, 1, 8), "classee1" , true, true, parent));
-		studentRepository.save(new Student("student2",null, LocalDate.of(2020, 2, 2), "classee2" , false, false, parent));
+		studentRepository.save(new Student("student1",null, LocalDate.of(2020, 1, 8), "classee1" , true, true, parent, 1L));
+		studentRepository.save(new Student("student2",null, LocalDate.of(2020, 2, 2), "classee2" , false, false, parent, 1L));
 	}
 }
 

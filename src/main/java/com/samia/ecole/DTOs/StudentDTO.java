@@ -28,11 +28,12 @@ public class StudentDTO {
     @JsonDeserialize()
     private Boolean cantine;
     private Long userId;
+    private Long classroomId;
 
     public StudentDTO() {
     }
 
-    public StudentDTO(String name, String profileImage, LocalDate birthday, String classe, Boolean presence, Boolean cantine, Long userId) {
+    public StudentDTO(String name, String profileImage, LocalDate birthday, String classe, Boolean presence, Boolean cantine, Long userId, Long classroomId) {
         this.name = name;
         this.profileImage = profileImage;
         this.birthday = birthday;
@@ -40,9 +41,10 @@ public class StudentDTO {
         this.presence = presence;
         this.cantine = cantine;
         this.userId = userId;
+        this.classroomId = classroomId;
     }
 
-    public StudentDTO(Long id, String name, String profileImage, LocalDate birthday, String classe, Boolean presence, Boolean cantine, Long userId) {
+    public StudentDTO(Long id, String name, String profileImage, LocalDate birthday, String classe, Boolean presence, Boolean cantine, Long userId, Long classroomId) {
         this.id = id;
         this.name = name;
         this.profileImage = profileImage;
@@ -51,6 +53,7 @@ public class StudentDTO {
         this.presence = presence;
         this.cantine = cantine;
         this.userId = userId;
+        this.classroomId = classroomId;
     }
 
     public Long getId() {
@@ -117,6 +120,14 @@ public class StudentDTO {
         this.userId = userId;
     }
 
+    public Long getClassroomId() {
+        return classroomId;
+    }
+
+    public void setClassroomId(Long classroomId) {
+        this.classroomId = classroomId;
+    }
+
     @Override
     public String toString() {
         return "StudentDTO{" +
@@ -128,6 +139,7 @@ public class StudentDTO {
                 ", presence=" + presence +
                 ", cantine=" + cantine +
                 ", userId=" + userId +
+                ", classroomId=" + classroomId +
                 '}';
     }
 }

@@ -25,10 +25,11 @@ public class Student {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+    private Long classroomId;
     public Student() {
     }
 
-    public Student(String name, String profileImage, LocalDate birthday, String classe, Boolean presence, Boolean cantine, User user) {
+    public Student(String name, String profileImage, LocalDate birthday, String classe, Boolean presence, Boolean cantine, User user, Long classroomId) {
         this.name = name;
         this.profileImage = profileImage;
         this.birthday = birthday;
@@ -36,9 +37,10 @@ public class Student {
         this.presence = presence;
         this.cantine = cantine;
         this.user = user;
+        this.classroomId = classroomId;
     }
 
-    public Student(Long id, String name, String profileImage, LocalDate birthday, String classe, Boolean presence, Boolean cantine, User user) {
+    public Student(Long id, String name, String profileImage, LocalDate birthday, String classe, Boolean presence, Boolean cantine, User user, Long classroomId) {
         this.id = id;
         this.name = name;
         this.profileImage = profileImage;
@@ -47,6 +49,7 @@ public class Student {
         this.presence = presence;
         this.cantine = cantine;
         this.user = user;
+        this.classroomId = classroomId;
     }
 
     public Long getId() {
@@ -113,6 +116,14 @@ public class Student {
         this.user = user;
     }
 
+    public Long getClassroomId() {
+        return classroomId;
+    }
+
+    public void setClassroomId(Long classroomId) {
+        this.classroomId = classroomId;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
@@ -124,6 +135,7 @@ public class Student {
                 ", presence=" + presence +
                 ", cantine=" + cantine +
                 //", user=" + user +
+                ", classroomId=" + classroomId +
                 '}';
     }
 //    @Override
