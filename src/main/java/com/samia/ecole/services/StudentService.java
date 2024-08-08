@@ -1,6 +1,7 @@
 package com.samia.ecole.services;
 
 import com.samia.ecole.DTOs.StudentDTO;
+import com.samia.ecole.DTOs.UserDTO;
 import com.samia.ecole.entities.Student;
 import com.samia.ecole.entities.User;
 import com.samia.ecole.exceptions.CustomException;
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,10 +19,12 @@ import java.util.stream.Collectors;
 public class StudentService {
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
-    public StudentService(StudentRepository studentRepository, UserRepository userRepository) {
+    public StudentService(StudentRepository studentRepository, UserRepository userRepository, UserService userService) {
         this.studentRepository = studentRepository;
         this.userRepository = userRepository;
+        this.userService = userService;
     }
     public StudentDTO mapToStudentDto(Student student){
         StudentDTO studentDTO =  new StudentDTO();
@@ -48,17 +52,30 @@ public class StudentService {
         student.setUser(user);
         return student;
     }
+
     // ONLY SUPER_ADMIN AND ADMIN CAN GET THE ALL STUDENTS OF ALL PARENTS
     public List<StudentDTO> getAllStudents(){
         List<Student> students = studentRepository.findAll();
         return students.stream().map((this::mapToStudentDto))
                 .collect(Collectors.toList());
     }
+
     // EACH PARENT GETS THEIR STUDENTS LIST
     public List<StudentDTO> getStudentsByUserId(Long userId){
         List<Student> students = studentRepository.getStudentsByUserId(userId);
         return students.stream().map((this::mapToStudentDto))
                 .collect(Collectors.toList());
+    }
+
+    // GET A LIST OF STUDENTS BY USER ID THAT BELONGS TO THE SAME CLASSROOM ID
+    public List<StudentDTO> getStudentsByClassroomId(Long classroomId){
+        List<UserDTO> users = userService.getUsersByClassroomId(classroomId);
+        List<StudentDTO> allStudents = new ArrayList<>();
+        for (UserDTO user : users){
+            List<StudentDTO> students = getStudentsByUserId(user.getId());
+            allStudents.addAll(students);
+        }
+        return allStudents;
     }
     public StudentDTO getStudentById(Long id){
         Student student = studentRepository.findById(id).orElseThrow(()-> new CustomException("Student not found", HttpStatus.NOT_FOUND));

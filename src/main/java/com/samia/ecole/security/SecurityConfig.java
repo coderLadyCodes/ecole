@@ -67,6 +67,7 @@ public class SecurityConfig {
                                                 .requestMatchers(GET,"/students/student/{id}").permitAll()
                                                 .requestMatchers(PUT,"/students/{id}").permitAll()
                                                 .requestMatchers(GET,"/students/user/{userId}").permitAll() //NOT SURE FOR PERMITALL
+                                                .requestMatchers(GET,"/students/classroom/{classroomId}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .requestMatchers(GET,"/students").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .requestMatchers(DELETE,"/students/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .requestMatchers(POST,"/posts").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
