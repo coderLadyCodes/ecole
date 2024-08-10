@@ -33,9 +33,10 @@ public class StudentService {
         studentDTO.setProfileImage(student.getProfileImage());
         studentDTO.setBirthday(student.getBirthday());
         studentDTO.setClasse(student.getClasse());
-        studentDTO.setPresence(student.getPresence());
+        studentDTO.setAbsence(student.getAbsence());
         studentDTO.setCantine(student.getCantine());
         studentDTO.setUserId(student.getUser().getId());
+        studentDTO.setGarderie(student.getGarderie());
         return studentDTO;
     }
     public Student mapToStudent(StudentDTO studentDTO){
@@ -45,8 +46,9 @@ public class StudentService {
         student.setProfileImage(studentDTO.getProfileImage());
         student.setBirthday(studentDTO.getBirthday());
         student.setClasse(studentDTO.getClasse());
-        student.setPresence(studentDTO.getPresence());
+        student.setAbsence(studentDTO.getAbsence());
         student.setCantine(studentDTO.getCantine());
+        student.setGarderie(studentDTO.getGarderie());
         User user = new User();
         user.setId(studentDTO.getUserId());
         student.setUser(user);
@@ -81,28 +83,6 @@ public class StudentService {
         Student student = studentRepository.findById(id).orElseThrow(()-> new CustomException("Student not found", HttpStatus.NOT_FOUND));
         return mapToStudentDto(student);
     }
-//    public StudentDTO createStudent(StudentDTO studentDTO){
-//        if (studentDTO == null) {
-//            throw new IllegalArgumentException("StudentDTO cannot be null");
-//        }
-//        Long userId = studentDTO.getUserId();
-//        if (userId == null) {
-//            throw new IllegalArgumentException("userId cannot be null for creating a student");
-//        }
-//        Optional<User> optionalUser = userRepository.findById(userId);
-//        if (optionalUser.isEmpty()){
-//            throw new UserNotFoundException("User not found for userId: " + userId);
-//        }
-//
-//        User user = optionalUser.get();
-//        Student student = mapToStudent(studentDTO);
-//        student.setUser(user);
-//        if(student.getId() != null && studentAlreadyExists(student.getId())){
-//            throw  new CustomException("student already exists", HttpStatus.CONFLICT);
-//        }
-//        Student savedStudent = studentRepository.save(student);
-//        return mapToStudentDto(savedStudent);
-//    }
     public StudentDTO createStudent(StudentDTO studentDTO){
         if (studentDTO == null) {
             throw new IllegalArgumentException("StudentDTO cannot be null");
@@ -119,6 +99,7 @@ public class StudentService {
         if(student.getId() != null && studentAlreadyExists(student.getId())){
             throw  new CustomException("student already exists", HttpStatus.CONFLICT);
         }
+
         Student savedStudent = studentRepository.save(student);
         return mapToStudentDto(savedStudent);
     }
@@ -132,8 +113,9 @@ public class StudentService {
         student.setProfileImage(studentDetails.getProfileImage());
         student.setBirthday(studentDetails.getBirthday());
         student.setClasse(studentDetails.getClasse());
-        student.setPresence(studentDetails.getPresence());
+        student.setAbsence(studentDetails.getAbsence());
         student.setCantine(studentDetails.getCantine());
+        student.setGarderie(studentDetails.getGarderie());
         Student studentUpdated = studentRepository.save(student);
         return mapToStudentDto(studentUpdated);
     }

@@ -18,10 +18,15 @@ public class Student {
     private LocalDate birthday;
     @Column(name="classe", nullable = false)
     private String classe;
-    @Column(name="presence", nullable = false)
-    private Boolean presence;
-    @Column(name="cantine", nullable = false)
+    @Column(name="absence")
+    private Boolean absence;
+//    @Column(name="motif")
+//    private Motif motif;
+    @Column(name="cantine")
     private Boolean cantine;
+    @Column(name="garderie")
+    @Enumerated(EnumType.STRING)
+    private Garderie garderie;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -29,25 +34,27 @@ public class Student {
     public Student() {
     }
 
-    public Student(String name, String profileImage, LocalDate birthday, String classe, Boolean presence, Boolean cantine, User user, Long classroomId) {
+    public Student(String name, String profileImage, LocalDate birthday, String classe, Boolean absence, Boolean cantine, Garderie garderie, User user, Long classroomId) {
         this.name = name;
         this.profileImage = profileImage;
         this.birthday = birthday;
         this.classe = classe;
-        this.presence = presence;
+        this.absence = absence;
         this.cantine = cantine;
+        this.garderie = garderie;
         this.user = user;
         this.classroomId = classroomId;
     }
 
-    public Student(Long id, String name, String profileImage, LocalDate birthday, String classe, Boolean presence, Boolean cantine, User user, Long classroomId) {
+    public Student(Long id, String name, String profileImage, LocalDate birthday, String classe, Boolean absence, Boolean cantine, Garderie garderie, User user, Long classroomId) {
         this.id = id;
         this.name = name;
         this.profileImage = profileImage;
         this.birthday = birthday;
         this.classe = classe;
-        this.presence = presence;
+        this.absence = absence;
         this.cantine = cantine;
+        this.garderie = garderie;
         this.user = user;
         this.classroomId = classroomId;
     }
@@ -92,12 +99,12 @@ public class Student {
         this.classe = classe;
     }
 
-    public Boolean getPresence() {
-        return presence;
+    public Boolean getAbsence() {
+        return absence;
     }
 
-    public void setPresence(Boolean presence) {
-        this.presence = presence;
+    public void setAbsence(Boolean absence) {
+        this.absence = absence;
     }
 
     public Boolean getCantine() {
@@ -106,6 +113,14 @@ public class Student {
 
     public void setCantine(Boolean cantine) {
         this.cantine = cantine;
+    }
+
+    public Garderie getGarderie() {
+        return garderie;
+    }
+
+    public void setGarderie(Garderie garderie) {
+        this.garderie = garderie;
     }
 
     public User getUser() {
@@ -132,24 +147,11 @@ public class Student {
                 ", profileImage='" + profileImage + '\'' +
                 ", birthday=" + birthday +
                 ", classe='" + classe + '\'' +
-                ", presence=" + presence +
+                ", absence=" + absence +
                 ", cantine=" + cantine +
+                ", garderie=" + garderie +
                 //", user=" + user +
                 ", classroomId=" + classroomId +
                 '}';
     }
-//    @Override
-//    public String toString() {
-//        String userString = (user != null) ? "user=" + user.getId() : "user=null";
-//        return "Student{" +
-//                "id=" + id +
-//                ", name='" + name + '\'' +
-//                ", profileImage='" + profileImage + '\'' +
-//                ", birthday=" + birthday +
-//                ", classe='" + classe + '\'' +
-//                ", presence=" + presence +
-//                ", cantine=" + cantine +
-//                ", " + userString +
-//                '}';
-//    }
 }
