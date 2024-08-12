@@ -36,6 +36,10 @@ public class StudentController {
     public List<StudentDTO> getStudentsByClassroomId(@PathVariable(value="classroomId") Long classroomId){
         return studentService.getStudentsByClassroomId(classroomId);
     }
+    @GetMapping("{id}/classroom/{classroomId}")
+    public StudentDTO getStudentByIdAndClassroomId(@PathVariable(value = "id") Long id, @PathVariable(value = "classroomId") Long classroomId){
+        return studentService.getStudentByIdAndClassroomId(id, classroomId);
+    }
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public StudentDTO createStudent(@RequestPart String studentDTO,
                                     @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile)throws IOException {

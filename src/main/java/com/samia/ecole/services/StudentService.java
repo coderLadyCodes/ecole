@@ -79,6 +79,11 @@ public class StudentService {
         }
         return allStudents;
     }
+    public StudentDTO getStudentByIdAndClassroomId(Long id, Long classroomId){
+        Student student = studentRepository.findByIdAndClassroomId(id, classroomId)
+                .orElseThrow(() -> new CustomException("Student not found", HttpStatus.NOT_FOUND));
+        return mapToStudentDto(student);
+    }
     public StudentDTO getStudentById(Long id){
         Student student = studentRepository.findById(id).orElseThrow(()-> new CustomException("Student not found", HttpStatus.NOT_FOUND));
         return mapToStudentDto(student);
