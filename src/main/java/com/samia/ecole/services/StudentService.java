@@ -32,11 +32,13 @@ public class StudentService {
         studentDTO.setName(student.getName());
         studentDTO.setProfileImage(student.getProfileImage());
         studentDTO.setBirthday(student.getBirthday());
-        studentDTO.setClasse(student.getClasse());
-        studentDTO.setAbsence(student.getAbsence());
-        studentDTO.setCantine(student.getCantine());
         studentDTO.setUserId(student.getUser().getId());
-        studentDTO.setGarderie(student.getGarderie());
+        studentDTO.setGrade(student.getGrade());
+//        studentDTO.setClasse(student.getClasse());
+//        studentDTO.setAbsence(student.getAbsence());
+//        studentDTO.setCantine(student.getCantine());
+
+//        studentDTO.setGarderie(student.getGarderie());
         return studentDTO;
     }
     public Student mapToStudent(StudentDTO studentDTO){
@@ -45,10 +47,11 @@ public class StudentService {
         student.setName(studentDTO.getName());
         student.setProfileImage(studentDTO.getProfileImage());
         student.setBirthday(studentDTO.getBirthday());
-        student.setClasse(studentDTO.getClasse());
-        student.setAbsence(studentDTO.getAbsence());
-        student.setCantine(studentDTO.getCantine());
-        student.setGarderie(studentDTO.getGarderie());
+        student.setGrade(studentDTO.getGrade());
+//        student.setClasse(studentDTO.getClasse());
+//        student.setAbsence(studentDTO.getAbsence());
+//        student.setCantine(studentDTO.getCantine());
+//        student.setGarderie(studentDTO.getGarderie());
         User user = new User();
         user.setId(studentDTO.getUserId());
         student.setUser(user);
@@ -117,10 +120,11 @@ public class StudentService {
         student.setName(studentDetails.getName());
         student.setProfileImage(studentDetails.getProfileImage());
         student.setBirthday(studentDetails.getBirthday());
-        student.setClasse(studentDetails.getClasse());
-        student.setAbsence(studentDetails.getAbsence());
-        student.setCantine(studentDetails.getCantine());
-        student.setGarderie(studentDetails.getGarderie());
+        student.setGrade(studentDetails.getGrade());
+//        student.setClasse(studentDetails.getClasse());
+//        student.setAbsence(studentDetails.getAbsence());
+//        student.setCantine(studentDetails.getCantine());
+//        student.setGarderie(studentDetails.getGarderie());
         Student studentUpdated = studentRepository.save(student);
         return mapToStudentDto(studentUpdated);
     }

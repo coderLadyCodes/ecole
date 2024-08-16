@@ -38,7 +38,6 @@ public class StudentController {
     }
     @GetMapping("{id}/classroom/{classroomId}")
     public StudentDTO getStudentByIdAndClassroomId(@PathVariable(value = "id") Long id, @PathVariable(value = "classroomId") Long classroomId){
-        System.out.println("getStudentByIdAndClassroomId" + id + classroomId);
         return studentService.getStudentByIdAndClassroomId(id, classroomId);
     }
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

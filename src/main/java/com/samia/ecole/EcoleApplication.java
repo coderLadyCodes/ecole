@@ -1,9 +1,6 @@
 package com.samia.ecole;
 
-import com.samia.ecole.entities.Garderie;
-import com.samia.ecole.entities.Role;
-import com.samia.ecole.entities.Student;
-import com.samia.ecole.entities.User;
+import com.samia.ecole.entities.*;
 import com.samia.ecole.repositories.StudentRepository;
 import com.samia.ecole.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
@@ -81,10 +78,10 @@ public class EcoleApplication implements CommandLineRunner {
 		parent = this.userRepository.findByEmail("parent@outlook.fr").orElse(parent);
 		this.userRepository.save(parent);
 
-		studentRepository.save(new Student(1L, "student1",null, LocalDate.of(2020, 1, 8), "classee1" , true, true, Garderie.SOIR,  parent, 1L));
-		studentRepository.save(new Student("student2",null, LocalDate.of(2020, 2, 2), "classee2" , false, false, Garderie.MATIN, parent, 1L));
-		studentRepository.save(new Student("student3",null, LocalDate.of(2020, 2, 2), "classee2" , false, false, Garderie.MATIN, admin, 1L));
-		studentRepository.save(new Student("student4",null, LocalDate.of(2020, 2, 2), "classee2" , false, false, Garderie.MATIN, admin, 1L));
+		studentRepository.save(new Student(1L, "student1",null, LocalDate.of(2020, 1, 8), Grade.CE1 , parent, 1L));
+		studentRepository.save(new Student("student2",null, LocalDate.of(2020, 2, 2), Grade.CE2 , parent, 1L));
+		studentRepository.save(new Student("student3",null, LocalDate.of(2020, 2, 2), Grade.CM1,  admin, 1L));
+		studentRepository.save(new Student("student4",null, LocalDate.of(2020, 2, 2), Grade.CM2 ,  admin, 1L));
 	}
 }
 

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.samia.ecole.entities.Garderie;
+import com.samia.ecole.entities.Grade;
 
 import java.time.LocalDate;
 
@@ -19,43 +19,37 @@ public class StudentDTO {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate birthday;
-    private String classe;
-    @JsonProperty("absence")
-    @JsonSerialize
-    @JsonDeserialize()
-    private Boolean absence;
-    @JsonProperty("cantine")
-    @JsonSerialize
-    @JsonDeserialize()
-    private Boolean cantine;
-    private Garderie garderie;
+//    private String classe;
+//    @JsonProperty("absence")
+//    @JsonSerialize
+//    @JsonDeserialize()
+//    private Boolean absence;
+//    @JsonProperty("cantine")
+//    @JsonSerialize
+//    @JsonDeserialize()
+//    private Boolean cantine;
+//    private Garderie garderie;
+    private Grade grade;
     private Long userId;
     private Long classroomId;
-
     public StudentDTO() {
     }
 
-    public StudentDTO(String name, String profileImage, LocalDate birthday, String classe, Boolean absence, Boolean cantine, Garderie garderie, Long userId, Long classroomId) {
+    public StudentDTO(String name, String profileImage, LocalDate birthday, Grade grade, Long userId, Long classroomId) {
         this.name = name;
         this.profileImage = profileImage;
         this.birthday = birthday;
-        this.classe = classe;
-        this.absence = absence;
-        this.cantine = cantine;
-        this.garderie = garderie;
+        this.grade = grade;
         this.userId = userId;
         this.classroomId = classroomId;
     }
 
-    public StudentDTO(Long id, String name, String profileImage, LocalDate birthday, String classe, Boolean absence, Boolean cantine, Garderie garderie, Long userId, Long classroomId) {
+    public StudentDTO(Long id, String name, String profileImage, LocalDate birthday, Grade grade, Long userId, Long classroomId) {
         this.id = id;
         this.name = name;
         this.profileImage = profileImage;
         this.birthday = birthday;
-        this.classe = classe;
-        this.absence = absence;
-        this.cantine = cantine;
-        this.garderie = garderie;
+        this.grade = grade;
         this.userId = userId;
         this.classroomId = classroomId;
     }
@@ -92,36 +86,12 @@ public class StudentDTO {
         this.birthday = birthday;
     }
 
-    public String getClasse() {
-        return classe;
+    public Grade getGrade() {
+        return grade;
     }
 
-    public void setClasse(String classe) {
-        this.classe = classe;
-    }
-
-    public Boolean getAbsence() {
-        return absence;
-    }
-
-    public void setAbsence(Boolean absence) {
-        this.absence = absence;
-    }
-
-    public Boolean getCantine() {
-        return cantine;
-    }
-
-    public void setCantine(Boolean cantine) {
-        this.cantine = cantine;
-    }
-
-    public Garderie getGarderie() {
-        return garderie;
-    }
-
-    public void setGarderie(Garderie garderie) {
-        this.garderie = garderie;
+    public void setGrade(Grade grade) {
+        this.grade = grade;
     }
 
     public Long getUserId() {
@@ -147,10 +117,7 @@ public class StudentDTO {
                 ", name='" + name + '\'' +
                 ", profileImage='" + profileImage + '\'' +
                 ", birthday=" + birthday +
-                ", classe='" + classe + '\'' +
-                ", absence=" + absence +
-                ", cantine=" + cantine +
-                ", garderie=" + garderie +
+                ", grade=" + grade +
                 ", userId=" + userId +
                 ", classroomId=" + classroomId +
                 '}';
