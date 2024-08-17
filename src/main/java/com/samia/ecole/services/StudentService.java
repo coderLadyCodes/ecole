@@ -34,11 +34,6 @@ public class StudentService {
         studentDTO.setBirthday(student.getBirthday());
         studentDTO.setUserId(student.getUser().getId());
         studentDTO.setGrade(student.getGrade());
-//        studentDTO.setClasse(student.getClasse());
-//        studentDTO.setAbsence(student.getAbsence());
-//        studentDTO.setCantine(student.getCantine());
-
-//        studentDTO.setGarderie(student.getGarderie());
         return studentDTO;
     }
     public Student mapToStudent(StudentDTO studentDTO){
@@ -48,10 +43,6 @@ public class StudentService {
         student.setProfileImage(studentDTO.getProfileImage());
         student.setBirthday(studentDTO.getBirthday());
         student.setGrade(studentDTO.getGrade());
-//        student.setClasse(studentDTO.getClasse());
-//        student.setAbsence(studentDTO.getAbsence());
-//        student.setCantine(studentDTO.getCantine());
-//        student.setGarderie(studentDTO.getGarderie());
         User user = new User();
         user.setId(studentDTO.getUserId());
         student.setUser(user);

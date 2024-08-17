@@ -1,0 +1,122 @@
+package com.samia.ecole.DTOs;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.samia.ecole.entities.Garderie;
+
+import java.time.LocalDateTime;
+
+public class RegularUpdatesDTO {
+    private Long id;
+    private Long studentId;
+    private Long parentId;
+    @JsonProperty("local_date_time")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime localDateTime;
+    @JsonProperty("isAbsent")
+    @JsonSerialize
+    @JsonDeserialize()
+    private Boolean isAbsent;
+    @JsonProperty("hasCantine")
+    @JsonSerialize
+    @JsonDeserialize()
+    private Boolean hasCantine;
+    private Garderie garderie;
+    //private String attachment;
+    public RegularUpdatesDTO() {
+    }
+
+    public RegularUpdatesDTO(Long studentId, Long parentId, LocalDateTime localDateTime, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
+        this.studentId = studentId;
+        this.parentId = parentId;
+        this.localDateTime = localDateTime;
+        this.isAbsent = isAbsent;
+        this.hasCantine = hasCantine;
+        this.garderie = garderie;
+    }
+
+    public RegularUpdatesDTO(Long id, Long studentId, Long parentId, LocalDateTime localDateTime, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
+        this.id = id;
+        this.studentId = studentId;
+        this.parentId = parentId;
+        this.localDateTime = localDateTime;
+        this.isAbsent = isAbsent;
+        this.hasCantine = hasCantine;
+        this.garderie = garderie;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getStudentId() {
+        return studentId;
+    }
+
+    public void setStudentId(Long studentId) {
+        this.studentId = studentId;
+    }
+
+    public Long getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Long parentId) {
+        this.parentId = parentId;
+    }
+
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
+    }
+
+    public void setLocalDateTime(LocalDateTime localDateTime) {
+        this.localDateTime = localDateTime;
+    }
+
+    public Boolean getAbsent() {
+        return isAbsent;
+    }
+
+    public void setAbsent(Boolean absent) {
+        isAbsent = absent;
+    }
+
+    public Boolean getHasCantine() {
+        return hasCantine;
+    }
+
+    public void setHasCantine(Boolean hasCantine) {
+        this.hasCantine = hasCantine;
+    }
+
+    public Garderie getGarderie() {
+        return garderie;
+    }
+
+    public void setGarderie(Garderie garderie) {
+        this.garderie = garderie;
+    }
+
+    @Override
+    public String toString() {
+        return "RegularUpdatesDTO{" +
+                "id=" + id +
+                ", studentId=" + studentId +
+                ", parentId=" + parentId +
+                ", localDateTime=" + localDateTime +
+                ", isAbsent=" + isAbsent +
+                ", hasCantine=" + hasCantine +
+                ", garderie=" + garderie +
+                '}';
+    }
+}

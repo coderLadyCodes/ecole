@@ -19,16 +19,6 @@ public class StudentDTO {
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate birthday;
-//    private String classe;
-//    @JsonProperty("absence")
-//    @JsonSerialize
-//    @JsonDeserialize()
-//    private Boolean absence;
-//    @JsonProperty("cantine")
-//    @JsonSerialize
-//    @JsonDeserialize()
-//    private Boolean cantine;
-//    private Garderie garderie;
     private Grade grade;
     private Long userId;
     private Long classroomId;
