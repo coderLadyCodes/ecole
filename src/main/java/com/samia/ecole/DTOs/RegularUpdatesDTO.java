@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.samia.ecole.entities.Garderie;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class RegularUpdatesDTO {
@@ -19,6 +22,11 @@ public class RegularUpdatesDTO {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime localDateTime;
+    @JsonProperty("local_date")
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    private LocalDate localDate;
     @JsonProperty("isAbsent")
     @JsonSerialize
     @JsonDeserialize()
@@ -32,20 +40,22 @@ public class RegularUpdatesDTO {
     public RegularUpdatesDTO() {
     }
 
-    public RegularUpdatesDTO(Long studentId, Long parentId, LocalDateTime localDateTime, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
+    public RegularUpdatesDTO(Long studentId, Long parentId, LocalDateTime localDateTime, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
         this.studentId = studentId;
         this.parentId = parentId;
         this.localDateTime = localDateTime;
+        this.localDate = localDate;
         this.isAbsent = isAbsent;
         this.hasCantine = hasCantine;
         this.garderie = garderie;
     }
 
-    public RegularUpdatesDTO(Long id, Long studentId, Long parentId, LocalDateTime localDateTime, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
+    public RegularUpdatesDTO(Long id, Long studentId, Long parentId, LocalDateTime localDateTime, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
         this.id = id;
         this.studentId = studentId;
         this.parentId = parentId;
         this.localDateTime = localDateTime;
+        this.localDate = localDate;
         this.isAbsent = isAbsent;
         this.hasCantine = hasCantine;
         this.garderie = garderie;
@@ -83,6 +93,14 @@ public class RegularUpdatesDTO {
         this.localDateTime = localDateTime;
     }
 
+    public LocalDate getLocalDate() {
+        return localDate;
+    }
+
+    public void setLocalDate(LocalDate localDate) {
+        this.localDate = localDate;
+    }
+
     public Boolean getAbsent() {
         return isAbsent;
     }
@@ -114,6 +132,7 @@ public class RegularUpdatesDTO {
                 ", studentId=" + studentId +
                 ", parentId=" + parentId +
                 ", localDateTime=" + localDateTime +
+                ", localDate=" + localDate +
                 ", isAbsent=" + isAbsent +
                 ", hasCantine=" + hasCantine +
                 ", garderie=" + garderie +

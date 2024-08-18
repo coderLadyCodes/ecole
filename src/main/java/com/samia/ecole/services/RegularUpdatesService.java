@@ -35,6 +35,7 @@ public class RegularUpdatesService {
         regularUpdatesDTO.setStudentId(regularUpdates.getStudent().getId());
         regularUpdatesDTO.setParentId(regularUpdates.getParent().getId());
         regularUpdatesDTO.setLocalDateTime(regularUpdates.getLocalDateTime());
+        regularUpdatesDTO.setLocalDate(regularUpdates.getLocalDate());
         regularUpdatesDTO.setAbsent(regularUpdates.getAbsent());
         regularUpdatesDTO.setHasCantine(regularUpdates.getHasCantine());
         regularUpdatesDTO.setGarderie(regularUpdates.getGarderie());
@@ -43,21 +44,14 @@ public class RegularUpdatesService {
     public RegularUpdates mapToRegularUpdates(RegularUpdatesDTO regularUpdatesDTO){
         RegularUpdates regularUpdates = new RegularUpdates();
         regularUpdates.setId(regularUpdatesDTO.getId());
-        // Fetch the full User entity (Parent)
-        User parent = userRepository.findById(regularUpdatesDTO.getParentId())
-                .orElseThrow(() -> new CustomException("User not found", HttpStatus.NOT_FOUND));
+        User parent = new User();
+        parent.setId(regularUpdatesDTO.getParentId());
         regularUpdates.setParent(parent);
-//        User parent = new User();
-//        parent.setId(regularUpdatesDTO.getParentId());
-//        regularUpdates.setParent(parent);
-        // Fetch the full Student entity
-        Student student = studentRepository.findById(regularUpdatesDTO.getStudentId())
-                .orElseThrow(() -> new CustomException("Student not found", HttpStatus.NOT_FOUND));
+        Student student = new Student();
+        student.setId(regularUpdatesDTO.getStudentId());
         regularUpdates.setStudent(student);
-//        Student student = new Student();
-//        student.setId(regularUpdatesDTO.getStudentId());
-//        regularUpdates.setStudent(student);
         regularUpdates.setLocalDateTime(regularUpdatesDTO.getLocalDateTime());
+        regularUpdates.setLocalDate(regularUpdatesDTO.getLocalDate());
         regularUpdates.setAbsent(regularUpdatesDTO.getAbsent());
         regularUpdates.setHasCantine(regularUpdatesDTO.getHasCantine());
         regularUpdates.setGarderie(regularUpdatesDTO.getGarderie());
@@ -73,6 +67,12 @@ public class RegularUpdatesService {
         return mapToRegularUpdatesDTO(regularUpdates);
     }
     public RegularUpdatesDTO createRegularUpdates(RegularUpdatesDTO regularUpdatesDTO, Long studentId) throws UnauthorizedException {
+        if (studentId == null) {
+            throw new IllegalArgumentException("The studentId must not be null.");
+        }
+        if (regularUpdatesDTO == null) {
+            throw new IllegalArgumentException("regularUpdatesDTO cannot be null.");
+        }
         User userContext = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Role userRole = userContext.getRole();
         if(userRole != Role.PARENT && userRole != Role.SUPER_ADMIN){
@@ -99,6 +99,7 @@ public class RegularUpdatesService {
         regularUpdates.setStudent(student);
         regularUpdates.setParent(parent);
         regularUpdates.setLocalDateTime(regularUpdatesDetails.getLocalDateTime());
+        regularUpdates.setLocalDate(regularUpdatesDetails.getLocalDate());
         RegularUpdates regularUpdatesUpdated =  regularUpdatesRepository.save(regularUpdates);
         return mapToRegularUpdatesDTO(regularUpdatesUpdated);
     }

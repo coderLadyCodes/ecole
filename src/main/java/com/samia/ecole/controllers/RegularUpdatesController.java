@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("updates")
+@RequestMapping("/updates")
 public class RegularUpdatesController {
     private final RegularUpdatesService regularUpdatesService;
 
     public RegularUpdatesController(RegularUpdatesService regularUpdatesService) {
         this.regularUpdatesService = regularUpdatesService;
     }
-    @PostMapping("{studentId}")
+    @PostMapping("/{studentId}")
     public RegularUpdatesDTO createRegularUpdates(@RequestBody RegularUpdatesDTO regularUpdatesDTO, @PathVariable(value="studentId") Long studentId) throws UnauthorizedException {
         return regularUpdatesService.createRegularUpdates(regularUpdatesDTO, studentId);
     }
@@ -23,15 +23,15 @@ public class RegularUpdatesController {
     public List<RegularUpdatesDTO> getAllregulardUpdates(){
             return regularUpdatesService.getAllregulardUpdates();
         }
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public RegularUpdatesDTO updateRegularUpdates(@PathVariable(value ="id") Long id, @RequestBody RegularUpdatesDTO regularUpdatesDetails){
         return regularUpdatesService.updateRegularUpdates(id, regularUpdatesDetails);
     }
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public RegularUpdatesDTO getRegularUpdatesById(@PathVariable(value = "id") Long id){
         return regularUpdatesService.getRegularUpdatesById(id);
     }
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public void deleteRegularUpdates(@PathVariable(value = "id" ) Long id){
         regularUpdatesService.deleteRegularUpdates(id);
     }

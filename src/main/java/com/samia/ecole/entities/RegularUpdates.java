@@ -2,6 +2,7 @@ package com.samia.ecole.entities;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -18,6 +19,8 @@ public class RegularUpdates {
     private User parent;
     @Column(name = "local_date_time")
     private LocalDateTime localDateTime;
+    @Column(name = "local_date")
+    private LocalDate localDate;
     @Column(name = "is_absent", nullable = true)
     private Boolean isAbsent;
     @Column(name = "has_cantine", nullable = true)
@@ -30,20 +33,22 @@ public class RegularUpdates {
     public RegularUpdates() {
     }
 
-    public RegularUpdates(Student student, User parent, LocalDateTime localDateTime, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
+    public RegularUpdates(Student student, User parent, LocalDateTime localDateTime, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
         this.student = student;
         this.parent = parent;
         this.localDateTime = localDateTime;
+        this.localDate = localDate;
         this.isAbsent = isAbsent;
         this.hasCantine = hasCantine;
         this.garderie = garderie;
     }
 
-    public RegularUpdates(Long id, Student student, User parent, LocalDateTime localDateTime, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
+    public RegularUpdates(Long id, Student student, User parent, LocalDateTime localDateTime, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
         this.id = id;
         this.student = student;
         this.parent = parent;
         this.localDateTime = localDateTime;
+        this.localDate = localDate;
         this.isAbsent = isAbsent;
         this.hasCantine = hasCantine;
         this.garderie = garderie;
@@ -81,6 +86,14 @@ public class RegularUpdates {
         this.localDateTime = localDateTime;
     }
 
+    public LocalDate getLocalDate() {
+        return localDate;
+    }
+
+    public void setLocalDate(LocalDate localDate) {
+        this.localDate = localDate;
+    }
+
     public Boolean getAbsent() {
         return isAbsent;
     }
@@ -112,6 +125,7 @@ public class RegularUpdates {
                 //", student=" + student +
                 //", parent=" + parent +
                 ", localDateTime=" + localDateTime +
+                ", localDate=" + localDate +
                 ", isAbsent=" + isAbsent +
                 ", hasCantine=" + hasCantine +
                 ", garderie=" + garderie +

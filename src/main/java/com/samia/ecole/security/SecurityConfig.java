@@ -83,7 +83,12 @@ public class SecurityConfig {
                                                 .requestMatchers(GET,"/classroom/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_PARENT")
                                                 .requestMatchers(GET,"/classroom").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .requestMatchers(POST,"/classroom/activation").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_PARENT")
-                                                .requestMatchers(GET,"posts/classroom/{classroomId}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_PARENT")
+                                                .requestMatchers(GET,"/posts/classroom/{classroomId}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_PARENT")
+                                                .requestMatchers(POST,"/updates/{studentId}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_PARENT")
+                                                .requestMatchers(GET,"/updates").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_PARENT")
+                                                .requestMatchers(GET,"/updates/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_PARENT")
+                                                .requestMatchers(PUT,"/updates/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_PARENT")
+                                                .requestMatchers(DELETE,"/updates/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_PARENT")
                                                 .anyRequest().authenticated()
                         )
                         .sessionManagement(httpSecuritySessionManagementConfigurer ->
