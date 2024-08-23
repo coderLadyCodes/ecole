@@ -2,10 +2,12 @@ package com.samia.ecole.services;
 
 import com.samia.ecole.entities.Classroom;
 import com.samia.ecole.entities.Role;
+import com.samia.ecole.entities.Student;
 import com.samia.ecole.entities.User;
 import com.samia.ecole.exceptions.CustomException;
 import com.samia.ecole.exceptions.UnauthorizedException;
 import com.samia.ecole.repositories.ClassroomRepository;
+import com.samia.ecole.repositories.StudentRepository;
 import com.samia.ecole.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,10 +19,12 @@ import java.util.*;
 public class ClassroomService {
     private final ClassroomRepository classroomRepository;
     private final UserRepository userRepository;
+    private final StudentRepository studentRepository;
     private  final  NotificationService notificationService;
-    public ClassroomService(ClassroomRepository classroomRepository, UserRepository userRepository, NotificationService notificationService) {
+    public ClassroomService(ClassroomRepository classroomRepository, UserRepository userRepository, StudentRepository studentRepository, NotificationService notificationService) {
         this.classroomRepository = classroomRepository;
         this.userRepository = userRepository;
+        this.studentRepository = studentRepository;
         this.notificationService = notificationService;
     }
     public List<Classroom> getAllClassrooms(){
@@ -82,36 +86,69 @@ public class ClassroomService {
     public Map<String, Object> activation(Map<String, String> activation) {
         String userIdStr = activation.get("userId");
         String classroomCode = activation.get("classroomCode");
+        String teacher = activation.get("teacher");
+        String kidIdStr = activation.get("kidId");
 
-        if (userIdStr != null && classroomCode != null) {
+        if (userIdStr != null && classroomCode != null && teacher != null && kidIdStr != null) {
             Long userId = Long.parseLong(userIdStr);
+            Long kidId = Long.parseLong(kidIdStr);
 
             // Find the user by ID
             Optional<User> optionalUser = userRepository.findById(userId);
             if (optionalUser.isPresent()) {
                 User user = optionalUser.get();
 
-                // Find the classroom by classroomCode
-                Classroom classroom = classroomRepository.findByClassroomCode(classroomCode);
-                if (classroom != null) {
-                    // Assign the classroom to the user
-                    user.setClassroomId(classroom.getId());
-                    userRepository.save(user);
+                // Find student by ID
+                Optional<Student> optionalStudent = studentRepository.findById(kidId);
+                if (optionalStudent.isPresent()) {
+                    Student student = optionalStudent.get();
 
-                    Map<String, Object> response = new HashMap<>();
-                    response.put("classroomId", classroom.getId());
-                    response.put("classroomCode", classroomCode);
-                    response.put("userId", userId);
-                    response.put("teacher", user.getName());
-                    return response;
+                    // Find the classroom by classroomCode
+                    Classroom classroom = classroomRepository.findByClassroomCode(classroomCode);
+                    if (classroom != null) {
+
+                        // Check if the teacher's name matches the classroom's teacher
+                        if (!teacher.equals(classroom.getTeacher())) {
+                            throw new CustomException("Teacher name does not match the classroom", HttpStatus.BAD_REQUEST);
+                        }
+
+                        // Check if student's grade matches the classroom's grade
+                        if (!student.getGrade().equals(classroom.getGrade())) {
+                            throw new CustomException("Student's grade does not match the classroom grade", HttpStatus.BAD_REQUEST);
+                        }
+
+                        // Check if the student is already assigned to a different classroom
+                        if (student.getClassroomId() != null && !student.getClassroomId().equals(classroom.getId())) {
+                            throw new CustomException("Student is already assigned to another classroom", HttpStatus.BAD_REQUEST);
+                        }
+
+                        // Assign the classroom to the student
+                        student.setClassroomId(classroom.getId());
+                        studentRepository.save(student);
+
+                        // Assign the classroom to the user (assuming user needs the same classroom assignment)
+                        user.setClassroomId(classroom.getId());
+                        userRepository.save(user);
+
+                        // Build the response
+                        Map<String, Object> response = new HashMap<>();
+                        response.put("classroomId", classroom.getId());
+                        response.put("classroomCode", classroomCode);
+                        response.put("userId", userId);
+                        response.put("teacher", classroom.getTeacher());
+                        response.put("kidId", kidId);
+                        return response;
+                        } else {
+                            throw new CustomException("Classroom not found", HttpStatus.NOT_FOUND);
+                        }
+                    } else {
+                        throw new CustomException("Student not found", HttpStatus.NOT_FOUND);
+                    }
                 } else {
-                    throw new CustomException("Invalid classroom code", HttpStatus.BAD_REQUEST);
+                    throw new CustomException("User not found", HttpStatus.NOT_FOUND);
                 }
             } else {
-                throw new CustomException("User not found", HttpStatus.NOT_FOUND);
+                throw new CustomException("Missing userId, classroomCode, teacher name, or kidId", HttpStatus.BAD_REQUEST);
             }
-        } else {
-            throw new CustomException("Missing userId or classroomCode", HttpStatus.BAD_REQUEST);
         }
-            }
 }
