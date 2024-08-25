@@ -82,73 +82,95 @@ public class ClassroomService {
         }
         classroomRepository.delete(classroom);
     }
-
     public Map<String, Object> activation(Map<String, String> activation) {
         String userIdStr = activation.get("userId");
         String classroomCode = activation.get("classroomCode");
         String teacher = activation.get("teacher");
         String kidIdStr = activation.get("kidId");
 
-        if (userIdStr != null && classroomCode != null && teacher != null && kidIdStr != null) {
+        if (userIdStr != null && classroomCode != null) {
             Long userId = Long.parseLong(userIdStr);
-            Long kidId = Long.parseLong(kidIdStr);
 
             // Find the user by ID
             Optional<User> optionalUser = userRepository.findById(userId);
             if (optionalUser.isPresent()) {
                 User user = optionalUser.get();
+                //Role role = user.getRole();
 
-                // Find student by ID
-                Optional<Student> optionalStudent = studentRepository.findById(kidId);
-                if (optionalStudent.isPresent()) {
-                    Student student = optionalStudent.get();
-
-                    // Find the classroom by classroomCode
+                if (user.getRole().equals(Role.ADMIN)) {
                     Classroom classroom = classroomRepository.findByClassroomCode(classroomCode);
                     if (classroom != null) {
-
-                        // Check if the teacher's name matches the classroom's teacher
-                        if (!teacher.equals(classroom.getTeacher())) {
-                            throw new CustomException("Teacher name does not match the classroom", HttpStatus.BAD_REQUEST);
-                        }
-
-                        // Check if student's grade matches the classroom's grade
-                        if (!student.getGrade().equals(classroom.getGrade())) {
-                            throw new CustomException("Student's grade does not match the classroom grade", HttpStatus.BAD_REQUEST);
-                        }
-
-                        // Check if the student is already assigned to a different classroom
-                        if (student.getClassroomId() != null && !student.getClassroomId().equals(classroom.getId())) {
-                            throw new CustomException("Student is already assigned to another classroom", HttpStatus.BAD_REQUEST);
-                        }
-
-                        // Assign the classroom to the student
-                        student.setClassroomId(classroom.getId());
-                        studentRepository.save(student);
-
-                        // Assign the classroom to the user (assuming user needs the same classroom assignment)
                         user.setClassroomId(classroom.getId());
                         userRepository.save(user);
 
-                        // Build the response
                         Map<String, Object> response = new HashMap<>();
                         response.put("classroomId", classroom.getId());
                         response.put("classroomCode", classroomCode);
                         response.put("userId", userId);
-                        response.put("teacher", classroom.getTeacher());
-                        response.put("kidId", kidId);
                         return response;
+                    } else {
+                        throw new CustomException("Classroom not found", HttpStatus.NOT_FOUND);
+                    }
+                } else if ((user.getRole().equals(Role.PARENT)) || (user.getRole().equals(Role.SUPER_ADMIN))){
+                    if (teacher != null && kidIdStr != null) {
+                        Long kidId = Long.parseLong(kidIdStr);
+
+                        // Find student by ID
+                        Optional<Student> optionalStudent = studentRepository.findById(kidId);
+                        if (optionalStudent.isPresent()) {
+                            Student student = optionalStudent.get();
+
+                            // Find the classroom by classroomCode
+                            Classroom classroom = classroomRepository.findByClassroomCode(classroomCode);
+                            if (classroom != null) {
+                                // Check if the teacher's name matches the classroom's teacher
+                                if (!teacher.equals(classroom.getTeacher())) {
+                                    throw new CustomException("Le nom de l'enseignant n'est pas correct", HttpStatus.BAD_REQUEST);
+                                }
+
+                                // Check if student's grade matches the classroom's grade
+                                if (!student.getGrade().equals(classroom.getGrade())) {
+                                    throw new CustomException("La classe de l'enfant n'est pas correct", HttpStatus.BAD_REQUEST);
+                                }
+
+                                // Check if the student is already assigned to a different classroom
+                                if (student.getClassroomId() != null && !student.getClassroomId().equals(classroom.getId())) {
+                                    throw new CustomException("Cet élève appartient à une autre classe", HttpStatus.BAD_REQUEST);
+                                }
+
+                                // Assign the classroom to the student
+                                student.setClassroomId(classroom.getId());
+                                studentRepository.save(student);
+
+                                // Assign the classroom to the user
+                                user.setClassroomId(classroom.getId());
+                                userRepository.save(user);
+
+                                Map<String, Object> response = new HashMap<>();
+                                response.put("classroomId", classroom.getId());
+                                response.put("classroomCode", classroomCode);
+                                response.put("userId", userId);
+                                response.put("teacher", classroom.getTeacher());
+                                response.put("kidId", kidId);
+                                return response;
+                            } else {
+                                throw new CustomException("Classroom not found", HttpStatus.NOT_FOUND);
+                            }
                         } else {
-                            throw new CustomException("Classroom not found", HttpStatus.NOT_FOUND);
+                            throw new CustomException("Student not found", HttpStatus.NOT_FOUND);
                         }
                     } else {
-                        throw new CustomException("Student not found", HttpStatus.NOT_FOUND);
+                        throw new CustomException("Missing teacher name or kidId", HttpStatus.BAD_REQUEST);
                     }
                 } else {
-                    throw new CustomException("User not found", HttpStatus.NOT_FOUND);
+                    throw new CustomException("Invalid role", HttpStatus.FORBIDDEN);
                 }
             } else {
-                throw new CustomException("Missing userId, classroomCode, teacher name, or kidId", HttpStatus.BAD_REQUEST);
+                throw new CustomException("User not found", HttpStatus.NOT_FOUND);
             }
+        } else {
+            throw new CustomException("Missing userId or classroomCode", HttpStatus.BAD_REQUEST);
         }
+    }
+
 }

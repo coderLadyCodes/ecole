@@ -1,17 +1,17 @@
 package com.samia.ecole.services;
 
 import com.samia.ecole.DTOs.StudentDTO;
-import com.samia.ecole.DTOs.UserDTO;
+import com.samia.ecole.entities.Classroom;
 import com.samia.ecole.entities.Student;
 import com.samia.ecole.entities.User;
 import com.samia.ecole.exceptions.CustomException;
+import com.samia.ecole.repositories.ClassroomRepository;
 import com.samia.ecole.repositories.StudentRepository;
 import com.samia.ecole.repositories.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,11 +20,13 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final ClassroomRepository classroomRepository;
 
-    public StudentService(StudentRepository studentRepository, UserRepository userRepository, UserService userService) {
+    public StudentService(StudentRepository studentRepository, UserRepository userRepository, UserService userService, ClassroomRepository classroomRepository) {
         this.studentRepository = studentRepository;
         this.userRepository = userRepository;
         this.userService = userService;
+        this.classroomRepository = classroomRepository;
     }
     public StudentDTO mapToStudentDto(Student student){
         StudentDTO studentDTO =  new StudentDTO();
@@ -63,15 +65,24 @@ public class StudentService {
                 .collect(Collectors.toList());
     }
 
-    // GET A LIST OF STUDENTS BY USER ID THAT BELONGS TO THE SAME CLASSROOM ID
-    public List<StudentDTO> getStudentsByClassroomId(Long classroomId){
-        List<UserDTO> users = userService.getUsersByClassroomId(classroomId);
-        List<StudentDTO> allStudents = new ArrayList<>();
-        for (UserDTO user : users){
-            List<StudentDTO> students = getStudentsByUserId(user.getId());
-            allStudents.addAll(students);
-        }
-        return allStudents;
+    // TO GET A LIST OF STUDENTS BY CLASSROOM ID AND GRADE AND TEACHER
+    public List<StudentDTO> getStudentsByClassroomId(Long classroomId) {// I SHOULD'VE CALLED IT: getStudentsByClassroomIdGradeTeacher() == FLEMME!
+        Classroom classroom = classroomRepository.findById(classroomId)
+                .orElseThrow(() -> new CustomException("Classroom not found", HttpStatus.NOT_FOUND));
+
+        List<Student> students = studentRepository.findByClassroomIdAndGrade(classroomId, classroom.getGrade());
+
+        List<Student> filteredStudents = students.stream()
+                .filter(student -> {
+                    Classroom studentClassroom = classroomRepository.findById(student.getClassroomId())
+                            .orElseThrow(() -> new CustomException("Classroom not found", HttpStatus.NOT_FOUND));
+                    return studentClassroom.getTeacher().equals(classroom.getTeacher());
+                })
+                .toList();
+
+        return filteredStudents.stream()
+                .map(this::mapToStudentDto)
+                .collect(Collectors.toList());
     }
     public StudentDTO getStudentByIdAndClassroomId(Long id, Long classroomId){
         Student student = studentRepository.findByIdAndClassroomId(id, classroomId)
