@@ -22,6 +22,11 @@ public class RegularUpdatesDTO {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime localDateTime;
+    @JsonProperty("modified_at")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy HH:mm:ss")
+    private LocalDateTime modifiedAt;
     @JsonProperty("local_date")
     @JsonSerialize(using = LocalDateSerializer.class)
     @JsonDeserialize(using = LocalDateDeserializer.class)
@@ -40,21 +45,23 @@ public class RegularUpdatesDTO {
     public RegularUpdatesDTO() {
     }
 
-    public RegularUpdatesDTO(Long studentId, Long parentId, LocalDateTime localDateTime, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
+    public RegularUpdatesDTO(Long studentId, Long parentId, LocalDateTime localDateTime, LocalDateTime modifiedAt, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
         this.studentId = studentId;
         this.parentId = parentId;
         this.localDateTime = localDateTime;
+        this.modifiedAt = modifiedAt;
         this.localDate = localDate;
         this.isAbsent = isAbsent;
         this.hasCantine = hasCantine;
         this.garderie = garderie;
     }
 
-    public RegularUpdatesDTO(Long id, Long studentId, Long parentId, LocalDateTime localDateTime, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
+    public RegularUpdatesDTO(Long id, Long studentId, Long parentId, LocalDateTime localDateTime, LocalDateTime modifiedAt, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
         this.id = id;
         this.studentId = studentId;
         this.parentId = parentId;
         this.localDateTime = localDateTime;
+        this.modifiedAt = modifiedAt;
         this.localDate = localDate;
         this.isAbsent = isAbsent;
         this.hasCantine = hasCantine;
@@ -91,6 +98,14 @@ public class RegularUpdatesDTO {
 
     public void setLocalDateTime(LocalDateTime localDateTime) {
         this.localDateTime = localDateTime;
+    }
+
+    public LocalDateTime getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(LocalDateTime modifiedAt) {
+        this.modifiedAt = modifiedAt;
     }
 
     public LocalDate getLocalDate() {
@@ -132,6 +147,7 @@ public class RegularUpdatesDTO {
                 ", studentId=" + studentId +
                 ", parentId=" + parentId +
                 ", localDateTime=" + localDateTime +
+                ", modifiedAt=" + modifiedAt +
                 ", localDate=" + localDate +
                 ", isAbsent=" + isAbsent +
                 ", hasCantine=" + hasCantine +

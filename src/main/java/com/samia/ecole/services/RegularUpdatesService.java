@@ -35,6 +35,7 @@ public class RegularUpdatesService {
         regularUpdatesDTO.setStudentId(regularUpdates.getStudent().getId());
         regularUpdatesDTO.setParentId(regularUpdates.getParent().getId());
         regularUpdatesDTO.setLocalDateTime(regularUpdates.getLocalDateTime());
+        regularUpdatesDTO.setModifiedAt(regularUpdates.getModifiedAt());
         regularUpdatesDTO.setLocalDate(regularUpdates.getLocalDate());
         regularUpdatesDTO.setAbsent(regularUpdates.getAbsent());
         regularUpdatesDTO.setHasCantine(regularUpdates.getHasCantine());
@@ -51,6 +52,7 @@ public class RegularUpdatesService {
         student.setId(regularUpdatesDTO.getStudentId());
         regularUpdates.setStudent(student);
         regularUpdates.setLocalDateTime(regularUpdatesDTO.getLocalDateTime());
+        regularUpdates.setModifiedAt(regularUpdatesDTO.getModifiedAt());
         regularUpdates.setLocalDate(regularUpdatesDTO.getLocalDate());
         regularUpdates.setAbsent(regularUpdatesDTO.getAbsent());
         regularUpdates.setHasCantine(regularUpdatesDTO.getHasCantine());
@@ -83,6 +85,7 @@ public class RegularUpdatesService {
         regularUpdates.setStudent(student);
         regularUpdates.setParent(userContext);
         regularUpdates.setLocalDateTime(LocalDateTime.now());
+        regularUpdates.setModifiedAt(LocalDateTime.now());
         RegularUpdates savedRegularUpdates = regularUpdatesRepository.save(regularUpdates);
          return mapToRegularUpdatesDTO(savedRegularUpdates);
     }
@@ -99,6 +102,7 @@ public class RegularUpdatesService {
         regularUpdates.setStudent(student);
         regularUpdates.setParent(parent);
         regularUpdates.setLocalDateTime(regularUpdatesDetails.getLocalDateTime());
+        regularUpdates.setModifiedAt(regularUpdatesDetails.getModifiedAt());
         regularUpdates.setLocalDate(regularUpdatesDetails.getLocalDate());
         RegularUpdates regularUpdatesUpdated =  regularUpdatesRepository.save(regularUpdates);
         return mapToRegularUpdatesDTO(regularUpdatesUpdated);

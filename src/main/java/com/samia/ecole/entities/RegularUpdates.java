@@ -19,6 +19,8 @@ public class RegularUpdates {
     private User parent;
     @Column(name = "local_date_time")
     private LocalDateTime localDateTime;
+    @Column(name = "modified_at")
+    private LocalDateTime modifiedAt;
     @Column(name = "local_date")
     private LocalDate localDate;
     @Column(name = "is_absent", nullable = true)
@@ -33,21 +35,23 @@ public class RegularUpdates {
     public RegularUpdates() {
     }
 
-    public RegularUpdates(Student student, User parent, LocalDateTime localDateTime, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
+    public RegularUpdates(Student student, User parent, LocalDateTime localDateTime, LocalDateTime modifiedAt, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
         this.student = student;
         this.parent = parent;
         this.localDateTime = localDateTime;
+        this.modifiedAt = modifiedAt;
         this.localDate = localDate;
         this.isAbsent = isAbsent;
         this.hasCantine = hasCantine;
         this.garderie = garderie;
     }
 
-    public RegularUpdates(Long id, Student student, User parent, LocalDateTime localDateTime, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
+    public RegularUpdates(Long id, Student student, User parent, LocalDateTime localDateTime, LocalDateTime modifiedAt, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
         this.id = id;
         this.student = student;
         this.parent = parent;
         this.localDateTime = localDateTime;
+        this.modifiedAt = modifiedAt;
         this.localDate = localDate;
         this.isAbsent = isAbsent;
         this.hasCantine = hasCantine;
@@ -84,6 +88,14 @@ public class RegularUpdates {
 
     public void setLocalDateTime(LocalDateTime localDateTime) {
         this.localDateTime = localDateTime;
+    }
+
+    public LocalDateTime getModifiedAt() {
+        return modifiedAt;
+    }
+
+    public void setModifiedAt(LocalDateTime modifiedAt) {
+        this.modifiedAt = modifiedAt;
     }
 
     public LocalDate getLocalDate() {
@@ -125,6 +137,7 @@ public class RegularUpdates {
                 //", student=" + student +
                 //", parent=" + parent +
                 ", localDateTime=" + localDateTime +
+                ", modifiedAt=" + modifiedAt +
                 ", localDate=" + localDate +
                 ", isAbsent=" + isAbsent +
                 ", hasCantine=" + hasCantine +
