@@ -59,15 +59,6 @@ public class RegularUpdatesService {
         regularUpdates.setGarderie(regularUpdatesDTO.getGarderie());
         return regularUpdates;
     }
-    public List<RegularUpdatesDTO> getAllregulardUpdates(){
-        List<RegularUpdates> regularUpdates = regularUpdatesRepository.findAll();
-        return regularUpdates.stream().map((this::mapToRegularUpdatesDTO))
-                .collect(Collectors.toList());
-    }
-    public RegularUpdatesDTO getRegularUpdatesById(Long id){
-        RegularUpdates regularUpdates = regularUpdatesRepository.findById(id).orElseThrow(()-> new CustomException("Updates non trouvés", HttpStatus.NOT_FOUND));
-        return mapToRegularUpdatesDTO(regularUpdates);
-    }
     public RegularUpdatesDTO createRegularUpdates(RegularUpdatesDTO regularUpdatesDTO, Long studentId) throws UnauthorizedException {
         if (studentId == null) {
             throw new IllegalArgumentException("The studentId must not be null.");
@@ -88,6 +79,19 @@ public class RegularUpdatesService {
         regularUpdates.setModifiedAt(LocalDateTime.now());
         RegularUpdates savedRegularUpdates = regularUpdatesRepository.save(regularUpdates);
          return mapToRegularUpdatesDTO(savedRegularUpdates);
+    }
+    public RegularUpdatesDTO getLatestRegularUpdateByStudentId(Long studentId){
+        RegularUpdates regularUpdates = regularUpdatesRepository.findLatestByStudentId(studentId).orElseThrow(() -> new CustomException("No regular updates found for student with ID " + studentId, HttpStatus.NOT_FOUND));
+        return mapToRegularUpdatesDTO(regularUpdates);
+    }
+    public List<RegularUpdatesDTO> getAllregulardUpdates(){
+        List<RegularUpdates> regularUpdates = regularUpdatesRepository.findAll();
+        return regularUpdates.stream().map((this::mapToRegularUpdatesDTO))
+                .collect(Collectors.toList());
+    }
+    public RegularUpdatesDTO getRegularUpdatesById(Long id){
+        RegularUpdates regularUpdates = regularUpdatesRepository.findById(id).orElseThrow(()-> new CustomException("Updates non trouvés", HttpStatus.NOT_FOUND));
+        return mapToRegularUpdatesDTO(regularUpdates);
     }
     public RegularUpdatesDTO updateRegularUpdates(Long id, RegularUpdatesDTO regularUpdatesDetails){
         RegularUpdates regularUpdates = regularUpdatesRepository.findById(id).orElseThrow(()-> new CustomException("cet update n'existe pas", HttpStatus.NOT_FOUND));

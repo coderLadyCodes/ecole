@@ -31,6 +31,10 @@ public class RegularUpdatesController {
     public RegularUpdatesDTO getRegularUpdatesById(@PathVariable(value = "id") Long id){
         return regularUpdatesService.getRegularUpdatesById(id);
     }
+    @GetMapping("/latest/{studentId}")
+    public RegularUpdatesDTO getLatestRegularUpdateByStudentId(@PathVariable(value = "studentId") Long studentId){
+        return regularUpdatesService.getLatestRegularUpdateByStudentId(studentId);
+    }
     @DeleteMapping("/{id}")
     public void deleteRegularUpdates(@PathVariable(value = "id" ) Long id){
         regularUpdatesService.deleteRegularUpdates(id);
