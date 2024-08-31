@@ -89,6 +89,11 @@ public class RegularUpdatesService {
         return regularUpdates.stream().map((this::mapToRegularUpdatesDTO))
                 .collect(Collectors.toList());
     }
+    public List<RegularUpdatesDTO> getAllregulardUpdatesByStudenId(Long studentId){
+        List<RegularUpdates> regularUpdates = regularUpdatesRepository.findByStudentId(studentId);
+        return regularUpdates.stream().map((this::mapToRegularUpdatesDTO))
+                .collect(Collectors.toList());
+    }
     public RegularUpdatesDTO getRegularUpdatesById(Long id){
         RegularUpdates regularUpdates = regularUpdatesRepository.findById(id).orElseThrow(()-> new CustomException("Updates non trouvés", HttpStatus.NOT_FOUND));
         return mapToRegularUpdatesDTO(regularUpdates);

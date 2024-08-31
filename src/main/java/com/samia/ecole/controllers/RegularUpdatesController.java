@@ -23,6 +23,10 @@ public class RegularUpdatesController {
     public List<RegularUpdatesDTO> getAllregulardUpdates(){
             return regularUpdatesService.getAllregulardUpdates();
         }
+    @GetMapping("regular/{studentId}")
+    public List<RegularUpdatesDTO> getAllregulardUpdatesByStudenId(@PathVariable(value = "studentId") Long studentId){
+        return regularUpdatesService.getAllregulardUpdatesByStudenId(studentId);
+    }
     @PutMapping("/{id}")
     public RegularUpdatesDTO updateRegularUpdates(@PathVariable(value ="id") Long id, @RequestBody RegularUpdatesDTO regularUpdatesDetails){
         return regularUpdatesService.updateRegularUpdates(id, regularUpdatesDetails);
