@@ -17,6 +17,8 @@ public class RegularUpdates {
     @ManyToOne
     @JoinColumn(name = "user_id", unique = false)
     private User parent;
+    @Column(name = "student_name")
+    private String studentName;
     @Column(name = "local_date_time")
     private LocalDateTime localDateTime;
     @Column(name = "modified_at")
@@ -35,9 +37,10 @@ public class RegularUpdates {
     public RegularUpdates() {
     }
 
-    public RegularUpdates(Student student, User parent, LocalDateTime localDateTime, LocalDateTime modifiedAt, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
+    public RegularUpdates(Student student, User parent, String studentName, LocalDateTime localDateTime, LocalDateTime modifiedAt, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
         this.student = student;
         this.parent = parent;
+        this.studentName = studentName;
         this.localDateTime = localDateTime;
         this.modifiedAt = modifiedAt;
         this.localDate = localDate;
@@ -46,10 +49,11 @@ public class RegularUpdates {
         this.garderie = garderie;
     }
 
-    public RegularUpdates(Long id, Student student, User parent, LocalDateTime localDateTime, LocalDateTime modifiedAt, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
+    public RegularUpdates(Long id, Student student, User parent, String studentName, LocalDateTime localDateTime, LocalDateTime modifiedAt, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
         this.id = id;
         this.student = student;
         this.parent = parent;
+        this.studentName = studentName;
         this.localDateTime = localDateTime;
         this.modifiedAt = modifiedAt;
         this.localDate = localDate;
@@ -80,6 +84,14 @@ public class RegularUpdates {
 
     public void setParent(User parent) {
         this.parent = parent;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
 
     public LocalDateTime getLocalDateTime() {
@@ -136,6 +148,7 @@ public class RegularUpdates {
                 "id=" + id +
                 //", student=" + student +
                 //", parent=" + parent +
+                ", studentName='" + studentName + '\'' +
                 ", localDateTime=" + localDateTime +
                 ", modifiedAt=" + modifiedAt +
                 ", localDate=" + localDate +

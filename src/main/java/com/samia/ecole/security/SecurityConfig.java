@@ -89,6 +89,7 @@ public class SecurityConfig {
                                                 .requestMatchers(GET,"/updates/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_PARENT")
                                                 .requestMatchers(PUT,"/updates/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_PARENT")
                                                 .requestMatchers(GET,"/updates").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_PARENT")
+                                                .requestMatchers(GET,"/updates/classroom/{classroomId}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .requestMatchers(GET,"/updates/regular/{studentId}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_PARENT")
                                                 .requestMatchers(DELETE,"/updates/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_PARENT")
                                                 .anyRequest().authenticated()

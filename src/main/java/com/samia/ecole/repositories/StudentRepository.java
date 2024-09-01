@@ -16,7 +16,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
  List<Student> getStudentsByUserId(Long userId);
  Optional<Student> findByIdAndClassroomId(Long id, Long classroomId);
 
- List<Student> findAllByClassroomId(Long classroomId); //not sure, not used!
+ List<Student> findAllByClassroomId(Long classroomId);
 @Query("SELECT s FROM Student s WHERE s.classroomId = :classroomId AND s.grade = :grade")
  List<Student> findByClassroomIdAndGrade(@Param("classroomId") Long classroomId,  @Param("grade") Grade grade);
 }

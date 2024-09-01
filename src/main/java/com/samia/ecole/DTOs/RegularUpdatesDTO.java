@@ -17,6 +17,7 @@ public class RegularUpdatesDTO {
     private Long id;
     private Long studentId;
     private Long parentId;
+    private String studentName;
     @JsonProperty("local_date_time")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -45,9 +46,10 @@ public class RegularUpdatesDTO {
     public RegularUpdatesDTO() {
     }
 
-    public RegularUpdatesDTO(Long studentId, Long parentId, LocalDateTime localDateTime, LocalDateTime modifiedAt, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
+    public RegularUpdatesDTO(Long studentId, Long parentId, String studentName, LocalDateTime localDateTime, LocalDateTime modifiedAt, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
         this.studentId = studentId;
         this.parentId = parentId;
+        this.studentName = studentName;
         this.localDateTime = localDateTime;
         this.modifiedAt = modifiedAt;
         this.localDate = localDate;
@@ -56,10 +58,11 @@ public class RegularUpdatesDTO {
         this.garderie = garderie;
     }
 
-    public RegularUpdatesDTO(Long id, Long studentId, Long parentId, LocalDateTime localDateTime, LocalDateTime modifiedAt, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
+    public RegularUpdatesDTO(Long id, Long studentId, Long parentId, String studentName, LocalDateTime localDateTime, LocalDateTime modifiedAt, LocalDate localDate, Boolean isAbsent, Boolean hasCantine, Garderie garderie) {
         this.id = id;
         this.studentId = studentId;
         this.parentId = parentId;
+        this.studentName = studentName;
         this.localDateTime = localDateTime;
         this.modifiedAt = modifiedAt;
         this.localDate = localDate;
@@ -90,6 +93,14 @@ public class RegularUpdatesDTO {
 
     public void setParentId(Long parentId) {
         this.parentId = parentId;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
 
     public LocalDateTime getLocalDateTime() {
@@ -146,6 +157,7 @@ public class RegularUpdatesDTO {
                 "id=" + id +
                 ", studentId=" + studentId +
                 ", parentId=" + parentId +
+                ", studentName='" + studentName + '\'' +
                 ", localDateTime=" + localDateTime +
                 ", modifiedAt=" + modifiedAt +
                 ", localDate=" + localDate +

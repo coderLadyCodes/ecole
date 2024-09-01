@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +35,7 @@ public class RegularUpdatesService {
         regularUpdatesDTO.setId(regularUpdates.getId());
         regularUpdatesDTO.setStudentId(regularUpdates.getStudent().getId());
         regularUpdatesDTO.setParentId(regularUpdates.getParent().getId());
+        regularUpdatesDTO.setStudentName(regularUpdates.getStudent().getName());
         regularUpdatesDTO.setLocalDateTime(regularUpdates.getLocalDateTime());
         regularUpdatesDTO.setModifiedAt(regularUpdates.getModifiedAt());
         regularUpdatesDTO.setLocalDate(regularUpdates.getLocalDate());
@@ -51,6 +53,7 @@ public class RegularUpdatesService {
         Student student = new Student();
         student.setId(regularUpdatesDTO.getStudentId());
         regularUpdates.setStudent(student);
+        regularUpdates.setStudentName(regularUpdatesDTO.getStudentName());
         regularUpdates.setLocalDateTime(regularUpdatesDTO.getLocalDateTime());
         regularUpdates.setModifiedAt(regularUpdatesDTO.getModifiedAt());
         regularUpdates.setLocalDate(regularUpdatesDTO.getLocalDate());
@@ -75,6 +78,7 @@ public class RegularUpdatesService {
         RegularUpdates regularUpdates = mapToRegularUpdates(regularUpdatesDTO);
         regularUpdates.setStudent(student);
         regularUpdates.setParent(userContext);
+        regularUpdates.setStudentName(student.getName());
         regularUpdates.setLocalDateTime(LocalDateTime.now());
         regularUpdates.setModifiedAt(LocalDateTime.now());
         RegularUpdates savedRegularUpdates = regularUpdatesRepository.save(regularUpdates);
@@ -98,6 +102,23 @@ public class RegularUpdatesService {
         RegularUpdates regularUpdates = regularUpdatesRepository.findById(id).orElseThrow(()-> new CustomException("Updates non trouvés", HttpStatus.NOT_FOUND));
         return mapToRegularUpdatesDTO(regularUpdates);
     }
+//    public List<RegularUpdatesDTO> getAllUpdatesForClassroom(Long classroomId) {
+//        List<Student> students = studentRepository.findAllByClassroomId(classroomId);
+//        List<RegularUpdates> regularUpdates = new ArrayList<>();
+//        for (Student student: students){
+//            regularUpdates.addAll(regularUpdatesRepository.findByStudentId(student.getId()));
+//        }
+//        return regularUpdates.stream()
+//                .map(this::mapToRegularUpdatesDTO)
+//                .collect(Collectors.toList());
+//    }
+public List<RegularUpdatesDTO> getAllUpdatesForClassroom(Long classroomId) {
+    List<RegularUpdates> regularUpdates = regularUpdatesRepository.findAllByClassroomId(classroomId);
+    return regularUpdates.stream()
+            .map(this::mapToRegularUpdatesDTO)
+            .collect(Collectors.toList());
+}
+
     public RegularUpdatesDTO updateRegularUpdates(Long id, RegularUpdatesDTO regularUpdatesDetails){
         RegularUpdates regularUpdates = regularUpdatesRepository.findById(id).orElseThrow(()-> new CustomException("cet update n'existe pas", HttpStatus.NOT_FOUND));
 
@@ -109,6 +130,7 @@ public class RegularUpdatesService {
         regularUpdates.setHasCantine(regularUpdatesDetails.getHasCantine());
         regularUpdates.setGarderie(regularUpdatesDetails.getGarderie());
         regularUpdates.setStudent(student);
+        regularUpdates.setStudentName(student.getName());
         regularUpdates.setParent(parent);
         regularUpdates.setLocalDateTime(regularUpdatesDetails.getLocalDateTime());
         regularUpdates.setModifiedAt(regularUpdatesDetails.getModifiedAt());
@@ -119,5 +141,9 @@ public class RegularUpdatesService {
     public void deleteRegularUpdates(Long id){
         RegularUpdates regularUpdates = regularUpdatesRepository.findById(id).orElseThrow(()-> new CustomException("cet update n'existe pas", HttpStatus.NOT_FOUND));
         regularUpdatesRepository.delete(regularUpdates);
+    }
+
+    public boolean updateExistsForDate(Long studentId, LocalDate localDate) {
+        return regularUpdatesRepository.existsByStudentIdAndLocalDate(studentId, localDate);
     }
 }
