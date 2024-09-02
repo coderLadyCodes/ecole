@@ -92,6 +92,12 @@ public class SecurityConfig {
                                                 .requestMatchers(GET,"/updates/classroom/{classroomId}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .requestMatchers(GET,"/updates/regular/{studentId}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_PARENT")
                                                 .requestMatchers(DELETE,"/updates/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_PARENT")
+                                                .requestMatchers(POST,"/cahierDeLiaison/{studentId}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
+                                                .requestMatchers(GET,"/cahierDeLiaison/all").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
+                                                .requestMatchers(GET,"/cahierDeLiaison/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
+                                                .requestMatchers(GET,"/cahierDeLiaison/all/{studentId}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
+                                                .requestMatchers(PUT,"/cahierDeLiaison/update/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
+                                                .requestMatchers(DELETE,"/cahierDeLiaison/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .anyRequest().authenticated()
                         )
                         .sessionManagement(httpSecuritySessionManagementConfigurer ->

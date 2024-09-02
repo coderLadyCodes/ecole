@@ -12,7 +12,7 @@ public class Classroom {
     @Enumerated(EnumType.STRING)
     private Grade grade;
     private Long userId;
-
+    @Column(name = "teacher")
     private String teacher;
     @Column(name = "classroom_code", unique = true)
     private String classroomCode;

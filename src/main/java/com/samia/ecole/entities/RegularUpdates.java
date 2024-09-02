@@ -15,15 +15,15 @@ public class RegularUpdates {
     @JoinColumn(name = "student_id", nullable = false)
     private Student student;
     @ManyToOne
-    @JoinColumn(name = "user_id", unique = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User parent;
     @Column(name = "student_name")
     private String studentName;
-    @Column(name = "local_date_time")
+    @Column(name = "local_date_time", nullable = false)
     private LocalDateTime localDateTime;
-    @Column(name = "modified_at")
+    @Column(name = "modified_at", nullable = false)
     private LocalDateTime modifiedAt;
-    @Column(name = "local_date")
+    @Column(name = "local_date", nullable = false)
     private LocalDate localDate;
     @Column(name = "is_absent", nullable = true)
     private Boolean isAbsent;
