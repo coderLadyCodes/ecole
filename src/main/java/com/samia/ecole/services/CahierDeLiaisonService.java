@@ -69,7 +69,7 @@ public class CahierDeLiaisonService {
         }
         User userContext = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Role userRole = userContext.getRole();
-        if( userRole != Role.SUPER_ADMIN){
+        if( userRole != Role.ADMIN && userRole != Role.SUPER_ADMIN){
             throw new UnauthorizedException("Vous ne pouvez paas creer de Cahier de Liaison");
         }
         Student student = studentRepository.findById(studentId).orElseThrow(()-> new CustomException("eleve n'esiste pas", HttpStatus.NOT_FOUND));

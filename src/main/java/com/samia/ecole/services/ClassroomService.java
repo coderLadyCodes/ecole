@@ -55,10 +55,10 @@ public class ClassroomService {
         classroom1.setUserId(userid);
         // set the classroom code
         Random random = new Random();
-        int randomInt = random.nextInt(999999999);
+        int randomInt = random.nextInt(99999);
         char randomLetter1 = (char) ('A' + random.nextInt(26));
         char randomLetter2 = (char) ('A' + random.nextInt(26));
-        String code = String.format("E%cM%04dS%cM", randomLetter1, randomInt, randomLetter2);
+        String code = String.format("%c%02d%c", randomLetter1, randomInt, randomLetter2);
         classroom1.setClassroomCode(code);
         return classroom1;
     }

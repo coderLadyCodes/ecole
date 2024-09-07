@@ -3,12 +3,11 @@ package com.samia.ecole.controllers;
 import com.samia.ecole.DTOs.CahierDeLiaisonDTO;
 import com.samia.ecole.exceptions.UnauthorizedException;
 import com.samia.ecole.services.CahierDeLiaisonService;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/cahierDeLiaison")
 public class CahierDeLiaisonController {
     private final CahierDeLiaisonService cahierDeLiaisonService;
