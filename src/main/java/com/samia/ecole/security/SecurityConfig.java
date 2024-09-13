@@ -98,6 +98,7 @@ public class SecurityConfig {
                                                 .requestMatchers(GET,"/cahierDeLiaison/all/{studentId}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_PARENT")
                                                 .requestMatchers(PUT,"/cahierDeLiaison/update/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
                                                 .requestMatchers(DELETE,"/cahierDeLiaison/{id}").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN")
+                                                .requestMatchers("/ws/**").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_PARENT")
                                                 .anyRequest().authenticated()
                         )
                         .sessionManagement(httpSecuritySessionManagementConfigurer ->
