@@ -88,14 +88,14 @@ public class UserController {
             cookie.setHttpOnly(true);
             cookie.setSecure(false);
             cookie.setPath("/");
-            cookie.setMaxAge( 30 * 60 * 1000);
+            cookie.setMaxAge( 10 * 60 * 1000);
             httpServletResponse.addCookie(cookie);
             //tokens.remove("bearer");
              //Set refresh token as HttpOnly cookie
             String refreshToken = tokens.get("refresh");
             Cookie refreshTokenCookie = new Cookie("refresh", refreshToken);
             refreshTokenCookie.setHttpOnly(true);
-            refreshTokenCookie.setSecure(false);
+            refreshTokenCookie.setSecure(false); //TRUE
             refreshTokenCookie.setPath("/");
             refreshTokenCookie.setMaxAge( 30 * 60 * 1000);
             httpServletResponse.addCookie(refreshTokenCookie);
@@ -129,16 +129,14 @@ public class UserController {
                 // Set new access token as HttpOnly cookie
                 Cookie newAccessTokenCookie = new Cookie("token", newAccessToken);
                 newAccessTokenCookie.setHttpOnly(true);
-                newAccessTokenCookie.setSecure(false);
+                newAccessTokenCookie.setSecure(false); // TRUE
                 newAccessTokenCookie.setPath("/");
-                newAccessTokenCookie.setMaxAge(30 * 60 * 1000);
-
+                newAccessTokenCookie.setMaxAge(7 * 24 * 60 * 60 * 1000);
                 response.addCookie(newAccessTokenCookie);
-                System.out.println("access token cookie : " + newAccessTokenCookie);
 
                 return tokens;
             } catch (RuntimeException e) {
-                throw new RuntimeException("Not authorized");
+                throw new RuntimeException("User Not authorized !! ");
             }
         }
         throw new RuntimeException("Refresh token not found");

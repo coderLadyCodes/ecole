@@ -54,7 +54,7 @@ public class JwtService {
                 .valeur(UUID.randomUUID().toString())
                 .expire(false)
                 .creation(Instant.now())
-                .expiration(Instant.now().plusMillis(30 *60 *1000))
+                .expiration(Instant.now().plusMillis(7 * 24 * 60 * 60 * 1000))
                 .build();
         final Jwt jwt = Jwt
                 .builder()
@@ -110,7 +110,7 @@ public class JwtService {
 
     private Map<String, String> generateJwt(User user) {
         final long currentTime = System.currentTimeMillis();
-        final long expirationTime = currentTime + 30 * 60 * 1000;
+        final long expirationTime = currentTime + 10 * 60 * 1000;
 
         final Map<String, Object> claims =  Map.of(
                 "name", user.getName(),

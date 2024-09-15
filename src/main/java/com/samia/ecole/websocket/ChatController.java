@@ -17,7 +17,7 @@ public class ChatController {
         this.chatMessageRepository = chatMessageRepository;
     }
 
-    @MessageMapping("/chat.sendMessage")
+    @MessageMapping("/chat.sendMessage/{classroomId}")
     @SendTo("/topic/classroom/{classroomId}")
     public ChatMessage sendMessage(@Payload ChatMessage chatMessage,
                                    @Header("simpSessionAttributes") Map<String, Object> attributes,
@@ -28,15 +28,18 @@ public class ChatController {
         }
         chatMessage.setLocalDateTime(LocalDateTime.now());
         chatMessage.setUser(user);
+        chatMessage.setClassroomId(Long.parseLong(classroomId));
         chatMessageRepository.save(chatMessage);
         return chatMessage;
     }
-    @MessageMapping("/chat.addUser")
+    @MessageMapping("/chat.addUser/{classroomId}")
     @SendTo("/topic/classroom/{classroomId}")
     public  ChatMessage addUser(@Payload ChatMessage chatMessage,
-                                @Header("simpSessionAttributes") Map<String, Object> attributes){
+                                @Header("simpSessionAttributes") Map<String, Object> attributes,
+                                @DestinationVariable String classroomId){
         chatMessage.setLocalDateTime(LocalDateTime.now());
         chatMessage.setTypeMessage(TypeMessage.JOIN);
+        chatMessage.setClassroomId(Long.parseLong(classroomId));
         chatMessageRepository.save(chatMessage);
         return chatMessage;
     }
