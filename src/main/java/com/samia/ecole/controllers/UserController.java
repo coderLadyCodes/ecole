@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.annotation.MultipartConfig;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -85,19 +86,19 @@ public class UserController {
 
             String jwtToken = tokens.get("bearer");
             Cookie cookie = new Cookie("token", jwtToken);
-            cookie.setHttpOnly(true);
-            cookie.setSecure(false);
+            cookie.setHttpOnly(true); // TRUE FOR PRODUCTION
+            cookie.setSecure(false); // TRUE FOR PRODUCTION
             cookie.setPath("/");
-            cookie.setMaxAge( 10 * 60 * 1000);
+            cookie.setMaxAge( 10 * 60 );
             httpServletResponse.addCookie(cookie);
             //tokens.remove("bearer");
              //Set refresh token as HttpOnly cookie
             String refreshToken = tokens.get("refresh");
             Cookie refreshTokenCookie = new Cookie("refresh", refreshToken);
-            refreshTokenCookie.setHttpOnly(true);
-            refreshTokenCookie.setSecure(false); //TRUE
+            refreshTokenCookie.setHttpOnly(true); // TRUE FOR PRODUCTION
+            refreshTokenCookie.setSecure(false); //TRUE FOR PRODUCTION
             refreshTokenCookie.setPath("/");
-            refreshTokenCookie.setMaxAge( 30 * 60 * 1000);
+            refreshTokenCookie.setMaxAge( 30 * 60 );
             httpServletResponse.addCookie(refreshTokenCookie);
 
             return tokens;
@@ -123,7 +124,6 @@ public class UserController {
             try {
                 refreshTokenRequest.put("refresh", refresh);
                 Map<String, String> tokens = jwtService.refreshToken(refreshTokenRequest);
-                System.out.println("refresh token request is : " + refreshTokenRequest);
                 String newAccessToken = tokens.get("bearer");
 
                 // Set new access token as HttpOnly cookie
@@ -141,10 +141,30 @@ public class UserController {
         }
         throw new RuntimeException("Refresh token not found");
     }
-//    @PostMapping("/refresh-token")
-//    public Map<String, String> refreshToken(@RequestBody Map<String, String> refreshTokenRequest){
-//        return this.jwtService.refreshToken(refreshTokenRequest);
-//    }
+
+    // THIS IS FOR WEBSOCKET NOT SURE IF IT WORTH IT
+    @GetMapping("/api/get-token")
+    public Map<String, String> getToken(HttpServletRequest request) {
+        String token = null;
+        Cookie[] cookies = request.getCookies();
+
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("token".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (token != null) {
+            Map<String, String> response = new HashMap<>();
+            response.put("token", token);
+            return response;
+        } else {
+            throw new RuntimeException("Token not found");
+        }
+    } // THIS IS FOR WEBSOCKET NOT SURE IF IT WORTH IT
 
     @PostMapping("/change-password")
     public void  passwordChange(@RequestBody Map<String, String> activation){

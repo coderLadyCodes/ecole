@@ -29,22 +29,4 @@ private final WebSocketHandshakeInterceptor webSocketHandshakeInterceptor;
       registry.enableSimpleBroker("/topic");
     }
 
-//    @Override
-//   public void configureClientInboundChannel(ChannelRegistration registration) {
-//       registration.interceptors(jwtChannelInterceptor);
-//        registration.interceptors(new ChannelInterceptor() {
-//            @Override
-//            public Message<?> preSend(Message<?> message, MessageChannel channel) {
-//                StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-//                if(StompCommand.CONNECT.equals(accessor.getCommand())){
-//                    Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//                    if(auth != null && auth.isAuthenticated()){
-//                        accessor.setUser(auth);
-//                    }
-//                }
-//                return message;
-//            }
-//        });
-//   }
-
 }

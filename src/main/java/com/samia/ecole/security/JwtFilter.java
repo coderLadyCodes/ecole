@@ -34,34 +34,7 @@ public class JwtFilter extends OncePerRequestFilter {
         Jwt tokenInDb = null;
         String username = null;
         boolean isTokenExpired = true;
-//        try {
-//            String authorization = request.getHeader("Authorization");
-//            if (authorization == null) {
-//                Cookie[] cookies = request.getCookies();
-//                if (cookies != null) {
-//                    for (Cookie cookie : cookies) {
-//                        if ("token".equals((cookie.getName()))) {
-//                            authorization = "Bearer " + cookie.getValue();
-//                        }
-//                    }
-//                }
-//            }
-//            if (authorization != null && authorization.startsWith("Bearer ")) {
-//                token = authorization.substring(7);
-//                tokenInDb = jwtService.tokenByValue(token);
-//                if (tokenInDb.getUser().getEmail().equals(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
-//                    UserDetails userDetails = userService.loadUserByUsername(username);
-//                    UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-//                            userDetails, null, userDetails.getAuthorities());
-//                    SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-//                }
-//            }
-//
-//    } catch(Exception e){
-//        handlerExceptionResolver.resolveException(request, response, null, e);
-//    }
-//     filterChain.doFilter(request, response);
-//}
+
             try {
                 String authorization = request.getHeader("Authorization");
                 Cookie[] cookies = request.getCookies();
