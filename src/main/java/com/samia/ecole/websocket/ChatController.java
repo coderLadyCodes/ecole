@@ -21,7 +21,6 @@ public class ChatController {
     public ChatMessage sendMessage(@Payload ChatMessage chatMessage,
                                    @Header("simpSessionAttributes") Map<String, Object> attributes,
                                    @DestinationVariable String classroomId) throws AccessDeniedException {
-        //User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (classroomId == null || classroomId.equals("undefined")) {
             throw new IllegalArgumentException("Invalid classroomId: " + classroomId);
         }
@@ -33,10 +32,15 @@ public class ChatController {
         if(!user.getClassroomId().equals(Long.parseLong(classroomId))){
             throw new AccessDeniedException("You don't have access to this classroom");
         }
+        if (chatMessage.getMessage() == null || chatMessage.getMessage().isEmpty()) {
+            throw new IllegalArgumentException("Message content cannot be null or empty");
+        }
         chatMessage.setLocalDateTime(LocalDateTime.now());
         chatMessage.setUser(user);
         chatMessage.setClassroomId(Long.parseLong(classroomId));
+        chatMessage.setTypeMessage(TypeMessage.CHAT);
         chatMessageRepository.save(chatMessage);
+
         return chatMessage;
     }
     @MessageMapping("/chat.addUser/{classroomId}")

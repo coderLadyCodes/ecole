@@ -114,6 +114,7 @@ public class JwtService {
 
         final Map<String, Object> claims =  Map.of(
                 "name", user.getName(),
+                //"classroomId", user.getClassroomId(), // I INCLUDED CLASSROOMID IN THE CLAIMS
                 //"role", user.getRole().name(),
                 Claims.EXPIRATION,new Date(expirationTime),
                 Claims.SUBJECT,user.getEmail()

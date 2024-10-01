@@ -83,6 +83,7 @@ public class UserController {
             tokens.put("role", user.getRole().name());
             tokens.put("id", String.valueOf(user.getId()));
             tokens.put("userName", user.getName());
+            tokens.put("classroomId", String.valueOf(user.getClassroomId())); // I ADDED THIS SO THAT THE WEBSOCKET WORKS
 
             String jwtToken = tokens.get("bearer");
             Cookie cookie = new Cookie("token", jwtToken);
@@ -142,29 +143,38 @@ public class UserController {
         throw new RuntimeException("Refresh token not found");
     }
 
-    // THIS IS FOR WEBSOCKET NOT SURE IF IT WORTH IT
-    @GetMapping("/api/get-token")
+
+    @GetMapping("/api/get-token") // THIS IS FOR WEBSOCKET NOT SURE IF IT WORTH IT
     public Map<String, String> getToken(HttpServletRequest request) {
-        String token = null;
         Cookie[] cookies = request.getCookies();
 
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("token".equals(cookie.getName())) {
-                    token = cookie.getValue();
-                    break;
-                }
+        if (cookies == null || cookies.length == 0) {
+            System.out.println("No cookies received.");
+            throw new RuntimeException("No cookies found in the request.");
+        }
+
+        for (Cookie cookie : cookies) {
+            //System.out.println("Received Cookie: " + cookie.getName() + " = " + cookie.getValue());
+        }
+
+        String token = null;
+        for (Cookie cookie : cookies) {
+            if ("token".equals(cookie.getName())) {
+                token = cookie.getValue();
+                break;
             }
         }
 
         if (token != null) {
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
+            //System.out.println("Token found: " + token);
             return response;
         } else {
-            throw new RuntimeException("Token not found");
+            System.out.println("Token not found in cookies.");
+            throw new RuntimeException("Token cookie not found.");
         }
-    } // THIS IS FOR WEBSOCKET NOT SURE IF IT WORTH IT
+    }
 
     @PostMapping("/change-password")
     public void  passwordChange(@RequestBody Map<String, String> activation){
@@ -174,11 +184,7 @@ public class UserController {
     public void  newPassword(@RequestBody Map<String, String> activation){
         this.userService.newPassword(activation);
     }
-//    @PostMapping("/deconnexion")
-//    public void logout(){
-//        this.jwtService.deconnexion();
-//        SecurityContextHolder.clearContext();
-//    }
+
     @PostMapping("/deconnexion")
     public void logout(HttpServletResponse response){
         Cookie tokenCookie = new Cookie("token", null);

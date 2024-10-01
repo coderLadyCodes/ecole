@@ -104,7 +104,7 @@ public class SecurityConfig {
                                                 .requestMatchers("/app/**").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_PARENT")
                                                 .requestMatchers("/chat.addUser/**").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_PARENT")
                                                 .requestMatchers("/chat.sendMessage/**").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_PARENT")
-                                                .requestMatchers(GET,"/api/get-token").permitAll()
+                                                .requestMatchers(GET,"/api/get-token").hasAnyAuthority("ROLE_SUPER_ADMIN", "ROLE_ADMIN", "ROLE_PARENT")
 
                                                 .anyRequest().authenticated()
                         )
