@@ -39,10 +39,11 @@ public class User implements UserDetails {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
+    @JsonIgnore  // NOT SURE I CAN DO THAT
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
     private List<Post> postList=new ArrayList<>();
     @JsonIgnore  // NOT SURE I CAN DO THAT
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Student> studentList = new ArrayList<>();
     @Column(name = "active_account")
     private boolean actif = false;
