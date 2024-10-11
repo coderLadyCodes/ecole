@@ -1,10 +1,13 @@
 package com.samia.ecole.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
 @Table(name="students")
 public class Student {
     @Id
@@ -19,17 +22,6 @@ public class Student {
     @Column(name = "grade")
     @Enumerated(EnumType.STRING)
     private Grade grade;
-//    @Column(name="classe", nullable = false)
-//    private String classe;
-//    @Column(name="absence")
-//    private Boolean absence;
-//    @Column(name="motif")
-//    private Motif motif;
-//    @Column(name="cantine")
-//    private Boolean cantine;
-//    @Column(name="garderie")
-//    @Enumerated(EnumType.STRING)
-//    private Garderie garderie;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

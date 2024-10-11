@@ -1,11 +1,14 @@
 package com.samia.ecole.entities;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,property = "id")
 @Table(name="posts")
 public class Post{
     @Id
@@ -13,7 +16,7 @@ public class Post{
     private Long id;
     @Column(name="title", nullable = false)
     private String title;
-    @Column(name="post_content", nullable = false)
+    @Column(name="post_content", nullable = false, columnDefinition = "TEXT")
     private String postContent;
     @Column(name="image_post")
     private String imagePost;

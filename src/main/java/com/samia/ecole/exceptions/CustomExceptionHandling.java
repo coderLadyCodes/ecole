@@ -34,9 +34,9 @@ public class CustomExceptionHandling {
 //    public Map<String, String> handleNotFoundExceptions(RuntimeException ex){
 //        Map<String, String> error = new HashMap<>();
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.CONFLICT)
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public Map<String, String> userNotFound(UserAlreadyExistsException ex){
+    public Map<String, String> userAlreadyExists(UserAlreadyExistsException ex){
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
         return error;

@@ -62,13 +62,13 @@ public class UserService implements UserDetailsService {
         }
         final Optional<User> userOptional = userRepository.findByEmail(user.getEmail());
         if(userOptional.isPresent()){
-            throw new UserAlreadyExistsException(user.getEmail() + " this user Exists already !");
+            throw new UserAlreadyExistsException(user.getEmail() + " existe déja !");
         }
         if (user.getEmail() == null){
-            throw new UserNotFoundException("user can not be null");
+            throw new UserNotFoundException("l'utilisateur ne peut pas etre NULL");
         }
         if (user.getPassword() == null || user.getPassword().isEmpty()) {
-            throw new IllegalArgumentException("Password cannot be null or empty");
+            throw new IllegalArgumentException("le mot de passe ne peut pas etre null ou vide");
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
