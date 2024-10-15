@@ -31,6 +31,8 @@ public class NotificationService {
                         
                         Retournez sur le site de l'école, et suivez les instructions.
                         
+                        PS: Ceci est un email automatique, ne répondez jamais à cet email.
+                        
                         """,
                 validation.getUser().getName(),
                 validation.getCode());
@@ -46,8 +48,9 @@ public class NotificationService {
         String text = String.format("""
                 Bonjour %s,
                 
-                Le code d'accés à la classe : %s, du  prof : %s  est : %s
-                Merci.
+                Le code d'accés à la classe : %s, de Maitresse / Maitre : %s  est : %s
+                
+                PS: Ceci est un email automatique, ne répondez jamais à cet email.
                 """,
                 userContext.getUsername(),
                 classroom.getGrade(),

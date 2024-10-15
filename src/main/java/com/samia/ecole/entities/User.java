@@ -23,7 +23,7 @@ public class User implements UserDetails {
     @Column(name="name", nullable = false)
     private String name;
     //@Email(message = "Email is not valid")
-    @Column(name="email",unique = true, nullable = false)
+    //@Column(name="email",unique = true, nullable = false)
     private String email;
 
     @Column(name="phone")
@@ -41,10 +41,8 @@ public class User implements UserDetails {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Role role;
-    //@JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true,fetch = FetchType.EAGER)
     private List<Post> postList=new ArrayList<>();
-    //@JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Student> studentList = new ArrayList<>();
     @Column(name = "active_account")

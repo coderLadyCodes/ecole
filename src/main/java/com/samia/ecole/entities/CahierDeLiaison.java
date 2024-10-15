@@ -20,9 +20,9 @@ public class CahierDeLiaison {
     private String teacherName;
     @Column(name = "title",nullable = false)
     private String title;
-    @Column(name = "content", nullable = false)
+    @Column(name = "content", nullable = false, columnDefinition = "TEXT")
     private String content;
-    @Column(name = "date_time",nullable = false)
+    @Column(name = "local_date_time",nullable = false)
     private LocalDateTime dateTime;
     @Column(name = "modified_at",nullable = false)
     private LocalDateTime modifiedAt;
