@@ -87,8 +87,8 @@ public class UserController {
 
             String jwtToken = tokens.get("bearer");
             Cookie cookie = new Cookie("token", jwtToken);
-            cookie.setHttpOnly(true); // TRUE FOR PRODUCTION
-            cookie.setSecure(false); // TRUE FOR PRODUCTION
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
             cookie.setPath("/");
             cookie.setMaxAge( 10 * 60 );
             httpServletResponse.addCookie(cookie);
@@ -96,8 +96,8 @@ public class UserController {
              //Set refresh token as HttpOnly cookie
             String refreshToken = tokens.get("refresh");
             Cookie refreshTokenCookie = new Cookie("refresh", refreshToken);
-            refreshTokenCookie.setHttpOnly(true); // TRUE FOR PRODUCTION
-            refreshTokenCookie.setSecure(false); //TRUE FOR PRODUCTION
+            refreshTokenCookie.setHttpOnly(true);
+            refreshTokenCookie.setSecure(true);
             refreshTokenCookie.setPath("/");
             refreshTokenCookie.setMaxAge( 30 * 60 );
             httpServletResponse.addCookie(refreshTokenCookie);
@@ -130,7 +130,7 @@ public class UserController {
                 // Set new access token as HttpOnly cookie
                 Cookie newAccessTokenCookie = new Cookie("token", newAccessToken);
                 newAccessTokenCookie.setHttpOnly(true);
-                newAccessTokenCookie.setSecure(false); // TRUE
+                newAccessTokenCookie.setSecure(true);
                 newAccessTokenCookie.setPath("/");
                 newAccessTokenCookie.setMaxAge(7 * 24 * 60 * 60 * 1000);
                 response.addCookie(newAccessTokenCookie);
