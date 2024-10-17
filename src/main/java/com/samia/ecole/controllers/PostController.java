@@ -6,7 +6,6 @@ import com.samia.ecole.DTOs.PostDTO;
 import com.samia.ecole.services.FileUploadUtil;
 import com.samia.ecole.services.PostService;
 import org.springframework.http.MediaType;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,9 +18,11 @@ import java.util.List;
 @RequestMapping("/posts")
 public class PostController{
     private final PostService postService;
+    private final FileUploadUtil fileUploadUtil;
 
-    public PostController(PostService postService) {
+    public PostController(PostService postService, FileUploadUtil fileUploadUtil) {
         this.postService = postService;
+        this.fileUploadUtil = fileUploadUtil;
     }
     @GetMapping()
     public List<PostDTO> getAllPosts(){
@@ -41,28 +42,28 @@ public class PostController{
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         PostDTO postdto = mapper.readValue(postDTO, PostDTO.class);
-        if (multipartFile != null && !multipartFile.isEmpty()) {
-            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+        //if (multipartFile != null && !multipartFile.isEmpty()) {
+            //String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
-            int extensionIndex = fileName.lastIndexOf('.');
-            String fileNameWithoutExtension = fileName.substring(0, extensionIndex);
+            //int extensionIndex = fileName.lastIndexOf('.');
+            //String fileNameWithoutExtension = fileName.substring(0, extensionIndex);
 
-            String shortenedFileName = fileNameWithoutExtension.substring(0, Math.min(fileNameWithoutExtension.length(), 10));
+            //String shortenedFileName = fileNameWithoutExtension.substring(0, Math.min(fileNameWithoutExtension.length(), 10));
 
-            String profileImageName = shortenedFileName + fileName.substring(extensionIndex);
+            //String profileImageName = shortenedFileName + fileName.substring(extensionIndex);
+            //String imageUrl = fileUploadUtil.uploadFile(multipartFile);
+            //postdto.setImagePost(imageUrl);
 
-            postdto.setImagePost(profileImageName);
+            //PostDTO savedPost = postService.createPost(postdto);
 
-            PostDTO savedPost = postService.createPost(postdto);
+            //String uploadDir = "images/" + savedPost.getId();
 
-            String uploadDir = "images/" + savedPost.getId();
+            //FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
 
-            FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
-
-            return savedPost;
-        } else {
-            return postService.createPost(postdto);
-        }
+            //return postService.createPost(postdto);
+        //} else {
+            return postService.createPost(postdto, multipartFile);
+        //}
     }
 
         @GetMapping("/post/{id}")
@@ -77,34 +78,51 @@ public class PostController{
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
             PostDTO postdetail = mapper.readValue(postDetails, PostDTO.class);
-            PostDTO originalPost = postService.getPostById(id);
-            if (multipartFile != null && !multipartFile.isEmpty()) {
-                String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+            //PostDTO originalPost = postService.getPostById(id);
+            //String oldImageUrl = originalPost.getImagePost();
+            //if (multipartFile != null && !multipartFile.isEmpty()) {
+                //try {
+                    //String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
-                int extensionIndex = fileName.lastIndexOf('.');
-                String fileNameWithoutExtension = fileName.substring(0, extensionIndex);
+                    //int extensionIndex = fileName.lastIndexOf('.');
+                    //String fileNameWithoutExtension = fileName.substring(0, extensionIndex);
 
-                String shortenedFileName = fileNameWithoutExtension.substring(0, Math.min(fileNameWithoutExtension.length(), 10));
+                    //String shortenedFileName = fileNameWithoutExtension.substring(0, Math.min(fileNameWithoutExtension.length(), 10));
 
-                String profileImageName = shortenedFileName + fileName.substring(extensionIndex);
+                    //String profileImageName = shortenedFileName + fileName.substring(extensionIndex);
+                    //String newImageUrl = fileUploadUtil.uploadFile(multipartFile);
+                    //postdetail.setImagePost(newImageUrl);
 
-                postdetail.setImagePost(profileImageName);
+                    //PostDTO updatedPost = postService.updatePost(id, postdetail);
 
-                PostDTO updatedPost = postService.updatePost(id, postdetail);
+                    //if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
+                        //String publicId = extractPublicIdFromUrl(oldImageUrl);
+                        //fileUploadUtil.deleteFile(publicId);
+                    //}
+                    //return updatedPost;
 
-                String uploadDir = "images/" + updatedPost.getId();
+                    //String uploadDir = "images/" + updatedPost.getId();
 
-                FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
-                if (originalPost.getImagePost() != null && !originalPost.getImagePost().isEmpty()) {
-                    String previousPath = uploadDir + "/" + originalPost.getImagePost();
-                    FileUploadUtil.deleteFile(previousPath);
-                }
-                return updatedPost;
+                    //FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+                    //if (originalPost.getImagePost() != null && !originalPost.getImagePost().isEmpty()) {
+                        //String previousPath = uploadDir + "/" + originalPost.getImagePost();
+                       // FileUploadUtil.deleteFile(previousPath);
+                    //}
+                    //return updatedPost;
+                //} catch (Exception e) {
+                    //throw new IOException("Error updating user and image: " + e.getMessage());
+                //}
 
-            } else {
-                return postService.updatePost(id,postdetail);
+                //} else {
+            //}
+                return postService.updatePost(id,postdetail, multipartFile);
             }
-        }
+//    private String extractPublicIdFromUrl(String imageUrl) {
+//        String[] urlParts = imageUrl.split("/");
+//        String fileName = urlParts[urlParts.length - 1];
+//        return fileName.substring(0, fileName.lastIndexOf('.'));
+//    }
+
         @DeleteMapping("{id}")
          public void deleteUser(@PathVariable(value = "id") Long id){
              postService.deletePost(id);

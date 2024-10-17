@@ -13,7 +13,9 @@ import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -24,11 +26,13 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final ClassroomRepository classroomRepository;
+    private final FileUploadUtil fileUploadUtil;
 
-    public PostService(PostRepository postRepository, UserRepository userRepository, ClassroomRepository classroomRepository) {
+    public PostService(PostRepository postRepository, UserRepository userRepository, ClassroomRepository classroomRepository, FileUploadUtil fileUploadUtil) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.classroomRepository = classroomRepository;
+        this.fileUploadUtil = fileUploadUtil;
     }
     public  PostDTO mapToPostDTO(Post post){
          PostDTO postDTO = new PostDTO();
@@ -75,7 +79,7 @@ public class PostService {
         Post post = postRepository.findById(id).orElseThrow(()-> new CustomException("post not found with id :" + id, HttpStatus.NOT_FOUND));
         return mapToPostDTO(post);
     }
-    public PostDTO createPost(PostDTO postDTO){
+    public PostDTO createPost(PostDTO postDTO, MultipartFile multipartFile) throws IOException {
         if (postDTO == null) {
             throw new IllegalArgumentException("postDTO cannot be null");
         }
@@ -106,22 +110,52 @@ public class PostService {
         }
 
         Post post = mapToPost(postDTO);
+        if (multipartFile != null && !multipartFile.isEmpty()){
+            String imageUrl = fileUploadUtil.uploadFile(multipartFile);
+            post.setImagePost(imageUrl);
+        }
         post.setUser(user);
         post.setClassroomId(optionalClassroom.get().getId());
         Post savedPost = postRepository.save(post);
         return mapToPostDTO(savedPost);
     }
-    public PostDTO updatePost(Long id, PostDTO postDetails){
-        Post post = postRepository.findById(id)
+    @Transactional
+    public PostDTO updatePost(Long id, PostDTO postDetails, MultipartFile multipartFile) throws IOException {
+        Post originalPost = postRepository.findById(id)
                 .orElseThrow(() -> new CustomException("Post not found with id :" + id, HttpStatus.NOT_FOUND));
-        post.setTitle(postDetails.getTitle() == null ? post.getTitle() : postDetails.getTitle());
-        post.setPostContent(postDetails.getPostContent() == null ? post.getPostContent() : postDetails.getPostContent());
-        post.setImagePost(postDetails.getImagePost());
-        Post postUpdated = postRepository.save(post);
+        String oldImageUrl = originalPost.getImagePost();
+        if (multipartFile != null && !multipartFile.isEmpty()) {
+            String newImageUrl = fileUploadUtil.uploadFile(multipartFile);
+            postDetails.setImagePost(newImageUrl);
+
+            if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
+                String publicId = extractPublicIdFromUrl(oldImageUrl);
+                fileUploadUtil.deleteFile(publicId);
+            }
+        } else {
+            postDetails.setImagePost(oldImageUrl);
+        }
+        originalPost.setTitle(postDetails.getTitle() == null ? originalPost.getTitle() : postDetails.getTitle());
+        originalPost.setPostContent(postDetails.getPostContent() == null ? originalPost.getPostContent() : postDetails.getPostContent());
+        originalPost.setImagePost(postDetails.getImagePost());
+        Post postUpdated = postRepository.save(originalPost);
         return mapToPostDTO(postUpdated);
+    }
+    private String extractPublicIdFromUrl(String imageUrl) {
+        String[] urlParts = imageUrl.split("/");
+        String fileName = urlParts[urlParts.length - 1];
+        return fileName.substring(0, fileName.lastIndexOf('.'));
     }
     public void deletePost(Long id){
         Post post = postRepository.findById(id).orElseThrow(()-> new CustomException("Post not found with id :" + id, HttpStatus.NOT_FOUND));
+        if(post.getImagePost() != null){
+            String publicId = extractPublicIdFromUrl(post.getImagePost());
+            try {
+                fileUploadUtil.deleteFile(publicId);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to delete image from Cloudinary: " + e.getMessage());
+            }
+        }
         User user = post.getUser();
         if (user != null){
             user.getPostList().remove(post);

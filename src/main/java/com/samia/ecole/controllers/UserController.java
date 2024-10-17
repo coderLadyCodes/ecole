@@ -10,12 +10,12 @@ import com.samia.ecole.services.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,55 +29,66 @@ import java.util.Map;
 @RestController
 @MultipartConfig
 public class UserController {
+    private final FileUploadUtil fileUploadUtil;
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JwtService jwtService;
-    public UserController(AuthenticationManager authenticationManager, UserService userService, JwtService jwtService) {
+
+    public UserController(FileUploadUtil fileUploadUtil, AuthenticationManager authenticationManager, UserService userService, JwtService jwtService) {
+        this.fileUploadUtil = fileUploadUtil;
         this.authenticationManager = authenticationManager;
         this.userService = userService;
         this.jwtService = jwtService;
     }
+
     @GetMapping("/identification")
-    public String identification(){
+    public String identification() {
         return "identifier";
     }
-    @PostMapping(value ="/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+
+    @PostMapping(value = "/signup", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserDTO createUser(@RequestPart String userDTO, @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         UserDTO userdto = mapper.readValue(userDTO, UserDTO.class);
-        if (multipartFile != null && !multipartFile.isEmpty()) {
-            String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+        //if (multipartFile != null && !multipartFile.isEmpty()) {
+            //String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 
-            int extensionIndex = fileName.lastIndexOf('.');
-            String fileNameWithoutExtension = fileName.substring(0, extensionIndex);
+            //int extensionIndex = fileName.lastIndexOf('.');
+            //String fileNameWithoutExtension = fileName.substring(0, extensionIndex);
 
-            String shortenedFileName = fileNameWithoutExtension.substring(0, Math.min(fileNameWithoutExtension.length(), 10));
+            //String shortenedFileName = fileNameWithoutExtension.substring(0, Math.min(fileNameWithoutExtension.length(), 10));
 
-            String profileImageName = shortenedFileName + fileName.substring(extensionIndex);
+            //String profileImageName = shortenedFileName + fileName.substring(extensionIndex);
 
-            userdto.setProfileImage(profileImageName);
+            //userdto.setProfileImage(profileImageName);
 
-            UserDTO savedUser = userService.createUser(userdto);
+            //String imageUrl = fileUploadUtil.uploadFile(multipartFile);
 
-            String uploadDir = "images/" + savedUser.getId();
+            //userdto.setProfileImage(imageUrl);
 
-            FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+            //UserDTO savedUser = userService.createUser(userdto);
 
-            return savedUser;
-        } else {
-            return userService.createUser(userdto);
-        }
+            //String uploadDir = "images/" + savedUser.getId();
+
+            //FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+
+            //return userService.createUser(userdto);
+        //} else {
+            return userService.createUser(userdto, multipartFile);
+        //}
     }
+
     @PostMapping("/activation")
-    public void activation(@RequestBody Map<String, String> activation){
+    public void activation(@RequestBody Map<String, String> activation) {
         userService.activation(activation);
     }
+
     @PostMapping("/connexion")
-    public Map<String, String> connexion(@RequestBody AuthentificationDTO authentificationDTO, HttpServletResponse httpServletResponse){
+    public Map<String, String> connexion(@RequestBody AuthentificationDTO authentificationDTO, HttpServletResponse httpServletResponse) {
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authentificationDTO.username(), authentificationDTO.password()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        if(authentication.isAuthenticated()) {
+        if (authentication.isAuthenticated()) {
             Map<String, String> tokens = this.jwtService.generate(authentificationDTO.username());
             User user = (User) authentication.getPrincipal();
             tokens.put("role", user.getRole().name());
@@ -90,21 +101,21 @@ public class UserController {
             cookie.setHttpOnly(true);
             cookie.setSecure(true);
             cookie.setPath("/");
-            cookie.setMaxAge( 10 * 60 );
+            cookie.setMaxAge(10 * 60);
             httpServletResponse.addCookie(cookie);
             //tokens.remove("bearer");
-             //Set refresh token as HttpOnly cookie
+            //Set refresh token as HttpOnly cookie
             String refreshToken = tokens.get("refresh");
             Cookie refreshTokenCookie = new Cookie("refresh", refreshToken);
             refreshTokenCookie.setHttpOnly(true);
             refreshTokenCookie.setSecure(true);
             refreshTokenCookie.setPath("/");
-            refreshTokenCookie.setMaxAge( 30 * 60 );
+            refreshTokenCookie.setMaxAge(30 * 60);
             httpServletResponse.addCookie(refreshTokenCookie);
 
             return tokens;
         }
-        return  null;
+        return null;
     }
 
     @PostMapping("/refresh-token")
@@ -177,16 +188,17 @@ public class UserController {
     }
 
     @PostMapping("/change-password")
-    public void  passwordChange(@RequestBody Map<String, String> activation){
+    public void passwordChange(@RequestBody Map<String, String> activation) {
         this.userService.changePassword(activation);
     }
+
     @PostMapping("/new-password")
-    public void  newPassword(@RequestBody Map<String, String> activation){
+    public void newPassword(@RequestBody Map<String, String> activation) {
         this.userService.newPassword(activation);
     }
 
     @PostMapping("/deconnexion")
-    public void logout(HttpServletResponse response){
+    public void logout(HttpServletResponse response) {
         Cookie tokenCookie = new Cookie("token", null);
         tokenCookie.setPath("/");
         tokenCookie.setMaxAge(0);
@@ -199,45 +211,66 @@ public class UserController {
         this.jwtService.deconnexion();
         SecurityContextHolder.clearContext();
     }
+
     @GetMapping("/users/{id}")
-    public UserDTO getUserById(@PathVariable(value="id") Long id){
-           return  userService.getUserById(id);
+    public UserDTO getUserById(@PathVariable(value = "id") Long id) {
+        return userService.getUserById(id);
     }
+    @Transactional
     @PutMapping(value = "/users/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-     public UserDTO updateUser(@PathVariable(value = "id") Long id,
-                          @RequestPart String userDetails,
-                          @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
+    public UserDTO updateUser(@PathVariable(value = "id") Long id,
+                              @RequestPart String userDetails,
+                              @RequestPart(value = "multipartFile", required = false) MultipartFile multipartFile) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         UserDTO userDetail = mapper.readValue(userDetails, UserDTO.class);
-        UserDTO originalUser =  userService.getUserById(id);
-    if (multipartFile != null && !multipartFile.isEmpty()) {
+        //UserDTO originalUser = userService.getUserById(id);
+        //String oldImageUrl = originalUser.getProfileImage();
+        //if (multipartFile != null && !multipartFile.isEmpty()) {
+            //try {
+                //String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
+                //int extensionIndex = fileName.lastIndexOf('.');
+                //String fileNameWithoutExtension = fileName.substring(0, extensionIndex);
 
-        String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
-        int extensionIndex = fileName.lastIndexOf('.');
-        String fileNameWithoutExtension = fileName.substring(0, extensionIndex);
+                //String shortenedFileName = fileNameWithoutExtension.substring(0, Math.min(fileNameWithoutExtension.length(), 10));
 
-        String shortenedFileName = fileNameWithoutExtension.substring(0, Math.min(fileNameWithoutExtension.length(), 10));
+                //String profileImageName = shortenedFileName + fileName.substring(extensionIndex);
+                //String newImageUrl = fileUploadUtil.uploadFile(multipartFile);
 
-        String profileImageName = shortenedFileName + fileName.substring(extensionIndex);
+                //userDetail.setProfileImage(newImageUrl);
 
-        userDetail.setProfileImage(profileImageName);
+                //UserDTO updatedUser = userService.updateUser(id, userDetail);
 
-        UserDTO updatedUser = userService.updateUser(id, userDetail);
+                //if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
+                    //String publicId = extractPublicIdFromUrl(oldImageUrl);
+                    //fileUploadUtil.deleteFile(publicId);
+                //}
 
-        String uploadDir = "images/" + updatedUser.getId();
+                //return updatedUser;
 
-        FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+            //} catch (Exception e) {
+                //throw new IOException("Error updating user and image: " + e.getMessage());
+            //}
 
-        if (originalUser.getProfileImage() != null && !originalUser.getProfileImage().isEmpty()) {
-            String previousPath = uploadDir + "/" + originalUser.getProfileImage();
-            FileUploadUtil.deleteFile(previousPath);
-        }
-        return updatedUser;
+            //String uploadDir = "images/" + updatedUser.getId();
 
-    } else {
-        return userService.updateUser(id,userDetail);
+            //FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+
+            //if (originalUser.getProfileImage() != null && !originalUser.getProfileImage().isEmpty()) {
+            //String previousPath = uploadDir + "/" + originalUser.getProfileImage();
+            //String publicId = extractPublicIdFromUrl(originalUser.getProfileImage());
+            //fileUploadUtil.deleteFile(publicId);
+            //FileUploadUtil.deleteFile(publicId);
+        //}
+        return userService.updateUser(id, userDetail, multipartFile);
+
     }
-}
+//    private String extractPublicIdFromUrl(String imageUrl) {
+//        String[] urlParts = imageUrl.split("/");
+//        String fileName = urlParts[urlParts.length - 1];
+//        return fileName.substring(0, fileName.lastIndexOf('.'));
+//    }
+
+
     //@PreAuthorize("hasAnyAuthority('SUPER_ADMIN','ADMIN')")
     @GetMapping("/users")
     public List<UserDTO> getAllUsers() {

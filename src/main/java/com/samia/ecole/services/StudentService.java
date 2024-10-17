@@ -8,10 +8,13 @@ import com.samia.ecole.exceptions.CustomException;
 import com.samia.ecole.repositories.ClassroomRepository;
 import com.samia.ecole.repositories.StudentRepository;
 import com.samia.ecole.repositories.UserRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,12 +24,14 @@ public class StudentService {
     private final UserRepository userRepository;
     private final UserService userService;
     private final ClassroomRepository classroomRepository;
+    private final FileUploadUtil fileUploadUtil;
 
-    public StudentService(StudentRepository studentRepository, UserRepository userRepository, UserService userService, ClassroomRepository classroomRepository) {
+    public StudentService(StudentRepository studentRepository, UserRepository userRepository, UserService userService, ClassroomRepository classroomRepository, FileUploadUtil fileUploadUtil) {
         this.studentRepository = studentRepository;
         this.userRepository = userRepository;
         this.userService = userService;
         this.classroomRepository = classroomRepository;
+        this.fileUploadUtil = fileUploadUtil;
     }
     public StudentDTO mapToStudentDto(Student student){
         StudentDTO studentDTO =  new StudentDTO();
@@ -93,7 +98,7 @@ public class StudentService {
         Student student = studentRepository.findById(id).orElseThrow(()-> new CustomException("Student not found", HttpStatus.NOT_FOUND));
         return mapToStudentDto(student);
     }
-    public StudentDTO createStudent(StudentDTO studentDTO){
+    public StudentDTO createStudent(StudentDTO studentDTO, MultipartFile multipartFile) throws IOException {
         if (studentDTO == null) {
             throw new IllegalArgumentException("StudentDTO cannot be null");
         }
@@ -109,6 +114,10 @@ public class StudentService {
         if(student.getId() != null && studentAlreadyExists(student.getId())){
             throw  new CustomException("student already exists", HttpStatus.CONFLICT);
         }
+        if (multipartFile != null && !multipartFile.isEmpty()){
+            String imageUrl = fileUploadUtil.uploadFile(multipartFile);
+            student.setProfileImage(imageUrl);
+        }
 
         Student savedStudent = studentRepository.save(student);
         return mapToStudentDto(savedStudent);
@@ -116,22 +125,50 @@ public class StudentService {
     private boolean studentAlreadyExists(Long id) {
         return studentRepository.findById(id).isPresent();
     }
+@Transactional
+public StudentDTO updateStudent(Long id, StudentDTO studentDetails, MultipartFile multipartFile) throws IOException {
+        //Student student = studentRepository.findById(id).orElseThrow(()-> new CustomException("Student not found", HttpStatus.NOT_FOUND));
+        Student originalStudent = studentRepository.findById(id).orElseThrow(()-> new CustomException("Student not found", HttpStatus.NOT_FOUND));
+        String oldImageUrl = originalStudent.getProfileImage();
 
-    public StudentDTO updateStudent(Long id, StudentDTO studentDetails){
-        Student student = studentRepository.findById(id).orElseThrow(()-> new CustomException("Student not found", HttpStatus.NOT_FOUND));
-        student.setName(studentDetails.getName());
-        student.setProfileImage(studentDetails.getProfileImage());
-        student.setBirthday(studentDetails.getBirthday());
-        student.setGrade(studentDetails.getGrade());
-//        student.setClasse(studentDetails.getClasse());
+    if (multipartFile != null && !multipartFile.isEmpty()) {
+        String newImageUrl = fileUploadUtil.uploadFile(multipartFile);
+        studentDetails.setProfileImage(newImageUrl);
+
+        if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
+            String publicId = extractPublicIdFromUrl(oldImageUrl);
+            fileUploadUtil.deleteFile(publicId);
+        }
+    } else {
+        studentDetails.setProfileImage(oldImageUrl);
+    }
+    originalStudent.setName(studentDetails.getName());
+    originalStudent.setProfileImage(studentDetails.getProfileImage());
+    originalStudent.setBirthday(studentDetails.getBirthday());
+    originalStudent.setGrade(studentDetails.getGrade());
+/*//        student.setClasse(studentDetails.getClasse());
 //        student.setAbsence(studentDetails.getAbsence());
 //        student.setCantine(studentDetails.getCantine());
-//        student.setGarderie(studentDetails.getGarderie());
-        Student studentUpdated = studentRepository.save(student);
+//        student.setGarderie(studentDetails.getGarderie());*/
+        Student studentUpdated = studentRepository.save(originalStudent);
         return mapToStudentDto(studentUpdated);
+    }
+    private String extractPublicIdFromUrl(String imageUrl) {
+        String[] urlParts = imageUrl.split("/");
+        String fileName = urlParts[urlParts.length - 1];
+        return fileName.substring(0, fileName.lastIndexOf('.'));
     }
     public void deleteStudent(Long id){     // ONLY ADMIN AND SUPER ADMIN CAN DO THAT
         Student student = studentRepository.findById(id).orElseThrow(()-> new CustomException("Student not found", HttpStatus.NOT_FOUND));
+
+        if (student.getProfileImage() != null) {
+            String publicId = extractPublicIdFromUrl(student.getProfileImage());
+            try {
+                fileUploadUtil.deleteFile(publicId);
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to delete image from Cloudinary: " + e.getMessage());
+            }
+        }
         User user = student.getUser();
         if (user != null){
             user.getStudentList().remove(student);
