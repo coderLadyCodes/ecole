@@ -29,11 +29,11 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @Configuration
-@PropertySource("classpath:secrets.properties")
+@PropertySource("application.properties")
 public class JwtService {
     public static final String BEARER = "bearer";
     public static final String REFRESH = "refresh";
-    @Value("${ENCRIPTION_KEY}")
+    @Value("${encription.key}")
     private String ENCRIPTION_KEY;
     private final UserService userService;
     private final JwtRepository jwtRepository;
